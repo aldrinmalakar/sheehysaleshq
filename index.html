@@ -771,6 +771,28 @@ Want me to connect you when the time comes, or would you rather have the schedul
 
 /* ================= call tracks ================= */
 const TRACKS = {
+ coldcall: {label:'Cold call (owner list)', script:
+`[cue]Open warm — say the name, then stop talking. Mirror their pace.
+"Hey {[Name]}. How you doing."
+
+[cue]Who you are + permission — keep it fast, sound like you know them
+"It is {[agent]} over at Sheehy Nissan in Manassas. I know you are probably in the middle of something so I will keep this quick, that fair?"
+
+[cue]Reason for the call — real, not manufactured
+"So the reason I am reaching out. You are in a {[current]} with us, and used values on those have been running higher than a lot of people expect right now. There is a real chance you are sitting on equity you could actually use. I did not want you to miss it without at least knowing the number."
+
+[cue]Trade-cycle read — a question, then let them talk
+"Quick question. How long have you had the {[current]} now? And are you usually a trade-every-few-years person, or do you drive them into the ground?"
+
+[cue]Bridge — ten minutes, zero pressure, either-way-you-win
+"Here is all I am suggesting. Ten minutes, I put real eyes on your car and get you the actual number. If there is strong equity and we can get you into something newer without your payment jumping, great. If not, you drive home in the same car and now you know where you stand. Either way you win, that sound reasonable?"
+
+[cue]Two-choice close — never ask "can you come in"
+"When is your next day off this week? ... Perfect. Do mornings or afternoons work better for you? ... I have got {[day/time]} or {[alt time]}, which one is easier?"
+
+[cue]Lock it + confirm on the call
+"Done, I have got you {[day/time]}. I will have your number pulled before you get here so we are not wasting your time. Is it just you coming, or is anyone else in on the decision with you? ... Great, and this is the best number for a confirmation text?"`},
+
  lead: {label:'Internet lead', script:
 `[cue]Opener
 "Hi, is this {[Name]}? ... Hi {[Name]}, this is {[agent]} over at Sheehy Nissan of Manassas. You asked about the {[vehicle]} online. Did I catch you at an okay time?"
@@ -837,12 +859,17 @@ Never promise a unit is available without checking. Say:
 };
 
 const VOICEMAIL = {
+ coldcall:`Hey [Name], [agent] here from Sheehy Nissan of Manassas. Real quick, used values on your [current] have been running high lately and there is a good chance you are sitting on equity you could use. Ten minutes and I can get you the actual number, no pressure either way. Call or text me back at [number]. That is [number]. Again, [agent] at Sheehy. Talk soon [Name].`,
  owner:`Hey [Name], [agent] here from Sheehy Nissan of Manassas, hope you are having a great one. Real quick, there are some strong owner offers on your [current] right now and I did not want you to miss them. Do me a favor and call or text me back at [number]. That is [number]. Again, it is [agent] at Sheehy Nissan. Talk soon [Name].`,
  lead:`Hi [Name], this is [agent] at Sheehy Nissan of Manassas. You asked about the [vehicle], and good news, it is here. I have one quick question before I send anything over, so give me a call or text at [number]. That is [number]. Again, [agent] at Sheehy. Talk soon.`,
  inbound:`Hi [Name], [agent] at Sheehy Nissan of Manassas returning your call about the [vehicle]. Easiest way to reach me is a call or text at [number]. That is [number]. Looking forward to helping you out. Talk soon.`
 };
 
 const OBJECTIONS = [
+ {q:'"I am not really interested" (cold call)',
+  a:`"Totally fair, most people are not until they see the number. Let me ask you this. When you got the {[current]}, did you happen to lock in a great rate, or were you just taking whatever the payment was at the time? ... Right. That is exactly why ten minutes is worth it. Get it in front of me and you will know where you actually stand. Would {[day/time]} or {[alt time]} work?"`},
+ {q:'"Call me back later" (cold call)',
+  a:`"Happy to. Real quick though, so I catch you at a good time, are you more of a mornings or an evenings person? ... Got it. Then let me just hold a spot so you are not chasing me. {[day/time]} or {[alt time]}, which is easier?"`},
  {q:'"Just give me your best price over the phone"',
   a:`"I get it, you want a real number, and I want to give you one that actually holds up. A price without the exact unit, your trade and how you are paying is a guess, and a guess can move on you later. Come in, fifteen minutes, and you leave with real figures you can hold anyone else to. Would {[day/time]} or {[alt time]} work?"`},
  {q:'"Just email me the info"',
