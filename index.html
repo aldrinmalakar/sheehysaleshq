@@ -334,6 +334,7 @@ var o=[];var l=Array.isArray(e);for(f=n.s.c;f<=n.e.c;++f)s[f]=ya(f);for(var c=n.
     </div>
 
     <div class="toolbar"><div class="chips" id="trackChips"></div></div>
+    <div id="openerBar" style="display:none"></div>
 
     <div class="card"><div class="card-body script" id="callScript"></div></div>
 
@@ -439,7 +440,7 @@ const DAYN = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Satur
 const S = {
   name:'', vehicle:'', current:'', phone:'', detail:'', mynum:'703-996-9877',
   agent:'Aldrin', d1:'', t1:'', d2:'', t2:'',
-  track:'lead', appt:'', notes:'',
+  track:'lead', opener:'equity', appt:'', notes:'',
   tally:{dials:0,contacts:0,vms:0,appts:0},
   smsCat:'All', emCat:'All', lead:null, lastOutcome:''
 };
@@ -771,15 +772,25 @@ Want me to connect you when the time comes, or would you rather have the schedul
 
 /* ================= call tracks ================= */
 const TRACKS = {
- coldcall: {label:'Cold call (owner list)', script:
+ coldcall: {label:'Cold call', openers:{
+   equity:{label:'Equity', hint:'Best when the car is paid off or close', tag:'paid off or close',
+     text:`"So here is why I am reaching out. You have had the {[current]} a good while now, and depending on your payoff there is a real chance you have equity sitting in it you could put to work. Give me ten minutes and I can tell you the real number."`,
+     vm:`Hey [Name], [agent] here from Sheehy Nissan of Manassas. Real quick, depending on your payoff there is a real chance you have equity sitting in your [current] you could use. Ten minutes and I can get you the real number. Call or text me back at [number]. That is [number]. Again, [agent] at Sheehy. Talk soon [Name].`},
+   age:{label:'Age & cost', hint:'Best on high miles or a car that has needed repairs', tag:'older or high miles',
+     text:`"So here is why I am calling. You are a good few years into the {[current]} now, and that is right around where repair bills start to creep up. Before you put money into an older car, it is worth knowing what it is worth today and whether a newer one lands close to what you are already paying."`,
+     vm:`Hey [Name], [agent] here from Sheehy Nissan of Manassas. Your [current] is getting some age on it, and before you sink money into it, it is worth knowing what it is worth today. Ten minutes does it. Call or text me back at [number]. That is [number]. Again, [agent] at Sheehy. Talk soon [Name].`},
+   straight:{label:'Straight', hint:'Least pitchy, often the most credible', tag:'no angle, just honest',
+     text:`"No gimmick here. I am just working back through our past customers. The {[current]} is getting some age on it, and I wanted to see where you are at before you decide what is next. Worst case you find out what it is worth. That is it."`,
+     vm:`Hey [Name], [agent] here from Sheehy Nissan of Manassas. No gimmick, I am just working back through past customers on the [current]. Wanted to see where you are at before you decide what is next. Call or text me back at [number]. That is [number]. Again, [agent] at Sheehy. Talk soon [Name].`}
+  }, script:
 `[cue]Open warm — say the name, then stop talking. Mirror their pace.
 "Hey {[Name]}. How you doing."
 
 [cue]Who you are + permission — keep it fast, sound like you know them
 "It is {[agent]} over at Sheehy Nissan in Manassas. I know you are probably in the middle of something so I will keep this quick, that fair?"
 
-[cue]Reason for the call — real, not manufactured
-"So the reason I am reaching out. You are in a {[current]} with us, and used values on those have been running higher than a lot of people expect right now. There is a real chance you are sitting on equity you could actually use. I did not want you to miss it without at least knowing the number."
+[cue]Reason for the call — pick the angle in the dropdown above
+{{OPENER}}
 
 [cue]Trade-cycle read — a question, then let them talk
 "Quick question. How long have you had the {[current]} now? And are you usually a trade-every-few-years person, or do you drive them into the ground?"
@@ -1014,7 +1025,32 @@ function renderCall(){
   catChips('trackChips', Object.keys(TRACKS).map(k=>TRACKS[k].label),
     TRACKS[S.track].label,
     lab=>{S.track=Object.keys(TRACKS).find(k=>TRACKS[k].label===lab);renderCall();});
-  const raw = TRACKS[S.track].script;
+  const trk = TRACKS[S.track];
+  let raw = trk.script;
+  const obar = $('openerBar');
+  if(trk.openers){
+    const keys = Object.keys(trk.openers);
+    if(!trk.openers[S.opener]) S.opener = keys[0];
+    raw = raw.replace('{{OPENER}}', trk.openers[S.opener].text);
+    // age read from the current vehicle year, if we have one
+    let age = null;
+    const ym = (S.current||'').match(/(19|20)\d\d/);
+    if(ym){ const a = new Date().getFullYear() - parseInt(ym[0],10); if(a>=0 && a<=40) age = a; }
+    const sug = (age!=null && age>=8) ? 'age' : null;
+    const opts = keys.map(k=>'<option value="'+k+'"'+(k===S.opener?' selected':'')+'>'+esc(trk.openers[k].label)+' · '+esc(trk.openers[k].tag)+'</option>').join('');
+    let hint = trk.openers[S.opener].hint;
+    if(age!=null) hint = 'Car is about '+age+' year'+(age===1?'':'s')+' old. '+hint;
+    if(sug && S.opener!=='age') hint += ' For a car this age the Age & cost angle usually lands better.';
+    obar.innerHTML =
+      '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'
+      + '<label for="openerSel" style="font:600 11px/1 \'Space Grotesk\',sans-serif;letter-spacing:.07em;text-transform:uppercase;color:#7d8a99">Opening angle</label>'
+      + '<select id="openerSel" style="flex:1;min-width:190px;border:1px solid var(--line);border-radius:8px;padding:9px 10px;font-family:inherit;font-size:15px;background:#fff">'+opts+'</select>'
+      + '</div>'
+      + '<div style="margin-top:6px;font-size:13px;color:#5b6b7b">'+esc(hint)+'</div>';
+    obar.style.display='';
+    const sel = document.getElementById('openerSel');
+    if(sel) sel.onchange = ()=>{ S.opener = sel.value; renderCall(); };
+  } else { obar.innerHTML=''; obar.style.display='none'; }
   const filled = fill(raw.replace(/\{\[(Name|vehicle|current|agent|day\/time|alt time)\]\}/g,'[$1]'));
   $('callScript').innerHTML = markup(filled).replace(/\[cue\]([^\n]*)/g,'<span class="cue">$1</span>');
 
@@ -1055,7 +1091,11 @@ function renderCall(){
 
   $('callNotes').value = S.notes;
   const vm = $('vmScript');
-  if(document.activeElement !== vm) vm.value = fill(VOICEMAIL[S.track]||VOICEMAIL.lead);
+  if(document.activeElement !== vm){
+    const trk0 = TRACKS[S.track];
+    const vmSrc = (trk0 && trk0.openers && trk0.openers[S.opener] && trk0.openers[S.opener].vm) || VOICEMAIL[S.track] || VOICEMAIL.lead;
+    vm.value = fill(vmSrc);
+  }
   ['dials','contacts','vms','appts'].forEach(k=>$('t_'+k).textContent=S.tally[k]);
 }
 
@@ -1255,7 +1295,7 @@ function selectLead(r){
   const tgt=autoTarget(S.current); if(tgt) S.vehicle=tgt;
   const ph=phoneOf(r);
   if(ph) S.phone=ph;
-  S.track='owner'; S.appt=''; S.notes=''; S.lastOutcome='';
+  S.track='coldcall'; S.appt=''; S.notes=''; S.lastOutcome='';
   syncInputs();
   // context strip
   const bits=[];
