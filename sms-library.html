@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SMS Library · Sheehy Sales HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#1a2330;--muted:#6b7889;--line:#e4e8ee;--line-soft:#eef1f5;--paper:#fff;--card:#f6f8fb;--accent:#2f5fe0;--good:#0f8a4d;--bad:#c0334d;--bg:#eef1f6}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.5}
+  .wrap{max-width:900px;margin:0 auto;padding:0 14px 60px}
+  .page-title{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:.01em;margin:16px 0 2px}
+  .fillbar{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px;margin:8px 0 14px}
+  .fill-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px}
+  .fill-grid label{display:flex;flex-direction:column;gap:4px;font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+  .fill-grid input{border:1px solid var(--line);border-radius:8px;padding:9px 10px;font-family:inherit;font-size:14.5px;background:#fff;color:var(--ink);text-transform:none;letter-spacing:normal;font-weight:400}
+  .fill-actions{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+  .clearcust{border:1px solid var(--line);background:transparent;border-radius:8px;padding:7px 13px;font-family:'Space Grotesk',sans-serif;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer}
+  .clearcust:hover{border-color:var(--bad);color:var(--bad)}
+  .fill-note{font-size:11.5px;color:var(--muted);line-height:1.5}
+  header{background:var(--paper);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
+  .hd{max-width:900px;margin:0 auto;padding:12px 14px}
+  .brand{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;letter-spacing:.01em}
+  .brand small{display:block;font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.02em;margin-top:1px}
+  .topnav{display:flex;gap:7px;margin-top:11px;flex-wrap:wrap}
+  .topnav a{text-decoration:none;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:7px 12px;background:var(--paper)}
+  .topnav a.on{color:#fff;background:var(--accent);border-color:var(--accent)}
+  .banner{background:#fff7ed;border:1px solid #f2d9b8;color:#8a5a12;border-radius:10px;padding:9px 12px;font-size:12.5px;line-height:1.5;margin:14px 0 10px}
+  .legend{font-size:12px;color:var(--muted);margin:0 0 12px;line-height:1.7}
+  .legend code{background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:11.5px;color:var(--ink)}
+  .search{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px 13px;font-size:15px;font-family:inherit;background:var(--paper);margin-bottom:10px}
+  .chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+  .chip{border:1px solid var(--line);background:var(--paper);border-radius:20px;padding:7px 13px;font-family:'Space Grotesk',sans-serif;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap}
+  .chip.on{color:#fff;background:var(--ink);border-color:var(--ink)}
+  .count{font-size:12.5px;color:var(--muted);margin-bottom:12px;font-family:'Space Grotesk',sans-serif;letter-spacing:.02em}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:13px;margin-bottom:12px;overflow:hidden}
+  .card-head{display:flex;align-items:center;gap:8px;padding:11px 13px 0;flex-wrap:wrap}
+  .tag{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:3px 9px;border-radius:6px;background:#eaf1ff;color:var(--accent)}
+  .card-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px}
+  .use{font-size:12px;color:var(--muted);width:100%;padding:0 1px}
+  .card-body{padding:10px 13px 13px}
+  .msg{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:9px;padding:11px;font-family:inherit;font-size:14.5px;line-height:1.55;background:#fff;resize:vertical;min-height:74px;color:var(--ink)}
+  .row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:8px}
+  .len{font-size:11.5px;color:var(--muted);font-family:'Space Grotesk',sans-serif}
+  .len.warn{color:var(--bad)}
+  .btns{display:flex;gap:7px}
+  .copy{border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:8px;padding:8px 15px;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;cursor:pointer}
+  .copy.ghost{background:transparent;color:var(--accent)}
+  .copy:active{transform:translateY(1px)}
+  .empty{text-align:center;color:var(--muted);padding:40px 10px;font-size:14px}
+  .foot{text-align:center;color:var(--muted);font-size:11.5px;margin-top:22px;line-height:1.6}
+</style>
+</head>
+<body>
+<script src="./nav.js" defer></script>
+
+<div class="wrap">
+  <h1 class="page-title">SMS Library</h1>
+  <div class="fillbar">
+    <div class="fill-grid">
+      <label>Customer name<input data-f="name" autocomplete="off" placeholder="Sarah"></label>
+      <label>Vehicle of interest<input data-f="vehicle" autocomplete="off" placeholder="2026 Rogue SV"></label>
+      <label>Vehicle they own now<input data-f="current" autocomplete="off" placeholder="2016 Murano"></label>
+      <label>Appointment day/time<input data-f="daytime" autocomplete="off" placeholder="Saturday at 11"></label>
+      <label>Your name<input data-f="agent" autocomplete="off" placeholder="Aldrin"></label>
+      <label>Your phone<input data-f="number" autocomplete="off" placeholder="703 555 0134"></label>
+      <label>Your email<input data-f="email" autocomplete="off" placeholder="you@sheehy.com"></label>
+    </div>
+    <div class="fill-actions"><button class="clearcust" type="button">Clear customer</button>
+      <span class="fill-note">Fills every message below as you type. Saved on this browser only. Blank fields stay as tokens so you can spot what is left to fill.</span></div>
+  </div>
+  <div class="banner">Verify any price, payment, rate, rebate or incentive with the desk before you send. No guaranteed numbers, no fake urgency. Text only contacts who are cleared to text. Every message is a starting point, so make line one sound like you.</div>
+  <div class="legend">Fill the blanks before sending:
+    <code>[Name]</code> customer first name ·
+    <code>[vehicle]</code> the car they want ·
+    <code>[current]</code> the car they own now ·
+    <code>[agent]</code> your name ·
+    <code>[number]</code> your callback number ·
+    <code>[day/time]</code> the appointment slot
+  </div>
+
+  <input class="search" id="search" placeholder="Search a scenario, a word, or a phrase" autocomplete="off">
+  <div class="chips" id="chips"></div>
+  <div class="count" id="count"></div>
+  <div id="grid"></div>
+
+  <div class="foot">Standalone page. Nothing here connects to or changes your main Sales HQ app.<br>Keep customer data inside dealership systems. This library holds templates only, no customer information.</div>
+</div>
+
+<script>
+const SMS = [
+  // ===== LEAD LIFECYCLE =====
+  {cat:'New lead', title:'Fast first touch', use:'Brand new internet lead, reach out within minutes', body:`Hi [Name], this is [agent] at Sheehy Nissan of Manassas. Got your note on the [vehicle]. It is here and I can hold it for you. Are you looking to come by today or is tomorrow better?`},
+  {cat:'New lead', title:'Question first', use:'When you want to qualify before pitching', body:`Hi [Name], [agent] at Sheehy Nissan. Before I send you a wall of info on the [vehicle], are you mainly checking price, availability or the right trim? One word back and I will keep it simple.`},
+  {cat:'New lead', title:'Warm and low-key', use:'Softer opener for a cautious lead', body:`Hi [Name], [agent] at Sheehy Nissan of Manassas. Saw you were looking at the [vehicle]. Happy to answer anything and hold it if you want. What is the best way to help, text or a quick call?`},
+
+  {cat:'No reply', title:'Day one nudge', use:'One day after the intro with no response', body:`Hi [Name], [agent] at Sheehy Nissan. Still have the [vehicle] flagged for you. Quick one so I plan around you, are you looking this week or is this more of a next-month thing?`},
+  {cat:'No reply', title:'Day three check', use:'A few days of silence', body:`Hi [Name], circling back on the [vehicle]. No pressure at all. If you are still in the market I will keep you posted, and if the timing changed just say the word and I will get out of your hair.`},
+  {cat:'No reply', title:'Value nudge', use:'Give them a reason to reply', body:`Hi [Name], [agent] here. I can usually save you a trip by narrowing things down over text first. What matters most on the [vehicle], the price, the payment or how soon you need it?`},
+  {cat:'No reply', title:'Last touch, 1 or 2', use:'Final attempt, easy exit', body:`Hi [Name], last one from me on the [vehicle] so I am not blowing up your phone. Still looking, or all set? Reply 1 if still looking and 2 if you are good, and I will act accordingly.`},
+
+  {cat:'Price shopper', title:'Real number, not a guess', use:'They lead with price', body:`Hi [Name], [agent] at Sheehy Nissan. Happy to get you real numbers on the [vehicle], not a guess. The cleanest way is a two minute call so I send the right figure the first time. Can I ring you now or after work?`},
+  {cat:'Price shopper', title:'Honest about the number', use:'Explain why price depends on details', body:`Hi [Name], I hear you on price. Here is the honest part, the number depends on the exact car and a couple details. Give me those and I will get it verified. Are you comparing one trim or a few?`},
+  {cat:'Price shopper', title:'Earn the business', use:'Shift from cheapest to best fit', body:`Hi [Name], [agent] at Sheehy Nissan. I want to earn your business, not just be the cheapest text. If I get you a fair number and a car that actually fits, are you open to coming in this week?`},
+
+  {cat:'Payment focused', title:'No guessing on payment', use:'They ask for a monthly number', body:`Hi [Name], [agent] at Sheehy Nissan. Totally get wanting the payment to make sense. I do not guess on payments, but I can get you real options from our finance team. What day works to sit down for ten minutes?`},
+  {cat:'Payment focused', title:'Get it right in person', use:'Redirect a payment text to a visit', body:`Hi [Name], the payment comes down to a few things we can walk through fast in person. Rather than text you a number I cannot stand behind, can you come by [day/time] so we get it right?`},
+
+  {cat:'Trade interest', title:'Appraise it properly', use:'They mention a trade', body:`Hi [Name], [agent] at Sheehy Nissan. You mentioned a trade. I will not guess the value from here since miles and condition matter, but we can appraise it properly and it may help more than you think. Want to bring it by [day/time]?`},
+  {cat:'Trade interest', title:'Real figure, ten minutes', use:'Set expectations on trade value', body:`Hi [Name], quick one on your trade. Values move around, so the only real number comes from putting eyes on it. Ten minutes and I can get you an actual figure. Morning or evening better for you?`},
+
+  {cat:'Credit rebuild', title:'No judgment', use:'Credit-sensitive buyer', body:`Hi [Name], [agent] at Sheehy Nissan. No judgment here at all, plenty of people are rebuilding. I do not promise approvals over text, but our finance team looks at the full picture. Want to talk through your options this week?`},
+  {cat:'Credit rebuild', title:'One piece of the puzzle', use:'Reassure and route to finance', body:`Hi [Name], credit is just one piece and it is fixable. The fastest way to know where you stand is a real conversation with our finance side. Can I set that up for [day/time]?`},
+
+  {cat:'Family decision', title:'Bring everyone', use:'Multiple decision makers', body:`Hi [Name], [agent] at Sheehy Nissan. Sounds like this is a family decision, which is smart. Want to come in together so nobody has to relay it secondhand? I can have the [vehicle] ready. What works for both of you?`},
+  {cat:'Family decision', title:'Make it easy on everyone', use:'Offer a relaxed group time', body:`Hi [Name], happy to make this easy on everyone. If you want to bring whoever is helping decide, I will set aside time so it is not rushed. Is a weekend or a weekday evening easier?`},
+
+  {cat:'Competitor compare', title:'Straight comparison', use:'They are cross-shopping brands', body:`Hi [Name], [agent] at Sheehy Nissan. Smart to cross-shop. I will give you a straight comparison on the [vehicle] versus what you are looking at, no spin. Want me to lay it out or would you rather drive them back to back?`},
+  {cat:'Competitor compare', title:'Feel the difference', use:'Push toward a back-to-back drive', body:`Hi [Name], if you are weighing the [vehicle] against another brand, I can point out the real differences that matter for how you drive. Quick call, or do you want to just come feel the difference?`},
+
+  {cat:'Appt confirm', title:'You are set', use:'Right after booking', body:`Hi [Name], [agent] at Sheehy Nissan. You are set for [day/time]. I will have the [vehicle] pulled up and ready. Ask for me at the front and I will come right out. See you then.`},
+  {cat:'Appt confirm', title:'Anything to prep', use:'Confirm and add value', body:`Hi [Name], confirming [day/time] for the [vehicle]. Anything specific you want ready when you get here? Reply and I will have it set.`},
+
+  {cat:'Appt reminder', title:'Day-of reminder', use:'Morning of the appointment', body:`Hi [Name], [agent] at Sheehy Nissan. Looking forward to [day/time]. The [vehicle] is ready and I blocked the time for you. Still good on your end?`},
+  {cat:'Appt reminder', title:'Meet you out front', use:'Reduce friction on arrival', body:`Hi [Name], quick reminder we are on for [day/time]. Text me when you are heading over and I will meet you out front so you are not waiting.`},
+
+  {cat:'No-show', title:'No worries, reschedule', use:'They missed the appointment', body:`Hi [Name], [agent] at Sheehy Nissan. Missed you today, no worries at all, life happens. The [vehicle] is still here. Want to grab a new time this week?`},
+  {cat:'No-show', title:'Hold it or not', use:'Gauge if they are still in', body:`Hi [Name], we had you down for today on the [vehicle]. I am guessing something came up. Should I hold it a little longer or is the timing off right now?`},
+
+  {cat:'Be-back', title:'Great meeting you', use:'After a showroom visit with no purchase', body:`Hi [Name], [agent] at Sheehy Nissan. Great meeting you today. The [vehicle] felt like a solid fit for what you described. Any questions come up after you left? I am here.`},
+  {cat:'Be-back', title:'One thing on your mind', use:'Isolate the last concern', body:`Hi [Name], thanks for coming by. No pressure, just want to make sure you have what you need to decide. What is the one thing still on your mind about the [vehicle]?`},
+
+  {cat:'After test drive', title:'How did it sit', use:'Same day as the drive', body:`Hi [Name], [agent] at Sheehy Nissan. How did the [vehicle] sit with you after the drive? Anything feel off, or was it close to what you wanted? Happy to line up the next step whenever you are ready.`},
+  {cat:'After test drive', title:'Checked the boxes', use:'Move a good drive forward', body:`Hi [Name], glad you got to drive the [vehicle]. If it checked the boxes, I can put real numbers together and we go from there. If not, tell me what was missing and I will find a better fit.`},
+
+  {cat:'Sold or swap', title:'It sold, here is close', use:'Their exact car is gone', body:`Hi [Name], [agent] at Sheehy Nissan. Straight with you, the exact [vehicle] you asked about just sold. Before you cross us off, I have one or two very close to it here right now. Want the details or would you rather see them in person?`},
+  {cat:'Sold or swap', title:'Something better', use:'Pivot to a similar unit', body:`Hi [Name], that specific [vehicle] is gone, but I have something close that may fit you even better. Worth a quick look? I can set it aside and have it ready [day/time].`},
+
+  {cat:'Reconnect', title:'Been a minute', use:'Revive a lead that went quiet weeks ago', body:`Hi [Name], [agent] at Sheehy Nissan. Been a minute since we talked about the [vehicle]. Still in the market or did you already handle it? Reply 1 if still looking and 2 if you are set, and I will follow your lead.`},
+  {cat:'Reconnect', title:'You came to mind', use:'Warm re-open of an old lead', body:`Hi [Name], thinking of a few folks I never got to finish helping and you came to mind. If the [vehicle] search is still open, I would love another shot at it. Where did you land?`},
+
+  {cat:'Referral', title:'Send them my way', use:'Ask a happy owner for a referral', body:`Hi [Name], [agent] at Sheehy Nissan. Hope the [vehicle] is treating you well. If anyone you know is car shopping, I would take great care of them the same way. Feel free to send them my way anytime.`},
+  {cat:'Referral', title:'Quick favor', use:'Direct referral ask', body:`Hi [Name], quick favor, no pressure. If a friend or family member is looking, I would love the introduction. I will make it easy on them and you will look good for it.`},
+
+  {cat:'Post-sale', title:'Thank you', use:'Day after delivery', body:`Hi [Name], [agent] at Sheehy Nissan. Thank you again for your business on the [vehicle]. Anything you need as you settle in, I am your guy. Enjoy it.`},
+  {cat:'Post-sale', title:'Text me first', use:'Position yourself as their contact', body:`Hi [Name], congrats again on the [vehicle]. If a question pops up in the first week, text me first before anyone else. I want you taken care of.`},
+
+  {cat:'Review request', title:'Quick review ask', use:'A few days after a good sale', body:`Hi [Name], [agent] at Sheehy Nissan. Glad the [vehicle] is working out. If you have a minute, a quick review really helps me out. I can text you the link. Would that be alright?`},
+  {cat:'Review request', title:'Meant a lot', use:'Softer review ask', body:`Hi [Name], hope you are loving the [vehicle]. If your experience with me was a good one, a short review would mean a lot. No worries if you are busy. Want the link?`},
+
+  {cat:'Service to sales', title:'While it is here', use:'Their car is in the service lane', body:`Hi [Name], [agent] at Sheehy Nissan. Saw your [current] was in for service. While you are thinking about it, values are decent right now and a newer one may land closer to what you expect than you would guess. Want me to check your number while you are here?`},
+  {cat:'Service to sales', title:'No rush, just options', use:'Aging vehicle, soft approach', body:`Hi [Name], hope the service visit went smooth. If that [current] is getting up there, no rush, but I can tell you what it is worth today and what your options look like. Interested, or should I leave it be?`},
+
+  {cat:'Owner equity', title:'Equity check', use:'Owner list, likely has equity', body:`Hi [Name], [agent] at Sheehy Nissan of Manassas. Reaching out to folks in a [current]. Depending on your payoff there is a real chance you have equity in it right now. Worth knowing your number? Takes ten minutes.`},
+  {cat:'Owner equity', title:'No gimmick check-in', use:'Owner list, straight approach', body:`Hi [Name], no gimmick, just checking in on your [current]. It has some age on it now and I wanted to see where you are before you decide what is next. Want me to pull what it is worth today?`},
+
+  {cat:'Lease end', title:'Options, no pressure', use:'Lease is close to maturity', body:`Hi [Name], [agent] at Sheehy Nissan. Your lease on the [current] is getting close to the end. Good news is you have options and I can walk you through them with no pressure. Want to go over them this week?`},
+  {cat:'Lease end', title:'All three paths', use:'Lay out lease-end choices', body:`Hi [Name], as the [current] lease winds down, let us make the next step easy. Turn it in, buy it or move into something new, your call. Want me to lay out all three?`},
+
+  // ===== MARKET AND EVENT DRIVEN =====
+  {cat:'End of month', title:'A little more room', use:'Late in the month, close a fence-sitter', body:`Hi [Name], [agent] at Sheehy Nissan. We are at a point in the month where I have a little more room to work for you on the [vehicle]. If you were close, this is a good week to talk. Want me to put something together?`},
+  {cat:'End of month', title:'Good timing', use:'Nudge without fake urgency', body:`Hi [Name], quick heads up, timing is decent right now on the [vehicle] if you were on the fence. No pressure and no gimmick. Want to look while it makes sense?`},
+
+  {cat:'Model-year change', title:'New one just landed', use:'Newer model year arriving', body:`Hi [Name], [agent] at Sheehy Nissan. The newer [vehicle] just started landing, which usually means good movement on the outgoing ones. If you liked it, now is a smart time to look. Want the rundown?`},
+  {cat:'Model-year change', title:'Worth seeing new', use:'Invite to see the fresh model', body:`Hi [Name], the fresh [vehicle] arrived and it is worth seeing in person. If you were considering it, want me to have one ready for you [day/time]?`},
+
+  {cat:'New inventory', title:'Back in stock', use:'Their wanted vehicle returned', body:`Hi [Name], [agent] at Sheehy Nissan. The [vehicle] you wanted just came back in stock. These do not sit long. Want me to hold it and text you a couple photos?`},
+  {cat:'New inventory', title:'First to see it', use:'Fresh match just arrived', body:`Hi [Name], good news, a [vehicle] just hit our lot that matches what you were after. Want to be the first to see it before it goes up front?`},
+
+  {cat:'Fresh offers', title:'New offers this month', use:'Incentives changed, stay compliant', body:`Hi [Name], [agent] at Sheehy Nissan. Some new offers just came through this month that could work in your favor on the [vehicle]. I want to quote them right, so give me a call and I will verify what applies to you.`},
+  {cat:'Fresh offers', title:'Let me verify it', use:'Route offer questions to a call', body:`Hi [Name], a few things changed this month that might help on the [vehicle]. Rather than text you a number I have to walk back, can I call you with the verified details?`},
+
+  {cat:'Tax season', title:'Refund into a car', use:'Tax refund window', body:`Hi [Name], [agent] at Sheehy Nissan. This is the time of year a lot of folks put a refund toward a nicer, safer vehicle. If that is you, the [vehicle] is a strong pick. Want to see what it would look like?`},
+  {cat:'Tax season', title:'Stretch it further', use:'Position the refund as a down move', body:`Hi [Name], refund season is here. If you were thinking about using it wisely on a vehicle, I can help you stretch it further than you would expect. Want to talk options?`},
+
+  {cat:'Holiday event', title:'Event this weekend', use:'Dealership sales event', body:`Hi [Name], [agent] at Sheehy Nissan. We have a sales event running this weekend and it is a good time to look at the [vehicle]. Want me to set aside time so you skip the crowd?`},
+  {cat:'Holiday event', title:'Skip the crowd', use:'Offer a reserved slot during an event', body:`Hi [Name], holiday weekend usually means more movement here. If the [vehicle] was on your mind, this is a good time. Want me to have it ready?`},
+
+  {cat:'Weather', title:'Before the next storm', use:'Winter or bad weather hitting', body:`Hi [Name], [agent] at Sheehy Nissan. With the weather turning, a lot of folks want the confidence of all-wheel drive and the safety tech. The [vehicle] handles both well. Want to feel the difference before the next storm?`},
+  {cat:'Weather', title:'Nervous in bad weather', use:'Their current car struggles in snow', body:`Hi [Name], snow season is a good reminder that traction and safety matter. If the [current] has you nervous in bad weather, the [vehicle] is worth a look. Want me to line one up?`},
+
+  {cat:'Fuel and EV', title:'Better fuel numbers', use:'Gas prices high, efficiency interest', body:`Hi [Name], [agent] at Sheehy Nissan. With gas where it is, folks are asking me about better fuel numbers and the electric options. If that is on your mind, the [vehicle] is worth a look. Want the honest pros and cons?`},
+  {cat:'Fuel and EV', title:'Match your daily drive', use:'Qualify for hybrid or EV fit', body:`Hi [Name], if fuel cost is nagging you, I can walk you through the efficient and electric choices without the hype. What is your daily drive like? That tells me where to point you.`},
+
+  {cat:'High trade values', title:'Worth more than you think', use:'Strong used-car market', body:`Hi [Name], [agent] at Sheehy Nissan. Trade values have been stronger than people expect lately. If you have been curious what your [current] is worth, now is a good time to find out. Want me to get you a real number?`},
+  {cat:'High trade values', title:'No obligation number', use:'Low-pressure equity check', body:`Hi [Name], quick one. Your [current] may be worth more right now than you think. No obligation to do anything, but it is worth knowing. Want me to check?`},
+
+  {cat:'Ownership check-in', title:'One year in', use:'Anniversary of a past sale', body:`Hi [Name], [agent] at Sheehy Nissan. Hard to believe it has been a year with the [current]. Just checking in, everything running the way you want? If anything ever comes up, I am here.`},
+  {cat:'Ownership check-in', title:'No pitch today', use:'Pure relationship touch', body:`Hi [Name], hope the [current] has been good to you. No sales pitch today, just making sure you are taken care of. Anything you need from our side?`},
+
+  // ===== LOCAL SEGMENTS =====
+  {cat:'First-time buyer', title:'Make it simple', use:'Nervous first purchase', body:`Hi [Name], [agent] at Sheehy Nissan. First car purchase is a big one and I will make it simple, no pressure. The [vehicle] is a smart, safe place to start. Want me to walk you through it step by step?`},
+  {cat:'First-time buyer', title:'Should feel good', use:'Reassure a first-timer', body:`Hi [Name], buying your first car should feel good, not stressful. I will explain every part in plain language. Want to come in and I will make it easy?`},
+
+  {cat:'Rideshare and delivery', title:'Built for high miles', use:'Rideshare or delivery driver', body:`Hi [Name], [agent] at Sheehy Nissan. If you are driving for rideshare or delivery, fuel economy and reliability are everything. The [vehicle] is built for high miles. Want me to show you why it pays off?`},
+  {cat:'Rideshare and delivery', title:'Save real money', use:'Focus on cost per mile', body:`Hi [Name], for the miles you put on, the right vehicle saves you real money. Let me point you to the smart pick for your kind of driving. What are you running now?`},
+
+  {cat:'Military and government', title:'Thank you for your service', use:'Military or government-adjacent buyer', body:`Hi [Name], [agent] at Sheehy Nissan of Manassas. Thank you for your service. There may be a program that applies to you, and I would want to verify the current details before I quote anything. Want me to check what you qualify for?`},
+  {cat:'Military and government', title:'Around your schedule', use:'Respect a busy schedule', body:`Hi [Name], with a lot of military and government folks in the area, I keep the process quick and respectful of your time. Want me to line up the [vehicle] around your schedule?`}
+];
+
+/* ============ render engine ============ */
+const $=id=>document.getElementById(id);
+let activeCat='All', q='';
+
+const FILL_KEY='shq_fill_v1';
+let F=loadFill();
+function loadFill(){ try{return JSON.parse(localStorage.getItem(FILL_KEY)||'{}');}catch(e){return {};} }
+function saveFill(){ try{localStorage.setItem(FILL_KEY,JSON.stringify(F));}catch(e){} }
+function fillText(s){
+  return String(s)
+    .replace(/\[Name\]/g, F.name||'[Name]')
+    .replace(/\[vehicle\]/g, F.vehicle||'[vehicle]')
+    .replace(/\[current\]/g, F.current||'[current]')
+    .replace(/\[agent\]/g, F.agent||'[agent]')
+    .replace(/\[number\]/g, F.number||'[number]')
+    .replace(/\[day\/time\]/g, F.daytime||'[day/time]')
+    .replace(/\[email\]/g, F.email||'[email]');
+}
+
+function cats(){ return ['All', ...Array.from(new Set(SMS.map(t=>t.cat)))]; }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function renderChips(){
+  const box=$('chips'); box.innerHTML='';
+  cats().forEach(c=>{
+    const b=document.createElement('button');
+    b.className='chip'+(c===activeCat?' on':'');
+    b.textContent=c;
+    b.onclick=()=>{activeCat=c;render();};
+    box.appendChild(b);
+  });
+}
+
+function filtered(){
+  const s=q.trim().toLowerCase();
+  return SMS.filter(t=>{
+    if(activeCat!=='All' && t.cat!==activeCat) return false;
+    if(!s) return true;
+    return (t.title+' '+t.use+' '+t.body+' '+t.cat).toLowerCase().includes(s);
+  });
+}
+
+function copyText(text, btn){
+  const done=()=>{ const t=btn.textContent; btn.textContent='Copied'; setTimeout(()=>btn.textContent=t,1100); };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done, ()=>fallback(text,done));
+  } else fallback(text,done);
+}
+function fallback(text,done){
+  const ta=document.createElement('textarea'); ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); done(); }catch(e){}
+  document.body.removeChild(ta);
+}
+
+function render(){
+  renderChips();
+  const list=filtered();
+  $('count').textContent=list.length+(list.length===1?' message':' messages');
+  const grid=$('grid'); grid.innerHTML='';
+  if(!list.length){ grid.innerHTML='<div class="empty">No messages match that. Try a different word or category.</div>'; return; }
+  list.forEach(t=>{
+    const card=document.createElement('div'); card.className='card';
+    card.innerHTML=`<div class="card-head"><span class="tag">${esc(t.cat)}</span><span class="card-title">${esc(t.title)}</span><span class="use">${esc(t.use)}</span></div>`;
+    const body=document.createElement('div'); body.className='card-body';
+    const ta=document.createElement('textarea'); ta.className='msg'; ta.value=fillText(t.body); ta.rows=Math.max(3,Math.ceil(ta.value.length/58));
+    const row=document.createElement('div'); row.className='row';
+    const len=document.createElement('span'); len.className='len';
+    const upd=()=>{ const n=ta.value.length; len.textContent=n+' characters'+(n>320?' · over 2 texts':''); len.classList.toggle('warn',n>320); };
+    ta.addEventListener('input',upd); upd();
+    const btns=document.createElement('div'); btns.className='btns';
+    const copy=document.createElement('button'); copy.className='copy'; copy.textContent='Copy'; copy.onclick=()=>copyText(ta.value,copy);
+    btns.appendChild(copy);
+    row.appendChild(len); row.appendChild(btns);
+    body.appendChild(ta); body.appendChild(row); card.appendChild(body); grid.appendChild(card);
+  });
+}
+
+$('search').addEventListener('input',e=>{q=e.target.value;render();});
+document.querySelectorAll('[data-f]').forEach(inp=>{
+  if(F[inp.dataset.f]) inp.value=F[inp.dataset.f];
+  inp.addEventListener('input',()=>{ F[inp.dataset.f]=inp.value.trim(); saveFill(); render(); });
+});
+const _cc=document.querySelector('.clearcust');
+if(_cc) _cc.onclick=()=>{
+  ['name','vehicle','current','daytime'].forEach(k=>F[k]='');
+  saveFill();
+  document.querySelectorAll('[data-f]').forEach(inp=>{ if(['name','vehicle','current','daytime'].indexOf(inp.dataset.f)>-1) inp.value=''; });
+  render();
+};
+render();
+</script>
+</body>
+</html>
