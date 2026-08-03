@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Objection Library · Sheehy Sales HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#1a2330;--muted:#6b7889;--line:#e4e8ee;--line-soft:#eef1f5;--paper:#fff;--card:#f6f8fb;--accent:#2f5fe0;--good:#0f8a4d;--bad:#c0334d;--bg:#eef1f6}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.5}
+  .wrap{max-width:900px;margin:0 auto;padding:0 14px 60px}
+  .page-title{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:.01em;margin:16px 0 2px}
+  .spine{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:8px 0 12px;font-size:13px;line-height:1.6}
+  .spine b{font-family:'Space Grotesk',sans-serif;letter-spacing:.02em}
+  .spine .steps{color:var(--accent);font-weight:600}
+  .fillbar{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px;margin:0 0 14px}
+  .fill-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px}
+  .fill-grid label{display:flex;flex-direction:column;gap:4px;font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+  .fill-grid input{border:1px solid var(--line);border-radius:8px;padding:9px 10px;font-family:inherit;font-size:14.5px;background:#fff;color:var(--ink);text-transform:none;letter-spacing:normal;font-weight:400}
+  .fill-actions{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+  .clearcust{border:1px solid var(--line);background:transparent;border-radius:8px;padding:7px 13px;font-family:'Space Grotesk',sans-serif;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer}
+  .clearcust:hover{border-color:var(--bad);color:var(--bad)}
+  .fill-note{font-size:11.5px;color:var(--muted);line-height:1.5}
+  .search{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px 13px;font-size:15px;font-family:inherit;background:var(--paper);margin-bottom:10px}
+  .chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+  .chip{border:1px solid var(--line);background:var(--paper);border-radius:20px;padding:7px 13px;font-family:'Space Grotesk',sans-serif;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap}
+  .chip.on{color:#fff;background:var(--ink);border-color:var(--ink)}
+  .count{font-size:12.5px;color:var(--muted);margin-bottom:12px;font-family:'Space Grotesk',sans-serif;letter-spacing:.02em}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:13px;margin-bottom:14px;overflow:hidden}
+  .card-head{padding:12px 14px 0}
+  .tag{display:inline-block;font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:3px 9px;border-radius:6px;background:#eaf1ff;color:var(--accent);margin-bottom:7px}
+  .obj{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16.5px;line-height:1.3}
+  .card-body{padding:8px 14px 14px}
+  .meta{font-size:13px;line-height:1.55;margin:9px 0}
+  .meta .k{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);display:block;margin-bottom:2px}
+  .meta.real{background:var(--card);border-radius:9px;padding:9px 11px}
+  .step{margin:10px 0}
+  .step .lab{font-family:'Space Grotesk',sans-serif;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:4px}
+  .line{position:relative;border:1px solid var(--line);border-radius:9px;padding:10px 42px 10px 11px;font-size:14px;line-height:1.5;background:#fff}
+  .line.ask{border-color:var(--good);background:linear-gradient(0deg,rgba(15,138,77,.04),rgba(15,138,77,.04)),#fff}
+  .line.iso{border-color:var(--accent);background:linear-gradient(0deg,rgba(47,95,224,.035),rgba(47,95,224,.035)),#fff}
+  .cp{position:absolute;top:7px;right:7px;border:1px solid var(--line);background:#fff;border-radius:6px;padding:4px 8px;font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer}
+  .cp:active{transform:translateY(1px)}
+  .hint{font-size:11.5px;color:var(--muted);margin-top:4px;font-style:italic}
+  .flag{margin-top:11px;background:#fff7ed;border:1px solid #f2d9b8;color:#8a5a12;border-radius:9px;padding:8px 11px;font-size:12px;line-height:1.5}
+  .flag b{font-family:'Space Grotesk',sans-serif}
+  .empty{text-align:center;color:var(--muted);padding:40px 10px;font-size:14px}
+  .foot{text-align:center;color:var(--muted);font-size:11.5px;margin-top:22px;line-height:1.6}
+</style>
+</head>
+<body>
+<script src="./nav.js" defer></script>
+
+<div class="wrap">
+  <h1 class="page-title">Objection Library</h1>
+  <div class="spine">
+    <b>The spine:</b> <span class="steps">Acknowledge, Clarify, Isolate, Reframe, Ask.</span> Three rules that separate you from average: isolate before you answer, argue the point never the person, and once you ask, stop talking. Built on transparency, precision, tactical empathy and humility. Every card gives you the words, but say them in your voice.
+  </div>
+
+  <div class="fillbar">
+    <div class="fill-grid">
+      <label>Customer name<input data-f="name" autocomplete="off" placeholder="Sarah"></label>
+      <label>Vehicle of interest<input data-f="vehicle" autocomplete="off" placeholder="2026 Rogue SV"></label>
+      <label>Vehicle they own now<input data-f="current" autocomplete="off" placeholder="2016 Murano"></label>
+      <label>Your name<input data-f="agent" autocomplete="off" placeholder="Aldrin"></label>
+    </div>
+    <div class="fill-actions"><button class="clearcust" type="button">Clear customer</button>
+      <span class="fill-note">Fills the wordtracks below. Saved on this browser only. Blank fields stay as tokens.</span></div>
+  </div>
+
+  <input class="search" id="search" placeholder="Search an objection, a word, or a phrase" autocomplete="off">
+  <div class="chips" id="chips"></div>
+  <div class="count" id="count"></div>
+  <div id="grid"></div>
+
+  <div class="foot">Standalone page. Nothing here connects to or changes your main Sales HQ app.<br>Wordtracks are starting points. Read the room, match the buyer, and never trade honesty for a close.</div>
+</div>
+
+<script>
+const OBJ = [
+  // ===== STALLS =====
+  {cat:'Stalls', obj:'"I am just looking"',
+    real:'Their guard is up. They are testing whether you will pounce or pressure. It is almost never a real no.',
+    hold:'Relax your posture and lower the stakes. The calmer you are, the safer they feel.',
+    steps:[
+      {lab:'Acknowledge + permission', say:'Good. You should look. Honestly most people who say that just do not want to get pounced on, and I get it. I am not going to do that to you.'},
+      {lab:'Reframe your role', say:'Think of me less as a salesperson and more as the guy who knows where everything is and what the real differences are. What pulled you in today, the [vehicle] or just starting to look around?'},
+      {lab:'Low-stakes choice', say:'Want me to point you at the two most people cross-shop, or would you rather wander and I stay out of your hair until you wave me down?'}
+    ],
+    close:'Give me sixty seconds to show you one thing, then you decide if I am worth another minute. Fair?'},
+
+  {cat:'Stalls', obj:'"I need to think about it"',
+    real:'There is a specific unspoken question or fear. Most of the time it is money. Vague usually means money.',
+    hold:'Do not panic and do not oversell. Agree first, then find the real thing.',
+    steps:[
+      {lab:'Acknowledge', say:'Of course. A car is a real decision and you should think about it.'},
+      {lab:'Clarify + label', say:'It sounds like there is one thing in particular sitting on your mind. When people say think about it, it is usually the price, the payment or whether this is the right vehicle. Which one is it for you?'},
+      {lab:'Give them something real to think about', say:'Here is what I do not want, for you to go home with nothing but a feeling. Give me five minutes to put the real numbers on paper so you actually have something to think about.'}
+    ],
+    isolate:'If that one thing were handled to your satisfaction, is this the one you would want?',
+    close:'Let me get you the numbers in writing so you are deciding on facts, not guessing. Grab a seat.',
+    flag:'Numbers on paper come from the desk. Do not put a price, payment or rate on anything yourself.'},
+
+  {cat:'Stalls', obj:'"I need to sleep on it"',
+    real:'Nervous about commitment, or an unspoken concern. They want to feel in control of the pace.',
+    hold:'Hand the control back, then quietly uncover the real hesitation.',
+    steps:[
+      {lab:'Acknowledge', say:'Totally fair, this is your money and your call.'},
+      {lab:'Clarify', say:'So I help the right way, is it the vehicle you are unsure about, or the money side?'},
+      {lab:'Bridge', say:'Whatever you decide, I want you deciding on the full picture. Let me make sure you have every number and answer before tonight, so tomorrow is a clear yes or a clear no instead of a maybe.'}
+    ],
+    isolate:'If the money side felt right tonight, is it really the sleeping on it, or is it the car?',
+    close:'Give me five minutes to get it all in front of you, then sleep on the real thing instead of the unknown. Sound fair?'},
+
+  {cat:'Stalls', obj:'"I want to do more research"',
+    real:'They do not trust they have the real story yet. A researched buyer is a good buyer, not a lost one.',
+    hold:'Respect it, then become the research. Do not act threatened by it.',
+    steps:[
+      {lab:'Acknowledge', say:'Smart. This is a big buy and you should feel sure.'},
+      {lab:'Reframe', say:'Here is the shortcut though. Most of what you find online is guesswork from people who never sat in this one. I can hand you the real numbers and the honest differences from the ones you are cross-shopping, straight, no spin.'}
+    ],
+    isolate:'What is the main thing you still want to nail down? Let me answer it right now so your research is faster, not slower.',
+    close:'Let me be your research for ten minutes. If I cannot make it clearer than a search bar, you have lost nothing.'},
+
+  {cat:'Stalls', obj:'"I will come back later"',
+    real:'They are politely leaving. Something is unresolved and they did not say it out loud.',
+    hold:'Do not guilt them. Find the real reason so coming back is not even necessary.',
+    steps:[
+      {lab:'Acknowledge', say:'No problem at all, no pressure from me.'},
+      {lab:'Label', say:'It seems like something did not quite line up today. Be straight with me, was it the car, the money or just me? I can take it.'},
+      {lab:'Value of now', say:'The only reason I ask is I can put real eyes on your trade and get you actual numbers while you are standing here. Later means starting over.'}
+    ],
+    isolate:'If we fixed that one thing right now, is there any reason we could not wrap this up today?',
+    close:'Let me get you the real numbers before you go, so if you do come back you already know it is worth it. Fair?'},
+
+  // ===== DECISION AUTHORITY =====
+  {cat:'Decision authority', obj:'"I need to talk to my spouse or family"',
+    real:'Either the real decider is not here, or it is a soft way to leave. You need to know which.',
+    hold:'Never fight it. Enable the conversation, and find out if there is a hidden objection too.',
+    steps:[
+      {lab:'Acknowledge', say:'Absolutely, this is a family decision and it should be.'},
+      {lab:'Enable the decider', say:'Rather than you relaying all this from memory, can we get them on the phone for two minutes, or set a time you both come in so nobody plays telephone? I would rather they hear it right.'},
+      {lab:'Give them the tool', say:'Let me put the numbers and the key points in writing so when you talk tonight, you are working off facts, not a fuzzy memory.'}
+    ],
+    isolate:'If it were only up to you, would you do it? That tells me whether it is really them or whether something is still on your mind too.',
+    close:'Want to call them now while it is fresh, or set a time tomorrow you both come see it?',
+    flag:'Written numbers come from the desk. Verify before anything goes home.'},
+
+  // ===== PRICE AND PAYMENT =====
+  {cat:'Price & payment', obj:'"Your price is too high"',
+    real:'They do not yet see enough value for the gap, or the payment does not fit. Rarely the sticker itself.',
+    hold:'Do not get defensive and do not cave on the spot. Get specific first.',
+    steps:[
+      {lab:'Acknowledge', say:'I hear you, and I would never want you to overpay.'},
+      {lab:'Clarify', say:'When you say too high, too high compared to what, another quote, a number in your head, or the payment it lands at?'},
+      {lab:'Reframe with transparency', say:'Let me show you exactly what goes into this number so nothing is hidden, and then let us see what we can actually do. I would rather earn it straight than play games.'}
+    ],
+    isolate:'If the number worked, is this the vehicle you want, or is price a polite way of saying it is not the one?',
+    close:'Tell me the piece that feels high and let me take it to my manager with a real reason. Deal?',
+    flag:'Any movement on price or a counter goes through David at the desk. Do not commit to a number yourself.'},
+
+  {cat:'Price & payment', obj:'"I saw it cheaper online or another dealer quoted less"',
+    real:'They want to know they are not being taken. Often the other number is missing fees or a different trim.',
+    hold:'Never trash the other store. Get transparent and compare the same thing.',
+    steps:[
+      {lab:'Acknowledge', say:'Good, you should shop, that is smart.'},
+      {lab:'Clarify with transparency', say:'Two things make those numbers look different, fees they have not shown yet and whether it is the exact same trim and package. Do you have their out-the-door number in writing, or just the advertised price?'},
+      {lab:'Reframe', say:'Send me what they gave you and I will read it line by line with you, no spin. If theirs is truly better on the same car out the door, I will tell you straight.'}
+    ],
+    isolate:'If we land at a fair out-the-door number on the same car, are we doing business?',
+    close:'Let me get you our real out-the-door number so you are comparing the same thing. Then you decide with facts. Fair?',
+    flag:'Out-the-door and any price match go through David. Never guarantee a match yourself.'},
+
+  {cat:'Price & payment', obj:'"Just give me your best price" (phone or text)',
+    real:'They have been jerked around before and want to skip the games. A fair ask, reward it.',
+    hold:'Reward the directness. Do not dodge, but do not freelance a number.',
+    steps:[
+      {lab:'Acknowledge', say:'I respect that, and you should not have to pry it out of anyone.'},
+      {lab:'Honest setup', say:'I will get you a real out-the-door number, not a teaser. To make it your actual number and not a generic one, I need the exact trim and whether you have a trade, because those move it.'},
+      {lab:'Route', say:'Give me those two things and I will get the desk to put the real figure in writing for you today.'}
+    ],
+    close:'What trim are you set on, and are you trading anything? I will get you the real number, not a runaround.',
+    flag:'You cannot quote price, payment or rate yourself. Online-sourced customer goes to Kiki first, then the desk puts it in writing verified.'},
+
+  {cat:'Price & payment', obj:'"The payment is too high"',
+    real:'The monthly does not fit their life, or the term and down are off. The car may still be right.',
+    hold:'Stay calm. Payment is a math problem with several levers, and finance owns them.',
+    steps:[
+      {lab:'Acknowledge', say:'Fair, the payment has to fit your real life, not just look good today.'},
+      {lab:'Clarify the target', say:'What number were you hoping to be at or under? Give me the honest one, not a lowball, so I bring finance something real to work with.'},
+      {lab:'Route', say:'There are a few levers on a payment and our finance team can work them the right way. Let me get them your target and see what is actually possible.'}
+    ],
+    isolate:'If finance gets the payment into a range that feels comfortable, is this the vehicle you want?',
+    close:'Tell me your comfortable monthly and let me put it in front of finance. What is that number?',
+    flag:'Never quote or promise a payment or rate. Bob, Daniel or Jack own the payment. You gather the target and hand it off.'},
+
+  {cat:'Price & payment', obj:'"I only care about the monthly payment"',
+    real:'Payment is how they control budget and risk. They may not trust the rest of the math.',
+    hold:'Meet them there first, then widen the lens honestly.',
+    steps:[
+      {lab:'Acknowledge', say:'Makes sense, the payment is what shows up in your life every month.'},
+      {lab:'Reframe with honesty', say:'I will absolutely get you to the right payment. One thing I owe you though, a payment can be made to look great by stretching the term or hiding stuff in it. I would rather show you the whole picture so the low payment is a real win, not a trick.'}
+    ],
+    isolate:'If finance gets you to the right monthly on the level, is this the one?',
+    close:'Give me your target monthly and let me get finance to build it honestly around that. What is the number?',
+    flag:'Payment and term structure is finance only. Route to Bob, Daniel or Jack.'},
+
+  {cat:'Price & payment', obj:'"I want zero down"',
+    real:'They do not have cash right now, or do not want to risk it. A structure question, not a moral one.',
+    hold:'No judgment. Set it up as a finance question and route it.',
+    steps:[
+      {lab:'Acknowledge', say:'No problem, plenty of people structure it that way.'},
+      {lab:'Clarify', say:'So I set it up right with finance, is zero down about not having it available right now, or wanting to keep your cash in your pocket?'},
+      {lab:'Route', say:'Let me hand your situation to finance and see what they can actually build. They do this all day.'}
+    ],
+    isolate:'If finance can structure something that works with little or nothing down, is this the vehicle you move on?',
+    close:'Let me get finance working on a structure that fits. Sound good?',
+    flag:'Do not promise zero down or any approval. Finance decides. Route to Bob, Daniel or Jack.'},
+
+  {cat:'Price & payment', obj:'"The fees are too high, what is this doc fee"',
+    real:'They are watching for the classic add-on game. They want to know they are not being padded.',
+    hold:'This is where honesty wins big. Do not get squirmy or vague.',
+    steps:[
+      {lab:'Acknowledge', say:'Good, you should ask about every line, and I will not dodge it.'},
+      {lab:'Explain straight', say:'The doc fee and the taxes and tags are real line items, not something I invented on the spot. Let me walk you through each one so you see exactly where every dollar goes.'},
+      {lab:'Reframe trust', say:'A dealer that hides these is the one to worry about. I would rather show you all of it than sneak anything.'}
+    ],
+    close:'Let me go through the sheet line by line with you so nothing is a surprise. Ready?',
+    flag:'Explain only fees you can verify with the desk. Do not invent or waive fees. Confirm the current doc fee, tax and tag figures before quoting.'},
+
+  // ===== TRADE =====
+  {cat:'Trade', obj:'"I want more for my trade"',
+    real:'They have a number in their head, usually from a website, and the offer feels low.',
+    hold:'Do not argue the value. Explain how it is set and separate trade from price.',
+    steps:[
+      {lab:'Acknowledge', say:'I get it, you want the most for your car, and you should.'},
+      {lab:'Clarify', say:'Where is your number coming from, a site estimate or a real offer somewhere? Those online numbers are guesses, they have not seen your actual car.'},
+      {lab:'Separate the levers', say:'Sometimes we have more room on the price of the new one than on the trade. What matters is the difference between the two, so let us look at the whole deal, not one half of it.'}
+    ],
+    isolate:'If the difference between the two cars felt fair, would the trade number by itself still stop you?',
+    close:'Let me get Christina to explain how she got the trade number, then let us look at the full picture together. Fair?',
+    flag:'Trade values are Christina\u2019s call. Do not promise a trade number. Route used-trade value to Christina.'},
+
+  {cat:'Trade', obj:'"I am upside down on my trade"',
+    real:'They are scared this makes a deal impossible or embarrassing. They need reassurance and a real plan.',
+    hold:'No shame, ever. This is extremely common and solvable.',
+    steps:[
+      {lab:'Acknowledge', say:'That is more common than you think, and it is not a dealbreaker. No worries at all.'},
+      {lab:'Reframe', say:'Being upside down just means we look at the whole structure, not that the door is closed. People in your spot move into a new vehicle all the time.'},
+      {lab:'Route honestly', say:'Let me get you a real trade number from our used manager and let finance look at the full structure. I will not blow smoke, I will get you the honest picture.'}
+    ],
+    close:'Let me have Christina appraise it for real and get finance looking at the whole thing. That work?',
+    flag:'Do not promise to cover negative equity or a payment. Christina for trade value, finance for structure. No guarantees.'},
+
+  // ===== CREDIT AND FINANCING =====
+  {cat:'Credit & financing', obj:'"My credit is not good"',
+    real:'They are bracing for rejection or embarrassment and want to know if it is even worth trying.',
+    hold:'Zero judgment. Lower the stakes and route to the pros.',
+    steps:[
+      {lab:'Acknowledge', say:'No judgment here at all. A lot of good people are in the same spot and drive home in something great.'},
+      {lab:'Reframe', say:'Credit is one piece and it is fixable over time. Our finance team looks at the whole picture, not just a number, and they work with a lot of different lenders.'},
+      {lab:'Route', say:'Let me get you with finance so you know exactly where you stand instead of guessing. Knowing beats worrying.'}
+    ],
+    isolate:'If the finance side comes back workable, is this the vehicle you would want?',
+    close:'Let me introduce you to our finance team and get you real answers. Sound okay?',
+    flag:'Never promise approval or a rate. Bob, Daniel or Jack handle credit. You reassure and route.'},
+
+  {cat:'Credit & financing', obj:'"I do not want a hard credit pull"',
+    real:'They are protecting their score, or not ready to commit. Sometimes it is fear of rejection.',
+    hold:'Respect it completely. Do not push a pull.',
+    steps:[
+      {lab:'Acknowledge', say:'Completely fair, and I would never run your credit without you knowing and agreeing first.'},
+      {lab:'Clarify', say:'Are you worried about the score hit, or is it more that you are not ready to commit yet? Both are fine, I just want to help the right way.'},
+      {lab:'Reframe', say:'We do not need to run anything to talk through vehicles, numbers and what makes sense. When and if you are ready, finance can walk you through options first.'}
+    ],
+    close:'Let us find the right vehicle and the real numbers first, no credit anything until you say go. Fair?',
+    flag:'Do not run or imply running credit without explicit consent. Finance handles all credit steps.'},
+
+  {cat:'Credit & financing', obj:'"I will wait for a better interest rate"',
+    real:'They are timing the market and using it to delay. Sometimes a soft stall.',
+    hold:'Do not promise rate moves. Reframe the real cost of waiting, without scare tactics.',
+    steps:[
+      {lab:'Acknowledge', say:'Reasonable, nobody wants to pay more interest than they have to.'},
+      {lab:'Reframe honestly', say:'Here is the honest tradeoff. Rates might come down or might not, nobody can promise either way. Meanwhile prices, your current car value and the exact inventory all move too. Waiting is a bet on one number while three others move.'},
+      {lab:'Route', say:'Let me have finance show you the actual options now, so you are deciding on real numbers instead of a maybe.'}
+    ],
+    isolate:'If finance found a program that made the math work today, would you still want to wait?',
+    close:'Let me get you the real financing picture today, then you decide if waiting still makes sense. Fair?',
+    flag:'Never predict or promise rates. Finance presents actual programs. No guarantees.'},
+
+  // ===== COMPETITOR AND PRODUCT =====
+  {cat:'Competitor & product', obj:'"I am comparing the Toyota or Honda"',
+    real:'They want reassurance they are making the smart choice. They are open, or testing you.',
+    hold:'Never trash the competitor. Respect the cross-shop, then differentiate on what matters to them.',
+    steps:[
+      {lab:'Acknowledge', say:'Smart, those are the exact two people cross-shop the [vehicle] against, and they are good vehicles. I will give it to you straight, not sell against them blindly.'},
+      {lab:'Discovery', say:'What matters most to you in the daily drive, so I compare on what actually affects you and not a spec sheet nobody feels?'},
+      {lab:'Differentiate honestly', say:'On the things you just named, here is where the [vehicle] genuinely wins, and I will also tell you where the other one has an edge, because you will find out anyway and I would rather you hear it from me.'}
+    ],
+    close:'Want to drive them back to back so you feel the difference instead of taking my word for it? I will set it up.',
+    flag:'Verify current trims, features and any comparison claims against Nissan USA or the QRG before stating them. Never soften a real Nissan disadvantage, name it honestly.'},
+
+  {cat:'Competitor & product', obj:'"Why Nissan over Toyota or Honda?"',
+    real:'They want a real reason to feel good about the brand, not a slogan.',
+    hold:'Answer with substance tied to them, not a brochure line.',
+    steps:[
+      {lab:'Acknowledge', say:'Fair question, and I will not give you a bumper sticker answer.'},
+      {lab:'Substance', say:'On this [vehicle] specifically, the honest edges are the value you get in the trim for the money, the tech that comes standard and how it drives. Where Toyota and Honda have earned a reputation edge is resale and long-term brand trust, and I will not pretend otherwise.'},
+      {lab:'Tie it to them', say:'You told me what matters most to you. That is exactly where this one earns it for how you actually drive.'}
+    ],
+    close:'Let me put you behind the wheel so the reasons are something you feel, not something I claim. Fair?',
+    flag:'Verify feature and comparison claims against the QRG or Nissan USA. State real disadvantages honestly, do not soften.'},
+
+  {cat:'Competitor & product', obj:'"Is it reliable? I heard the CVT is a problem"',
+    real:'They are afraid of an expensive mistake and want honest reassurance, not a dodge.',
+    hold:'Do not get defensive or oversell. Acknowledge, then give facts you can back.',
+    steps:[
+      {lab:'Acknowledge', say:'Good thing to ask, reliability is the whole ballgame on a purchase this size.'},
+      {lab:'Clarify', say:'Is that coming from something specific you read, or a general worry? I want to answer the real thing.'},
+      {lab:'Address honestly', say:'Let me give you the straight story on this generation and its powertrain, what the warranty actually covers, and the maintenance that keeps it healthy. I would rather you know the facts than a talking point.'}
+    ],
+    close:'Want me to pull up the warranty coverage and the maintenance picture so you can judge for yourself? Two minutes.',
+    flag:'Verify reliability, powertrain and warranty specifics against the QRG, owner manual or Nissan USA before stating them. Do not invent coverage.'},
+
+  {cat:'Competitor & product', obj:'"I do not want all these features"',
+    real:'They do not want to pay for things they will not use. A value concern in disguise.',
+    hold:'Do not defend the trim. Find the fit.',
+    steps:[
+      {lab:'Acknowledge', say:'Fair, you should not pay for stuff you will never touch.'},
+      {lab:'Clarify', say:'Which pieces feel like extras to you? Some of what looks fancy is actually the safety or the resale, but if it is truly not for you, let us find the trim that fits.'},
+      {lab:'Options', say:'There may be a lower trim that gives you exactly what you want without the rest. Let me check what we have on the ground.'}
+    ],
+    close:'Let me find the trim that matches what you actually want. Give me a minute to look?',
+    flag:'Confirm trim availability from live inventory. Do not promise a trim or price that is not verified.'},
+
+  // ===== TRUST AND PRESSURE =====
+  {cat:'Trust & pressure', obj:'"I hate dealerships, I do not want to be pressured"',
+    real:'They have been burned or are bracing for it. They need proof you are different.',
+    hold:'This is a gift. Agree hard, then actually be different.',
+    steps:[
+      {lab:'Accusation audit', say:'You are probably expecting me to be pushy, to rush you and to play the let me talk to my manager game. If I do any of that, call me on it.'},
+      {lab:'Agree and reframe', say:'I do not blame you, the old way earned that reputation. I work differently. Straight numbers and no games. If this is not right for you I will tell you.'},
+      {lab:'Give control', say:'You set the pace. If at any point you want space, say the word and you get it. Deal?'}
+    ],
+    close:'So with that out of the way, what would make today actually useful for you?'},
+
+  {cat:'Trust & pressure', obj:'"I do not want to be here all day"',
+    real:'They fear the four-hour grind. Their time is the real currency, more than the savings.',
+    hold:'Respect their time visibly. Speed is a selling point here.',
+    steps:[
+      {lab:'Acknowledge', say:'I hear that, nobody should lose a whole day to buy a car, and I will not do that to you.'},
+      {lab:'Set the pace', say:'Here is how I keep it tight. We confirm the right vehicle, I get you real numbers fast, and if it works we move. If it does not, you are out the door quick with no hard feelings.'}
+    ],
+    isolate:'If I can get you a clear yes or no in the next little while, that works for you?',
+    close:'Let me move fast then. Is the [vehicle] the one you want me to get numbers on, or do we nail that first?'},
+
+  {cat:'Trust & pressure', obj:'"I had a bad experience before"',
+    real:'They are carrying a wound from another store and testing whether you will repeat it.',
+    hold:'Let them vent, validate, then quietly prove the opposite.',
+    steps:[
+      {lab:'Label', say:'It sounds like someone burned you, and now you are waiting to see if I do the same.'},
+      {lab:'Validate', say:'I am sorry that happened, it gives all of us a bad name. You do not have to trust me on words, watch how I do it.'},
+      {lab:'Reframe', say:'Straight answers, real numbers and your pace. If I slip, you hold me to it.'}
+    ],
+    close:'Let us start simple and let me earn it one step at a time. What matters most to you today?'},
+
+  // ===== AFTER THE NUMBERS =====
+  {cat:'After the numbers', obj:'"Let me think about it" (after seeing the proposal)',
+    real:'This late it is almost always one number that spooked them, or plain fear of commitment. The deal is close.',
+    hold:'Stay calm and do not re-sell the whole car. Find the one thing.',
+    steps:[
+      {lab:'Acknowledge', say:'Of course. You have the real numbers now, so this is the right time to think.'},
+      {lab:'Isolate hard', say:'Be straight with me, is it the vehicle, the trade number or the monthly? One of those is the thing. Which one?'},
+      {lab:'Handle the one thing', say:'Okay, that one I can work with. Let me take it to the desk, because if that is the only thing, we are closer than you think.'}
+    ],
+    isolate:'If we get that one piece right, are you good to move today?',
+    close:'If we get that piece right, are you good to move today?  [then stop talking and let them answer]',
+    flag:'Any change to price, trade or payment goes through the desk or finance. Do not adjust numbers yourself.'},
+
+  {cat:'After the numbers', obj:'"I will wait for a sale or end of year"',
+    real:'They believe a magic discount is coming, or they are stalling. Often soft.',
+    hold:'Do not invent a sale or fake urgency. Reframe honestly.',
+    steps:[
+      {lab:'Acknowledge', say:'I get it, everyone wants to buy at the perfect moment.'},
+      {lab:'Reframe with honesty', say:'Here is the honest part. I am not going to make up a countdown to scare you. What I can tell you is the exact car, your current car value and the current programs all move over time, with no guarantee they move in your favor. The best real deal is usually the right car at a fair number that you actually get to drive.'}
+    ],
+    isolate:'If today\u2019s numbers were genuinely fair, is there a reason waiting would beat driving it now?',
+    close:'Let me get you today\u2019s real numbers so you are comparing something solid to a maybe. Fair?',
+    flag:'Never fabricate a sale, deadline or scarcity. Verify any actual current programs with the desk. No guarantees on future pricing.'}
+];
+
+/* ============ fill + render engine ============ */
+const $=id=>document.getElementById(id);
+let activeCat='All', q='';
+
+const FILL_KEY='shq_fill_v1';
+let F=loadFill();
+function loadFill(){ try{return JSON.parse(localStorage.getItem(FILL_KEY)||'{}');}catch(e){return {};} }
+function saveFill(){ try{localStorage.setItem(FILL_KEY,JSON.stringify(F));}catch(e){} }
+function fillText(s){
+  return String(s)
+    .replace(/\[Name\]/g, F.name||'[Name]')
+    .replace(/\[vehicle\]/g, F.vehicle||'[vehicle]')
+    .replace(/\[current\]/g, F.current||'[current]')
+    .replace(/\[agent\]/g, F.agent||'[agent]')
+    .replace(/\[number\]/g, F.number||'[number]')
+    .replace(/\[day\/time\]/g, F.daytime||'[day/time]')
+    .replace(/\[email\]/g, F.email||'[email]');
+}
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function cats(){ return ['All', ...Array.from(new Set(OBJ.map(t=>t.cat)))]; }
+
+function renderChips(){
+  const box=$('chips'); box.innerHTML='';
+  cats().forEach(c=>{
+    const b=document.createElement('button');
+    b.className='chip'+(c===activeCat?' on':'');
+    b.textContent=c;
+    b.onclick=()=>{activeCat=c;render();};
+    box.appendChild(b);
+  });
+}
+function searchText(t){ return (t.obj+' '+t.real+' '+t.hold+' '+t.cat+' '+t.steps.map(s=>s.say).join(' ')+' '+(t.isolate||'')+' '+(t.close||'')).toLowerCase(); }
+function filtered(){
+  const s=q.trim().toLowerCase();
+  return OBJ.filter(t=>{
+    if(activeCat!=='All' && t.cat!==activeCat) return false;
+    if(!s) return true;
+    return searchText(t).includes(s);
+  });
+}
+function copyText(text, btn){
+  const done=()=>{ const t=btn.textContent; btn.textContent='Copied'; setTimeout(()=>btn.textContent=t,1000); };
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(done, ()=>fb(text,done)); }
+  else fb(text,done);
+}
+function fb(text,done){ const ta=document.createElement('textarea'); ta.value=text; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy');done();}catch(e){} document.body.removeChild(ta); }
+
+function lineEl(text, cls){
+  const wrap=document.createElement('div'); wrap.className='line'+(cls?(' '+cls):'');
+  const filled=fillText(text);
+  wrap.appendChild(document.createTextNode(filled));
+  const cp=document.createElement('button'); cp.className='cp'; cp.textContent='Copy';
+  cp.onclick=()=>copyText(filled,cp);
+  wrap.appendChild(cp);
+  return wrap;
+}
+
+function render(){
+  renderChips();
+  const list=filtered();
+  $('count').textContent=list.length+(list.length===1?' objection':' objections');
+  const grid=$('grid'); grid.innerHTML='';
+  if(!list.length){ grid.innerHTML='<div class="empty">No objections match that. Try a different word or category.</div>'; return; }
+  list.forEach(t=>{
+    const card=document.createElement('div'); card.className='card';
+    const head=document.createElement('div'); head.className='card-head';
+    head.innerHTML='<span class="tag">'+esc(t.cat)+'</span><div class="obj">'+esc(t.obj)+'</div>';
+    const body=document.createElement('div'); body.className='card-body';
+
+    const real=document.createElement('div'); real.className='meta real';
+    real.innerHTML='<span class="k">What they are really saying</span>'+esc(t.real);
+    body.appendChild(real);
+
+    const hold=document.createElement('div'); hold.className='meta';
+    hold.innerHTML='<span class="k">Hold yourself</span>'+esc(t.hold);
+    body.appendChild(hold);
+
+    t.steps.forEach(s=>{
+      const st=document.createElement('div'); st.className='step';
+      const lab=document.createElement('div'); lab.className='lab'; lab.textContent=s.lab;
+      st.appendChild(lab); st.appendChild(lineEl(s.say));
+      body.appendChild(st);
+    });
+
+    if(t.isolate){
+      const st=document.createElement('div'); st.className='step';
+      const lab=document.createElement('div'); lab.className='lab'; lab.textContent='Isolate';
+      st.appendChild(lab); st.appendChild(lineEl(t.isolate,'iso'));
+      body.appendChild(st);
+    }
+
+    const ca=document.createElement('div'); ca.className='step';
+    const cl=document.createElement('div'); cl.className='lab'; cl.textContent='The ask';
+    ca.appendChild(cl); ca.appendChild(lineEl(t.close,'ask'));
+    const hint=document.createElement('div'); hint.className='hint'; hint.textContent='Say it, then stop talking. Silence is doing the work.';
+    ca.appendChild(hint);
+    body.appendChild(ca);
+
+    if(t.flag){
+      const fl=document.createElement('div'); fl.className='flag';
+      fl.innerHTML='<b>Compliance:</b> '+esc(t.flag);
+      body.appendChild(fl);
+    }
+
+    card.appendChild(head); card.appendChild(body); grid.appendChild(card);
+  });
+}
+
+$('search').addEventListener('input',e=>{q=e.target.value;render();});
+document.querySelectorAll('[data-f]').forEach(inp=>{
+  if(F[inp.dataset.f]) inp.value=F[inp.dataset.f];
+  inp.addEventListener('input',()=>{ F[inp.dataset.f]=inp.value.trim(); saveFill(); render(); });
+});
+const _cc=document.querySelector('.clearcust');
+if(_cc) _cc.onclick=()=>{
+  ['name','vehicle','current','daytime'].forEach(k=>F[k]='');
+  saveFill();
+  document.querySelectorAll('[data-f]').forEach(inp=>{ if(['name','vehicle','current','daytime'].indexOf(inp.dataset.f)>-1) inp.value=''; });
+  render();
+};
+render();
+</script>
+</body>
+</html>
