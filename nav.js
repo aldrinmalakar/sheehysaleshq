@@ -9,7 +9,8 @@
     { href:'index.html',        label:'Sales HQ' },
     { href:'sms-library.html',  label:'SMS Library' },
     { href:'email-library.html',label:'Email Library' },
-    { href:'objection-library.html',label:'Objections' }
+    { href:'objection-library.html',label:'Objections' },
+    { href:'reconnect.html',    label:'Reconnect' }
   ];
 
   var here = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
