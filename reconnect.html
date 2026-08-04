@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reconnect · Sheehy Sales HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#1a2330;--muted:#6b7889;--line:#e4e8ee;--line-soft:#eef1f5;--paper:#fff;--card:#f6f8fb;--accent:#2f5fe0;--good:#0f8a4d;--bad:#c0334d;--warn:#8a5a12;--bg:#eef1f6}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.5}
+  .wrap{max-width:900px;margin:0 auto;padding:0 14px 60px}
+  .page-title{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:.01em;margin:16px 0 2px}
+  .sub{font-size:13px;color:var(--muted);margin:0 0 12px}
+  .panel{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px;margin:0 0 14px}
+  .panel h2{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 10px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:9px}
+  .grid label{display:flex;flex-direction:column;gap:4px;font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+  .grid input,.grid select{border:1px solid var(--line);border-radius:8px;padding:9px 10px;font-family:inherit;font-size:14.5px;background:#fff;color:var(--ink);text-transform:none;letter-spacing:normal;font-weight:400}
+  .agebar{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+  .agepill{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;border-radius:20px;padding:5px 13px;border:1px solid var(--line);background:var(--card);color:var(--muted)}
+  .agepill.fresh{border-color:var(--good);color:var(--good);background:rgba(15,138,77,.06)}
+  .agepill.warm{border-color:var(--accent);color:var(--accent);background:rgba(47,95,224,.06)}
+  .agepill.cooling{border-color:#b07816;color:#b07816;background:rgba(176,120,22,.07)}
+  .agepill.cold{border-color:var(--bad);color:var(--bad);background:rgba(192,51,77,.06)}
+  .agehint{font-size:12.5px;color:var(--muted);line-height:1.5;flex:1;min-width:220px}
+  .chips{display:flex;gap:7px;flex-wrap:wrap}
+  .chip{border:1px solid var(--line);background:var(--paper);border-radius:20px;padding:7px 13px;font-family:'Space Grotesk',sans-serif;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap}
+  .chip.on{color:#fff;background:var(--ink);border-color:var(--ink)}
+  .chip.slot.on{background:var(--accent);border-color:var(--accent)}
+  .out{margin-top:6px}
+  .block{margin:0 0 13px}
+  .block .bh{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+  .block .bh span{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+  .cpy{border:1px solid var(--accent);background:transparent;color:var(--accent);border-radius:7px;padding:5px 12px;font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:600;cursor:pointer}
+  .cpy.solid{background:var(--accent);color:#fff}
+  .cpy:active{transform:translateY(1px)}
+  textarea.script{width:100%;border:1px solid var(--line);border-radius:9px;padding:11px;font-family:inherit;font-size:14.5px;line-height:1.6;background:#fff;resize:vertical;color:var(--ink)}
+  input.subj{width:100%;border:1px solid var(--line);border-radius:9px;padding:10px 11px;font-family:inherit;font-size:14.5px;font-weight:600;background:#fff;color:var(--ink);margin-bottom:7px}
+  .cue{display:block;font-size:11.5px;color:var(--muted);font-style:italic;margin:2px 0 6px}
+  .slotrow{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:10px}
+  .slotcol{display:flex;flex-direction:column;gap:6px}
+  .slotcol .lab{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+  .confirmbox{border:1px solid var(--line);border-radius:10px;background:var(--card);padding:11px 12px;margin-top:8px}
+  .confirmbox .when{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;margin-bottom:6px}
+  .confline{position:relative;border:1px solid var(--good);border-radius:9px;background:#fff;padding:10px 42px 10px 11px;font-size:14px;line-height:1.55}
+  .confline .cp{position:absolute;top:7px;right:7px;border:1px solid var(--line);background:#fff;border-radius:6px;padding:4px 8px;font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer}
+  .rowbtns{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+  .primary{border:1px solid var(--good);background:var(--good);color:#fff;border-radius:8px;padding:9px 16px;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;cursor:pointer}
+  .ghostb{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:8px;padding:9px 14px;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;cursor:pointer}
+  .appt{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;border:1px solid var(--line);border-radius:9px;padding:9px 11px;margin-bottom:7px;background:#fff}
+  .appt .who{font-weight:600}
+  .appt .meta{font-size:12px;color:var(--muted);margin-top:2px}
+  .appt .acts{display:flex;gap:6px;flex-shrink:0}
+  .qbtn{border:1px solid var(--line);background:transparent;border-radius:7px;padding:5px 10px;font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap}
+  .qbtn.dl{border-color:var(--good);color:var(--good)}
+  .qbtn.rm:hover{border-color:var(--bad);color:var(--bad)}
+  .note{font-size:11.5px;color:var(--muted);line-height:1.5;margin-top:8px}
+  .flag{background:#fff7ed;border:1px solid #f2d9b8;color:var(--warn);border-radius:9px;padding:8px 11px;font-size:12px;line-height:1.5;margin-top:10px}
+  .empty{font-size:13px;color:var(--muted)}
+  .foot{text-align:center;color:var(--muted);font-size:11.5px;margin-top:22px;line-height:1.6}
+</style>
+</head>
+<body>
+<script src="./nav.js" defer></script>
+
+<div class="wrap">
+  <h1 class="page-title">Reconnect</h1>
+  <p class="sub">For people you already touched who have not bought yet. One goal, sell the appointment and get them in the store.</p>
+
+  <div class="panel">
+    <h2>Who and where they left off</h2>
+    <div class="grid">
+      <label>Customer name<input data-f="name" autocomplete="off" placeholder="Sarah"></label>
+      <label>Vehicle of interest<input data-f="vehicle" autocomplete="off" placeholder="2026 Rogue SV"></label>
+      <label>Vehicle they own now<input data-f="current" autocomplete="off" placeholder="2016 Murano"></label>
+      <label>Your name<input data-f="agent" autocomplete="off" placeholder="Aldrin"></label>
+      <label>Your phone<input data-f="number" autocomplete="off" placeholder="703 555 0134"></label>
+      <label>Lead date (first contact)<input type="date" id="leadDate"></label>
+      <label>Where it left off<select id="scenario">
+        <option value="noresponse">No response to my text or email</option>
+        <option value="novm">No response to my call or voicemail</option>
+        <option value="video">Sent a video, no reply</option>
+        <option value="visit">Visited the store, no test drive</option>
+        <option value="testdrive">Test drove, then left</option>
+        <option value="pencil">Saw numbers (first pencil), then left</option>
+        <option value="quiet">We talked a few times, then went quiet</option>
+      </select></label>
+    </div>
+    <div class="agebar">
+      <span class="agepill" id="agePill">Set the lead date</span>
+      <span class="agehint" id="ageHint">Enter the date of first contact and every script below adapts to how much time has passed.</span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Call script, lead with this</h2>
+    <div class="out">
+      <div class="block">
+        <div class="bh"><span>What to say</span><button class="cpy" id="cpCall">Copy</button></div>
+        <textarea class="script" id="callOut" rows="16"></textarea>
+      </div>
+      <div class="block">
+        <div class="bh"><span>Voicemail if no answer</span><button class="cpy" id="cpVM">Copy</button></div>
+        <textarea class="script" id="vmOut" rows="4"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Text version</h2>
+    <div class="block">
+      <div class="bh"><span>SMS</span><button class="cpy" id="cpSMS">Copy</button></div>
+      <textarea class="script" id="smsOut" rows="4"></textarea>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Email version</h2>
+    <div class="block">
+      <div class="bh"><span>Subject</span><button class="cpy" id="cpSubj">Copy</button></div>
+      <input class="subj" id="subjOut">
+      <div class="bh"><span>Body</span><button class="cpy" id="cpBody">Copy</button></div>
+      <textarea class="script" id="bodyOut" rows="12"></textarea>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Set the appointment</h2>
+    <div class="slotrow">
+      <div class="slotcol"><span class="lab">Day</span>
+        <div class="chips" id="dayChips"></div></div>
+      <div class="slotcol"><span class="lab">Time of day</span>
+        <div class="chips" id="todChips"></div></div>
+    </div>
+    <div id="confirmArea" class="confirmbox" style="display:none">
+      <div class="when" id="whenLine"></div>
+      <div class="grid" style="margin-bottom:9px">
+        <label>Exact date<select id="dateSel"></select></label>
+        <label>Exact time<select id="timeSel"></select></label>
+      </div>
+      <div class="bh" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px"><span style="font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)">Confirm it out loud</span></div>
+      <div class="confline" id="confLine"><span id="confText"></span><button class="cp" id="cpConf">Copy</button></div>
+      <div class="rowbtns">
+        <button class="primary" id="saveAppt">Save appointment</button>
+        <button class="ghostb" id="clearSlot">Clear</button>
+      </div>
+      <div class="note">Weekend offers Saturday and Sunday. Confirm store hours before you lock a Sunday slot.</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Saved appointments</h2>
+    <div id="apptList"><span class="empty">Nothing saved yet. Set a slot above and it lands here with a calendar download.</span></div>
+    <div class="note">Saved on this browser only. The .ics file opens in Outlook, Google Calendar or your phone calendar. Log the appointment in DriveCentric once the customer is assigned to you.</div>
+  </div>
+
+  <div class="flag"><b>Compliance:</b> these scripts never promise a price, payment, rate or approval. Anything with numbers gets verified with the desk, trade values go to Christina and payment or credit goes to Bob, Daniel or Jack. Do not call anyone on the DNC list.</div>
+
+  <div class="foot">Standalone page. Nothing here connects to or changes your main Sales HQ app.</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+
+/* ---------- shared fill profile ---------- */
+const FILL_KEY='shq_fill_v1';
+let F=loadFill();
+function loadFill(){ try{return JSON.parse(localStorage.getItem(FILL_KEY)||'{}');}catch(e){return {};} }
+function saveFill(){ try{localStorage.setItem(FILL_KEY,JSON.stringify(F));}catch(e){} }
+function tok(k,fb){ return (F[k]&&F[k].trim())||fb; }
+
+/* ---------- lead age ---------- */
+function daysAgo(){
+  const v=$('leadDate').value; if(!v) return null;
+  const d=new Date(v+'T12:00:00'); if(isNaN(d)) return null;
+  return Math.max(0, Math.floor((Date.now()-d.getTime())/86400000));
+}
+function tierOf(n){
+  if(n==null) return null;
+  if(n<=7) return 'fresh';
+  if(n<=30) return 'warm';
+  if(n<=90) return 'cooling';
+  return 'cold';
+}
+const TIER_META={
+  fresh:{label:'Fresh, under a week', hint:'They still remember you. Pick up mid-conversation, be confident and go straight to the two-choice appointment ask.'},
+  warm:{label:'Warm, 1 to 4 weeks', hint:'Light touch on the gap, re-anchor why they were interested, then a confident ask. Do not apologize for existing.'},
+  cooling:{label:'Cooling, 1 to 3 months', hint:'Acknowledge the time honestly and check status before you push. Ask for the appointment, but give them an easy exit. The exit is what earns the yes.'},
+  cold:{label:'Cold, 3 months or more', hint:'Lead with humility, assume things changed and ask permission. Your soft close is a fresh-look invitation or an honest close-the-file question. No pressure moves at all.'}
+};
+
+/* ---------- script fragments ---------- */
+function nm(){ return tok('name','[Name]'); }
+function veh(){ return tok('vehicle','[vehicle]'); }
+function ag(){ return tok('agent','[agent]'); }
+function num(){ return tok('number','[number]'); }
+
+function openLine(t){
+  const base='"Hey '+nm()+', it is '+ag()+' over at Sheehy Nissan in Manassas. How have you been?"\n[cue]Stop and let them answer. Mean the question.\n\n';
+  if(t==='fresh') return base+'"Good, glad I caught you. I will keep this quick."\n\n';
+  if(t==='warm') return base+'"Glad I caught you. It has been a couple weeks since we talked and I did not want to let it go cold without a real conversation."\n\n';
+  if(t==='cooling') return base+'"I know it has been a while since we talked, and honestly that is on me, I should have reached back sooner."\n\n';
+  return base+'"I know it has been a good while, so I will keep this easy and low key."\n\n';
+}
+
+function bridgeLine(sc,t){
+  const V=veh();
+  if(sc==='noresponse'){
+    if(t==='cold') return '"A while back you were looking at the '+V+' and we never really connected. Life moves, plans change and that is completely fine. I am not calling to rewind, just to see where you actually landed."\n\n';
+    return '"I reached out about the '+V+' and I know how it goes, life gets loud and a message from a car guy is easy to skip. No guilt at all. I just did not want to give up on you without one real conversation."\n\n';
+  }
+  if(sc==='novm'){
+    if(t==='cold') return '"I tried you a while back about the '+V+' and we kept missing each other. That happens. I figured one more honest try beats wondering."\n\n';
+    return '"We kept missing each other on the phone about the '+V+'. Phone tag is nobody\'s favorite game, so I wanted to catch you live once and see where your head is at."\n\n';
+  }
+  if(sc==='video'){
+    if(t==='cold') return '"A while ago I sent you a quick video of the '+V+'. Whether you watched it or it got buried, no worries either way. I figured a real hello beats another clip in your inbox."\n\n';
+    return '"I sent you a quick video walk of the '+V+' recently. Whether you got to it or not, totally fine. I would rather just talk like people and answer whatever you are actually wondering."\n\n';
+  }
+  if(sc==='visit'){
+    if(t==='cold') return '"You came by to see the '+V+' a while back and we never even got you behind the wheel. If the search is still alive at all, that drive is the thing that actually answers your questions."\n\n';
+    return '"You came in and looked at the '+V+' but we never got you behind the wheel, and honestly that bugs me, because the drive is the part that answers the real questions. Everything before that is just talk."\n\n';
+  }
+  if(sc==='testdrive'){
+    if(t==='cold') return '"A while back you drove the '+V+' and I remember you liked how it felt. When someone likes the drive and life still gets in the way, the door usually is not closed, it is just paused. So I wanted to check honestly, paused or closed?"\n\n';
+    return '"You drove the '+V+' and I could tell you liked how it felt. Usually when somebody likes the drive and still walks out, it is not the car, it is something around the deal, and that something is usually fixable. What was it for you?"\n[cue]Let them talk. Whatever they name is the real objection.\n\n';
+  }
+  if(sc==='pencil'){
+    if(t==='cold') return '"We got all the way to numbers on the '+V+' a while back and then it went quiet. Numbers change, situations change and inventory changes. I am not calling to rehash old paper, just to see if it is worth a fresh look with fresh eyes."\n\n';
+    return '"We got all the way to real numbers on the '+V+' and you took them home, which is exactly what a smart buyer does. Now that you have sat with them, tell me straight, which piece did not sit right, the price, the trade or the monthly?"\n[cue]Let them name it. Do not defend the old sheet.\n\n';
+  }
+  return (t==='cold')
+    ? '"We talked a few times about the '+V+' and then it went quiet, which after this long usually means the timing moved or it stopped being a priority. Both are completely fine. I would just rather know than guess."\n\n'
+    : '"We talked a few times about the '+V+' and then it went quiet on me. That usually means the timing moved or something did not sit right, and either one is fine. Give it to me straight so I stop guessing and can actually help."\n[cue]Whatever they say, thank them for the honesty first.\n\n';
+}
+
+function valueLine(sc,t){
+  const V=veh();
+  if(sc==='pencil') return '"Here is what I can do. Come back in, and I will have the desk take a fresh look at the whole picture with the current programs, no rehashing the old sheet. If it works now great, and if it does not, I will tell you straight."\n\n';
+  if(sc==='visit') return '"Come take the drive. Fifteen minutes behind the wheel of the '+V+' will tell you more than every website you have read, and I will have it pulled up and ready so you are not waiting around."\n\n';
+  if(sc==='testdrive') return '"You already know how it drives, so the visit is short. We sit down, get the real numbers in front of you and you leave with a clear yes or a clear no instead of a maybe."\n\n';
+  if(t==='cold') return '"If it is still on your mind at all, a lot has moved since we talked, the inventory, the programs and what your current car is worth. Twenty minutes gets you the real picture today, not the old one."\n\n';
+  return '"Come see it in person. I will have the '+V+' pulled up front, we keep it tight and you get real answers and real numbers instead of guesses."\n\n';
+}
+
+function askLine(t, slotTxt, altTxt){
+  const a=slotTxt||'today', b=altTxt||'tomorrow';
+  if(t==='cooling') return '[cue]Soft ask, with a real exit\n"Would it be worth a fresh look this week? I can do '+a+' or '+b+', and if the timing is truly wrong, tell me and I will back off. Which is closer to right?"\n[cue]Then stop talking. Silence does the work.';
+  if(t==='cold') return '[cue]Permission ask, easy exit\n"So no pressure at all. If I set aside twenty minutes, would '+a+' be worth your time, or should I close your file for now and leave you be? Either answer is fine, I just want a real one."\n[cue]Then stop talking. The exit is what makes the yes real.';
+  return '[cue]Two-choice ask, then silence\n"Let us just put a time on it. What is easier for you, '+a+' or '+b+'?"\n[cue]Then stop talking. First one to speak loses the slot.';
+}
+
+function vmScript(sc,t){
+  const V=veh();
+  let mid;
+  if(sc==='pencil') mid='We got to numbers on the '+V+' a bit back, and rather than let old paper sit, I would love to take a fresh look with you.';
+  else if(sc==='testdrive') mid='You drove the '+V+' and I know you liked it. I would love to finish the conversation properly.';
+  else if(sc==='visit') mid='You came by about the '+V+' and we never got you the drive. That fifteen minutes is worth it.';
+  else if(t==='cold') mid='It has been a while since we talked about the '+V+', and no pressure, I just wanted to see where you landed.';
+  else mid='Just following up on the '+V+' for you.';
+  return 'Hey '+nm()+', it is '+ag()+' at Sheehy Nissan in Manassas. '+mid+' Call or text me at '+num()+'. That is '+num()+'. Talk soon '+nm()+'.';
+}
+
+function smsScript(sc,t,slotTxt,altTxt){
+  const V=veh(), a=slotTxt||'today', b=altTxt||'tomorrow';
+  if(t==='cold'){
+    return 'Hi '+nm()+', '+ag()+' at Sheehy Nissan. It has been a while since we talked about the '+V+', and no pressure at all. Still on your mind, or did life take it another way? If it is still alive I would love to get you a fresh look. Either answer helps me help you.';
+  }
+  if(sc==='pencil') return 'Hi '+nm()+', '+ag()+' at Sheehy Nissan. You took the numbers on the '+V+' home to think it over. Fair. Now that you have sat with them, what is the one piece not sitting right? Tell me that and I will have the desk take a fresh look. Could you do '+a+' or '+b+'?';
+  if(sc==='testdrive') return 'Hi '+nm()+', '+ag()+' here at Sheehy Nissan. You drove the '+V+' and liked how it felt, so let us finish the job. Quick sit down, real numbers, clear answer. Easier '+a+' or '+b+'?';
+  if(sc==='visit') return 'Hi '+nm()+', '+ag()+' at Sheehy Nissan. You saw the '+V+' but never drove it, and the drive is the part that answers everything. I will have it ready so it is quick. '+a+' or '+b+'?';
+  if(sc==='quiet') return 'Hi '+nm()+', '+ag()+' at Sheehy Nissan. It went quiet on the '+V+' and that is okay, I just want the truth so I stop guessing. Still looking, or timing moved? If still looking, I can do '+a+' or '+b+'.';
+  return 'Hi '+nm()+', '+ag()+' at Sheehy Nissan. I reached out about the '+V+' a bit ago, and no guilt, life gets busy. Still interested? I can make it easy, '+a+' or '+b+', short and useful. Which works?';
+}
+
+function emailSubj(sc,t){
+  const V=veh();
+  if(t==='cold') return 'is the '+V+' still on your mind, '+nm()+'?';
+  if(sc==='pencil') return 'a fresh look at your '+V+' numbers';
+  if(sc==='testdrive') return 'finishing what the test drive started';
+  if(sc==='visit') return 'you never got the drive, '+nm();
+  if(sc==='quiet') return 'give it to me straight, '+nm();
+  return 'picking the '+V+' back up, '+nm();
+}
+function emailBody(sc,t,slotTxt,altTxt){
+  const V=veh(), a=slotTxt||'today', b=altTxt||'tomorrow';
+  let open, mid, ask;
+  if(t==='cold'){
+    open='Hi '+nm()+', it has been a good while since we talked about the '+V+', so no pressure in this note at all.';
+    mid='Plans change and that is fine. If the search went another way, tell me and I will close your file cleanly. If it is still alive, a lot has moved since then, the inventory, the programs and what your current car is worth, so a fresh twenty minute look would give you the real picture instead of the old one.';
+    ask='Worth a fresh look, or should I leave you be? Either answer is a good answer.';
+  } else if(sc==='pencil'){
+    open='Hi '+nm()+', you took the numbers on the '+V+' home to think them over, which is exactly what a smart buyer does.';
+    mid='Now that you have sat with them, there is usually one piece that did not sit right, the price, the trade or the monthly. Tell me which one and I will have the desk take a fresh honest look at the whole picture, no rehashing the old sheet.';
+    ask='Could you come by '+a+' or '+b+'? I will keep it short and make it worth the trip.';
+  } else if(sc==='testdrive'){
+    open='Hi '+nm()+', you drove the '+V+' and I could tell it felt right.';
+    mid='When somebody likes the drive and still walks out, it is almost never the car, it is something around the deal, and that is usually fixable. The visit is short now, we sit down, get real numbers in front of you and you leave with a clear yes or a clear no.';
+    ask='What is easier, '+a+' or '+b+'?';
+  } else if(sc==='visit'){
+    open='Hi '+nm()+', you came in and saw the '+V+' but we never got you behind the wheel.';
+    mid='Honestly that bugs me, because the drive is the part that answers the real questions. Everything before it is just talk. I will have it pulled up and ready so the whole thing takes fifteen minutes.';
+    ask='Can you make '+a+' or '+b+' work?';
+  } else if(sc==='quiet'){
+    open='Hi '+nm()+', we talked a few times about the '+V+' and then it went quiet on me.';
+    mid='That usually means the timing moved or something did not sit right, and either one is completely fine. I would just rather know than guess, so give it to me straight and I will either help or get out of your way.';
+    ask='If it is still on, I can do '+a+' or '+b+'. If not, one line back and I will close it out cleanly.';
+  } else {
+    open='Hi '+nm()+', I reached out about the '+V+' a little while back and I know how it goes, life gets loud.';
+    mid='No guilt at all. I just did not want to give up on you without one real try, because if you are still in the market I can make this quick and genuinely useful, real answers and real numbers, no runaround.';
+    ask='What is easier for you, '+a+' or '+b+'?';
+  }
+  return open+'\n\n'+mid+'\n\n'+ask+'\n\nBest,\n'+ag();
+}
+
+/* ---------- slot machine ---------- */
+let slotDay=null, slotTod=null, chosenDateIdx=0;
+const TODS={Morning:[9,11.5], Afternoon:[12,16.5], Evening:[17,19.5]};
+
+function fmtDate(d){ return d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'}); }
+function shortDate(d){ return d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}); }
+function ymdOf(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+
+function candDates(){
+  const now=new Date();
+  if(slotDay==='Today') return [new Date(now)];
+  if(slotDay==='Tomorrow'){ const t=new Date(now); t.setDate(t.getDate()+1); return [t]; }
+  // Weekend: next Saturday and Sunday on or after today
+  const sat=new Date(now); sat.setDate(sat.getDate()+((6-sat.getDay()+7)%7));
+  const sun=new Date(sat); sun.setDate(sat.getDate()+1);
+  if(now.getDay()===0){ // today is Sunday
+    const todaySun=new Date(now);
+    return [todaySun, sat];
+  }
+  return [sat,sun];
+}
+function timeOpts(){
+  if(!slotTod) return [];
+  const [a,b]=TODS[slotTod]; const out=[];
+  for(let h=a; h<=b+0.001; h+=0.5){
+    const hh=Math.floor(h), mm=(h%1)?'30':'00';
+    const d=new Date(); d.setHours(hh,parseInt(mm,10),0,0);
+    const label=d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+    out.push({h:hh,m:parseInt(mm,10),label});
+  }
+  return out;
+}
+function slotPhrase(){
+  if(!slotDay||!slotTod) return null;
+  const d=slotDay==='Weekend'?'this weekend':slotDay.toLowerCase();
+  return d+' '+slotTod.toLowerCase();
+}
+function altPhrase(){
+  if(!slotDay||!slotTod) return null;
+  if(slotDay==='Today') return 'tomorrow '+slotTod.toLowerCase();
+  if(slotDay==='Tomorrow') return slotTod==='Evening'?'tomorrow afternoon':'tomorrow evening';
+  return slotTod==='Morning'?'the weekend afternoon':'the weekend morning';
+}
+
+function renderSlots(){
+  const dc=$('dayChips'); dc.innerHTML='';
+  ['Today','Tomorrow','Weekend'].forEach(d=>{
+    const b=document.createElement('button'); b.className='chip slot'+(slotDay===d?' on':''); b.textContent=d;
+    b.onclick=()=>{ slotDay=(slotDay===d?null:d); chosenDateIdx=0; renderSlots(); renderAll(); };
+    dc.appendChild(b);
+  });
+  const tc=$('todChips'); tc.innerHTML='';
+  ['Morning','Afternoon','Evening'].forEach(t=>{
+    const b=document.createElement('button'); b.className='chip slot'+(slotTod===t?' on':''); b.textContent=t;
+    b.onclick=()=>{ slotTod=(slotTod===t?null:t); renderSlots(); renderAll(); };
+    tc.appendChild(b);
+  });
+  const area=$('confirmArea');
+  if(slotDay&&slotTod){
+    area.style.display='';
+    $('whenLine').textContent=slotDay+' '+slotTod.toLowerCase();
+    const ds=$('dateSel'); ds.innerHTML='';
+    candDates().forEach((d,i)=>{ const o=document.createElement('option'); o.value=i; o.textContent=fmtDate(d); if(i===chosenDateIdx) o.selected=true; ds.appendChild(o); });
+    ds.onchange=()=>{ chosenDateIdx=parseInt(ds.value,10)||0; renderConfirm(); };
+    const ts=$('timeSel'); ts.innerHTML='';
+    timeOpts().forEach((t,i)=>{ const o=document.createElement('option'); o.value=i; o.textContent=t.label; ts.appendChild(o); });
+    ts.onchange=renderConfirm;
+    renderConfirm();
+  } else area.style.display='none';
+}
+function chosenDateTime(){
+  const dates=candDates(); const d=new Date(dates[Math.min(chosenDateIdx,dates.length-1)]);
+  const opts=timeOpts(); const ti=parseInt(($('timeSel').value||'0'),10)||0;
+  const t=opts[Math.min(ti,opts.length-1)]||{h:10,m:0,label:'10:00 AM'};
+  d.setHours(t.h,t.m,0,0);
+  return {d, label:t.label};
+}
+function renderConfirm(){
+  if(!slotDay||!slotTod) return;
+  const {d,label}=chosenDateTime();
+  $('confText').textContent='"Perfect, '+nm()+'. I have you down for '+fmtDate(d)+' at '+label+'. I will have the '+veh()+' pulled up front and ready, and I will block that time off just for you. If anything changes, call or text me at '+num()+'. See you then."';
+}
+
+/* ---------- saved appointments + ics ---------- */
+const A_KEY='shq_reconnect_appts_v1';
+function loadA(){ try{return JSON.parse(localStorage.getItem(A_KEY)||'[]');}catch(e){return [];} }
+function saveA(a){ try{localStorage.setItem(A_KEY,JSON.stringify(a));}catch(e){} }
+
+function icsEscape(s){ return String(s).replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\n/g,'\\n'); }
+function icsStamp(d){ return d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')+'T'+String(d.getHours()).padStart(2,'0')+String(d.getMinutes()).padStart(2,'0')+'00'; }
+function buildICS(ap){
+  const start=new Date(ap.iso);
+  const end=new Date(start.getTime()+45*60000);
+  const now=new Date();
+  return ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Sheehy Sales HQ//Reconnect//EN','CALSCALE:GREGORIAN','BEGIN:VEVENT',
+    'UID:'+ap.id+'@sheehysaleshq',
+    'DTSTAMP:'+icsStamp(now),
+    'DTSTART:'+icsStamp(start),
+    'DTEND:'+icsStamp(end),
+    'SUMMARY:'+icsEscape('Sheehy Nissan appt: '+ap.name+' ('+ap.vehicle+')'),
+    'LOCATION:'+icsEscape('Sheehy Nissan of Manassas, 9010 Liberia Ave, Manassas, VA 20110'),
+    'DESCRIPTION:'+icsEscape('Customer: '+ap.name+'\nVehicle: '+ap.vehicle+'\nSet by: '+ap.agent+'\nCallback: '+ap.number),
+    'BEGIN:VALARM','TRIGGER:-PT60M','ACTION:DISPLAY','DESCRIPTION:'+icsEscape('Appointment with '+ap.name),'END:VALARM',
+    'END:VEVENT','END:VCALENDAR'].join('\r\n');
+}
+function downloadICS(ap){
+  const blob=new Blob([buildICS(ap)],{type:'text/calendar'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=('appt-'+(ap.name||'customer')+'-'+ap.iso.slice(0,10)).replace(/[^a-z0-9\-]+/gi,'-').toLowerCase()+'.ics';
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove();},400);
+}
+function renderAppts(){
+  const list=loadA(); const box=$('apptList');
+  if(!list.length){ box.innerHTML='<span class="empty">Nothing saved yet. Set a slot above and it lands here with a calendar download.</span>'; return; }
+  box.innerHTML='';
+  list.sort((x,y)=>x.iso<y.iso?-1:1).forEach(ap=>{
+    const d=new Date(ap.iso);
+    const el=document.createElement('div'); el.className='appt';
+    const left=document.createElement('div');
+    left.innerHTML='<div class="who">'+esch(ap.name||'Customer')+' \u00b7 '+esch(ap.vehicle||'')+'</div><div class="meta">'+shortDate(d)+' at '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})+'</div>';
+    const acts=document.createElement('div'); acts.className='acts';
+    const dl=document.createElement('button'); dl.className='qbtn dl'; dl.textContent='Download .ics'; dl.onclick=()=>downloadICS(ap);
+    const rm=document.createElement('button'); rm.className='qbtn rm'; rm.textContent='Remove'; rm.onclick=()=>{ saveA(loadA().filter(x=>x.id!==ap.id)); renderAppts(); };
+    acts.appendChild(dl); acts.appendChild(rm);
+    el.appendChild(left); el.appendChild(acts); box.appendChild(el);
+  });
+}
+function esch(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+/* ---------- master render ---------- */
+function renderAll(){
+  const n=daysAgo(), t=tierOf(n)||'warm';
+  const pill=$('agePill');
+  if(n==null){ pill.className='agepill'; pill.textContent='Set the lead date'; $('ageHint').textContent='Enter the date of first contact and every script below adapts to how much time has passed.'; }
+  else { pill.className='agepill '+t; pill.textContent=n+' day'+(n===1?'':'s')+' ago \u00b7 '+TIER_META[t].label; $('ageHint').textContent=TIER_META[t].hint; }
+  const sc=$('scenario').value;
+  const sp=slotPhrase(), ap=altPhrase();
+  $('callOut').value=openLine(t)+bridgeLine(sc,t)+valueLine(sc,t)+askLine(t,sp,ap);
+  $('vmOut').value=vmScript(sc,t);
+  $('smsOut').value=smsScript(sc,t,sp,ap);
+  $('subjOut').value=emailSubj(sc,t);
+  $('bodyOut').value=emailBody(sc,t,sp,ap);
+  renderConfirm();
+}
+
+/* ---------- wiring ---------- */
+function copyBtn(btnId, getVal){
+  $(btnId).onclick=()=>{ const b=$(btnId); const text=getVal();
+    const done=()=>{ const o=b.textContent; b.textContent='Copied'; setTimeout(()=>b.textContent=o,1000); };
+    if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done,()=>{});
+  };
+}
+copyBtn('cpCall',()=>$('callOut').value.replace(/\[cue\][^\n]*\n?/g,''));
+copyBtn('cpVM',()=>$('vmOut').value);
+copyBtn('cpSMS',()=>$('smsOut').value);
+copyBtn('cpSubj',()=>$('subjOut').value);
+copyBtn('cpBody',()=>$('bodyOut').value);
+$('cpConf').onclick=()=>{ const b=$('cpConf'); const txt=$('confText').textContent;
+  if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(()=>{ b.textContent='Copied'; setTimeout(()=>b.textContent='Copy',1000); },()=>{});
+};
+
+document.querySelectorAll('[data-f]').forEach(inp=>{
+  if(F[inp.dataset.f]) inp.value=F[inp.dataset.f];
+  inp.addEventListener('input',()=>{ F[inp.dataset.f]=inp.value.trim(); saveFill(); renderAll(); });
+});
+$('leadDate').addEventListener('input',renderAll);
+$('scenario').addEventListener('change',renderAll);
+
+$('saveAppt').onclick=()=>{
+  if(!slotDay||!slotTod) return;
+  const {d}=chosenDateTime();
+  const ap={ id:'a'+Date.now(), name:nm()==='[Name]'?'':nm(), vehicle:veh()==='[vehicle]'?'':veh(),
+    agent:ag()==='[agent]'?'':ag(), number:num()==='[number]'?'':num(), iso:d.toISOString() };
+  const list=loadA(); list.push(ap); saveA(list); renderAppts();
+  const b=$('saveAppt'); const o=b.textContent; b.textContent='Saved'; setTimeout(()=>b.textContent=o,1100);
+};
+$('clearSlot').onclick=()=>{ slotDay=null; slotTod=null; chosenDateIdx=0; renderSlots(); renderAll(); };
+
+renderSlots();
+renderAppts();
+renderAll();
+</script>
+</body>
+</html>
