@@ -21,6 +21,20 @@
   .clearcust{border:1px solid var(--line);background:transparent;border-radius:8px;padding:7px 13px;font-family:'Space Grotesk',sans-serif;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer}
   .clearcust:hover{border-color:var(--bad);color:var(--bad)}
   .fill-note{font-size:11.5px;color:var(--muted);line-height:1.5}
+  .sigwrap{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:0 12px;margin:0 0 12px}
+  .sigwrap>summary{cursor:pointer;list-style:none;padding:11px 0;font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+  .sigwrap>summary::-webkit-details-marker{display:none}
+  .sigwrap>summary::after{content:'edit';float:right;color:var(--accent)}
+  .sigwrap[open]>summary::after{content:'close'}
+  .sigwrap textarea{width:100%;min-height:140px;border:1px solid var(--line);border-radius:8px;padding:10px;font-family:inherit;font-size:14px;line-height:1.5;resize:vertical}
+  .sigrow{display:flex;gap:8px;margin:9px 0}
+  .signote{font-size:11.5px;color:var(--muted);padding-bottom:11px;line-height:1.5}
+  .progbar{background:#eaf1ff;border:1px solid #c9dbff;border-radius:10px;padding:10px 12px;margin:0 0 12px;font-size:13px;line-height:1.55;color:#1a2330}
+  .progbar b{font-family:'Space Grotesk',sans-serif}
+  .progbar .pl{position:relative;background:#fff;border:1px solid var(--line);border-radius:8px;padding:9px 40px 9px 10px;margin-top:7px;font-size:13.5px}
+  .progbar .pc{position:absolute;top:6px;right:6px;border:1px solid var(--line);background:#fff;border-radius:6px;padding:3px 8px;font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer}
+  .progbar a{color:var(--accent);font-weight:600}
+
   header{background:var(--paper);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
   .hd{max-width:900px;margin:0 auto;padding:12px 14px}
   .brand{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;letter-spacing:.01em}
@@ -57,9 +71,11 @@
 </head>
 <body>
 <script src="./nav.js" defer></script>
+<script src="./programs.js"></script>
 
 <div class="wrap">
   <h1 class="page-title">Email Library</h1>
+  <div id="progBar"></div>
   <div class="fillbar">
     <div class="fill-grid">
       <label>Customer name<input data-f="name" autocomplete="off" placeholder="Sarah"></label>
@@ -69,6 +85,7 @@
       <label>Your name<input data-f="agent" autocomplete="off" placeholder="Aldrin"></label>
       <label>Your phone<input data-f="number" autocomplete="off" placeholder="703 555 0134"></label>
       <label>Your email<input data-f="email" autocomplete="off" placeholder="you@sheehy.com"></label>
+      <label>Send to (customer email)<input data-f="email_to" autocomplete="off" placeholder="them@email.com"></label>
     </div>
     <div class="fill-actions"><button class="clearcust" type="button">Clear customer</button>
       <span class="fill-note">Fills every template below as you type. Saved on this browser only. Blank fields stay as tokens so you can spot what is left to fill.</span></div>
@@ -82,6 +99,13 @@
     <code>[number]</code> your callback number ·
     <code>[day/time]</code> the appointment slot
   </div>
+
+  <details class="sigwrap"><summary>My email signature</summary>
+    <textarea id="sigBox" spellcheck="true"></textarea>
+    <div class="sigrow"><button class="copy" id="sigSave">Save signature</button>
+      <button class="copy ghost" id="sigReset">Reset to default</button></div>
+    <div class="signote">Added to the bottom of every email you open in Outlook. Saved on this browser only.</div>
+  </details>
 
   <input class="search" id="search" placeholder="Search a scenario, a word, or a phrase" autocomplete="off">
   <div class="chips" id="chips"></div>
@@ -407,6 +431,56 @@ Best,
 ];
 
 /* ============ render engine ============ */
+
+/* ---- active programs banner (fed by programs.html) ---- */
+(function(){
+  function renderProgBar(channel){
+    var host=document.getElementById('progBar'); if(!host||!window.SHQPrograms) return;
+    var P=window.SHQPrograms, act=P.active(), stale=P.stale();
+    if(!act.length){
+      host.innerHTML='<div class="progbar">No programs switched on. Add the current owner and customer programs on the <a href="programs.html">Programs page</a> and the language shows up here.</div>';
+      return;
+    }
+    var names=act.map(function(p){return p.name;}).join(', ');
+    var lineTxt=P.line(channel);
+    var warn = stale.length ? '<div style="margin-top:6px;color:#8a5a12"><b>Verify first:</b> '+stale.map(function(p){return p.name;}).join(', ')+' is past its end date or has none set.</div>' : '';
+    host.innerHTML='<div class="progbar"><b>Live programs:</b> '+names
+      +'<div class="pl"><span id="progLineTxt"></span><button class="pc" id="progCopy">Copy</button></div>'+warn+'</div>';
+    document.getElementById('progLineTxt').textContent=lineTxt;
+    var b=document.getElementById('progCopy');
+    b.onclick=function(){ if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(lineTxt).then(function(){ b.textContent='Copied'; setTimeout(function(){b.textContent='Copy';},1000); },function(){}); } };
+  }
+  window.renderProgBar=renderProgBar;
+})();
+
+
+/* ---- signature + Outlook compose (moved here from the main app) ---- */
+const SIG_KEY='sheehy_email_sig_v1', Q_KEY='sheehy_followup_v1';
+const DEFAULT_SIG=['Aldrin Malakar','Sales Consultant','Sheehy Nissan of Manassas',
+  '9010 Liberia Ave, Manassas, VA 20110','Call or text 703-996-9877','aldrinmalakar@sheehy.com','',
+  'If you would rather not hear from me just reply STOP and I will close it out.'].join('\n');
+function getSig(){ try{ const v=localStorage.getItem(SIG_KEY); return v==null?DEFAULT_SIG:v; }catch(e){ return DEFAULT_SIG; } }
+function setSig(v){ try{ localStorage.setItem(SIG_KEY,v); }catch(e){} }
+function ymd(d){ d=d||new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function addDays(n){ const d=new Date(); d.setDate(d.getDate()+n); return ymd(d); }
+function logEmail(email,name,vehicle){
+  email=(email||'').trim().toLowerCase(); if(!email) return;
+  let q={}; try{ q=JSON.parse(localStorage.getItem(Q_KEY)||'{}'); }catch(e){}
+  const prev=q[email]||{};
+  q[email]={ email:email, name:name||prev.name||'', vehicle:vehicle||prev.vehicle||'',
+    emailedAt:ymd(), callDueAt:addDays(2), calledAt:'' };
+  try{ localStorage.setItem(Q_KEY, JSON.stringify(q)); }catch(e){}
+}
+function openOutlookCompose(subject, body){
+  const to=(F.email_to||'').trim();
+  const full=(body||'')+'\n\n'+getSig();
+  const url='https://outlook.office.com/mail/deeplink/compose?to='+encodeURIComponent(to)
+    +'&subject='+encodeURIComponent(subject||'')
+    +'&body='+encodeURIComponent(full);
+  window.open(url,'_blank','noopener');
+  if(to) logEmail(to, F.name, F.current||F.vehicle);
+}
+
 const $=id=>document.getElementById(id);
 let activeCat='All', q='';
 
@@ -484,10 +558,12 @@ function render(){
     const btns=document.createElement('div'); btns.className='btns';
     const bBody=document.createElement('button'); bBody.className='copy'; bBody.textContent='Copy body';
     const bAll=document.createElement('button'); bAll.className='copy ghost'; bAll.textContent='Copy all';
-    btns.appendChild(bBody); btns.appendChild(bAll); bLab.appendChild(bSpan); bLab.appendChild(btns);
+    const bOut=document.createElement('button'); bOut.className='copy'; bOut.textContent='Open in Outlook';
+    btns.appendChild(bOut); btns.appendChild(bBody); btns.appendChild(bAll); bLab.appendChild(bSpan); bLab.appendChild(btns);
     const bText=document.createElement('textarea'); bText.className='body'; bText.value=fillText(t.body); bText.rows=Math.max(6,bText.value.split('\n').length+1);
     bBody.onclick=()=>copyText(bText.value,bBody);
     bAll.onclick=()=>copyText('Subject: '+sInput.value+'\n\n'+bText.value,bAll);
+    bOut.onclick=()=>openOutlookCompose(sInput.value, bText.value);
 
     body.appendChild(sLab); body.appendChild(sInput); body.appendChild(bLab); body.appendChild(bText);
     card.appendChild(body); grid.appendChild(card);
@@ -507,6 +583,12 @@ if(_cc) _cc.onclick=()=>{
   render();
 };
 render();
+renderProgBar('email');
+const _sig=document.getElementById('sigBox');
+if(_sig){ _sig.value=getSig();
+  document.getElementById('sigSave').onclick=function(){ setSig(_sig.value); const b=this; const t=b.textContent; b.textContent='Saved'; setTimeout(()=>b.textContent=t,1100); };
+  document.getElementById('sigReset').onclick=function(){ _sig.value=DEFAULT_SIG; setSig(DEFAULT_SIG); };
+}
 </script>
 </body>
 </html>
