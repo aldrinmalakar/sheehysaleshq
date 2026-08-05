@@ -10,7 +10,9 @@
     { href:'sms-library.html',  label:'SMS Library' },
     { href:'email-library.html',label:'Email Library' },
     { href:'objection-library.html',label:'Objections' },
-    { href:'reconnect.html',    label:'Reconnect' }
+    { href:'reconnect.html',    label:'Reconnect' },
+    { href:'sister-store.html', label:'Sister Store' },
+    { href:'programs.html',     label:'Programs' }
   ];
 
   var here = (location.pathname.split('/').pop() || 'index.html').toLowerCase();

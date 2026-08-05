@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sister Store · Sheehy Sales HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#1a2330;--muted:#6b7889;--line:#e4e8ee;--paper:#fff;--card:#f6f8fb;--accent:#2f5fe0;--good:#0f8a4d;--bad:#c0334d;--warn:#8a5a12;--bg:#eef1f6}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.5}
+  .wrap{max-width:900px;margin:0 auto;padding:0 14px 60px}
+  .page-title{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;margin:16px 0 2px}
+  .sub{font-size:13px;color:var(--muted);margin:0 0 12px}
+  .panel{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px;margin:0 0 14px}
+  .panel h2{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 10px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:9px}
+  .grid label{display:flex;flex-direction:column;gap:4px;font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+  input,select,textarea{border:1px solid var(--line);border-radius:8px;padding:9px 10px;font-family:inherit;font-size:14.5px;background:#fff;color:var(--ink);text-transform:none;letter-spacing:normal;font-weight:400}
+  .chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}
+  .chip{border:1px solid var(--line);background:var(--paper);border-radius:20px;padding:7px 13px;font-family:'Space Grotesk',sans-serif;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap}
+  .chip.on{color:#fff;background:var(--ink);border-color:var(--ink)}
+  .stage{margin-bottom:14px}
+  .stage .sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+  .stage .sh b{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--accent)}
+  .cpy{border:1px solid var(--accent);background:transparent;color:var(--accent);border-radius:7px;padding:5px 12px;font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:600;cursor:pointer}
+  .cpy:active{transform:translateY(1px)}
+  .line{position:relative;border:1px solid var(--line);border-radius:9px;padding:11px 11px;font-size:14.5px;line-height:1.6;background:#fff;white-space:pre-wrap}
+  .line.ask{border-color:var(--good);background:linear-gradient(0deg,rgba(15,138,77,.04),rgba(15,138,77,.04)),#fff}
+  .cue{display:block;font-size:11.5px;color:var(--muted);font-style:italic;margin-top:5px}
+  .why{background:var(--card);border-radius:9px;padding:10px 11px;font-size:13px;line-height:1.55;margin-bottom:10px}
+  .why b{font-family:'Space Grotesk',sans-serif}
+  textarea.script{width:100%;resize:vertical;font-size:14.5px;line-height:1.6}
+  .flag{background:#fff7ed;border:1px solid #f2d9b8;color:var(--warn);border-radius:9px;padding:9px 11px;font-size:12.5px;line-height:1.55;margin-top:10px}
+  .stop{background:#fdeceb;border:1px solid #f3c4c4;color:#8a2230;border-radius:9px;padding:9px 11px;font-size:12.5px;line-height:1.55;margin-top:10px}
+  .foot{text-align:center;color:var(--muted);font-size:11.5px;margin-top:22px;line-height:1.6}
+</style>
+</head>
+<body>
+<script src="./nav.js" defer></script>
+<script src="./programs.js"></script>
+
+<div class="wrap">
+  <h1 class="page-title">Sister Store Vehicle</h1>
+  <p class="sub">They want a vehicle we do not have on the ground. Drive a comparable today, commit, then we bring theirs in.</p>
+
+  <div class="panel">
+    <h2>Setup</h2>
+    <div class="grid">
+      <label>Customer name<input data-f="name" autocomplete="off" placeholder="Sarah"></label>
+      <label>Vehicle they want<input data-f="vehicle" autocomplete="off" placeholder="2026 Rogue SL, Boulder Gray"></label>
+      <label>What we have to drive<input id="demoVeh" autocomplete="off" placeholder="2026 Rogue SV, same drivetrain"></label>
+      <label>Your name<input data-f="agent" autocomplete="off" placeholder="Aldrin"></label>
+      <label>Your phone<input data-f="number" autocomplete="off" placeholder="703 555 0134"></label>
+      <label>Difference from the demo<select id="diff">
+        <option value="trim">Different trim level</option>
+        <option value="color">Different color only</option>
+        <option value="both">Different trim and color</option>
+        <option value="same">Same build, different unit</option>
+      </select></label>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Where you are in it</h2>
+    <div class="chips" id="stageChips"></div>
+    <div class="why" id="whyBox"></div>
+    <div id="out"></div>
+  </div>
+
+  <div class="stop"><b>Never promise the transfer before the desk confirms it.</b> Another store can sell that unit while you are talking, and a dealer trade is not yours until David has it locked. Say we can request it, not we will get it. Do not put a date on delivery until the desk gives you one.</div>
+
+  <div class="flag"><b>Compliance:</b> no price, payment, rate or fee language anywhere in this flow. A transfer can change the numbers, so any figure the customer sees comes from the desk on a fresh sheet, and any deposit is refundable and handled by management, never held by you.</div>
+
+  <div class="foot">Standalone page. Nothing here connects to or changes your main Sales HQ app.</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const FILL_KEY='shq_fill_v1';
+let F=(function(){try{return JSON.parse(localStorage.getItem(FILL_KEY)||'{}');}catch(e){return {};}})();
+function saveFill(){ try{localStorage.setItem(FILL_KEY,JSON.stringify(F));}catch(e){} }
+function tok(k,fb){ return (F[k]&&F[k].trim())||fb; }
+function nm(){ return tok('name','[Name]'); }
+function veh(){ return tok('vehicle','[vehicle]'); }
+function ag(){ return tok('agent','[agent]'); }
+function num(){ return tok('number','[number]'); }
+function demo(){ const v=$('demoVeh').value.trim(); return v||'a comparable one we have here'; }
+
+let stage='setup';
+const STAGES=[
+  ['setup','They asked for one we do not have'],
+  ['drive','Selling the comparable drive'],
+  ['commit','Asking for the commitment'],
+  ['after','After they commit'],
+  ['fell','If the transfer falls through']
+];
+
+function diffLine(){
+  const d=$('diff').value;
+  if(d==='color') return 'The one here is the same build, just a different color, so everything you feel today is exactly what yours will be.';
+  if(d==='trim') return 'The one here is a different trim, so I will point out the handful of things that change and what stays identical, no surprises.';
+  if(d==='both') return 'The one here is a different trim and color, so I will be upfront about every difference between this and the one you actually want.';
+  return 'The one here is the same build, just a different unit off the lot, so what you feel today is what you get.';
+}
+
+const WHY={
+  setup:'<b>The goal:</b> do not let a missing color or trim end the visit. Be straight that it is not here, then get them behind the wheel of something comparable, because the drive is what sells the car and the drive transfers.',
+  drive:'<b>The goal:</b> name every difference before they find one. Honesty here is what makes them believe you later when you say the transfer is worth waiting for.',
+  commit:'<b>The goal:</b> a transfer costs the store real effort, so it is fair to ask for a real commitment first. Ask plainly, then stop talking.',
+  after:'<b>The goal:</b> silence kills transfers. They are waiting on a car they have never seen, so over-communicate until it lands.',
+  fell:'<b>The goal:</b> if it is gone, you tell them fast and first. Bad news delivered early keeps the deal, bad news discovered late loses the customer.'
+};
+
+function scriptFor(){
+  const V=veh(), D=demo(), N=nm();
+  if(stage==='setup') return [
+    {lab:'Be straight first', txt:'"Straight with you, '+N+'. The exact one you want is not sitting on my lot today. I am not going to waste your time pretending otherwise."'},
+    {lab:'Then the good news', txt:'"Here is the good news though. It is in our group at a sister store, which means we can request it and bring it here for you. That part is real, I just have to confirm it is still available before I promise you anything."'},
+    {lab:'Redirect to the drive', txt:'"What I do have is '+D+'. '+diffLine()+' The way it drives, the seat, the visibility, the tech, all of that is what you are really deciding on, and you can feel every bit of it today."'},
+    {lab:'The ask', txt:'"So let us do this. Drive this one, and if it feels right we go get you the exact one you want. Fair?"', ask:true, cue:'Then stop talking. Let them say yes to the drive.'}
+  ];
+  if(stage==='drive') return [
+    {lab:'Set expectations before the keys', txt:'"Before we go, one thing so nothing surprises you later. '+diffLine()+' Everything else, how it rides, the power, the seats, the tech, is what yours will be."'},
+    {lab:'During the drive', txt:'"Pay attention to how it feels, not the badge on the back. The color is a picture, the drive is the part you live with every day."', cue:'Let the road do the selling. Talk less than you think you should.'},
+    {lab:'After the drive', txt:'"Now that you have driven it, was there anything about how it drove that did not work for you? ... Good. Then the only thing between you and the right one is the color and the paperwork, and I can handle both."'},
+    {lab:'The ask', txt:'"If I can confirm the exact one you want is available, are you ready to move forward on it today?"', ask:true, cue:'Then stop talking. This answer tells you whether to spend the store\u2019s effort on a transfer.'}
+  ];
+  if(stage==='commit') return [
+    {lab:'Explain honestly why you are asking', txt:'"Here is why I am asking you to commit before I go get it. Moving a vehicle between stores takes real work and we do it for people who actually want the car. I am not trying to trap you, I just want to know it is yours before I go chase it."'},
+    {lab:'Tell them what you can and cannot promise', txt:'"What I can do is request it and get you an answer fast. What I will not do is promise you a date before I have one, because another store can sell it while we are standing here. When my manager confirms it, you will know within the hour."'},
+    {lab:'Make it safe', txt:'"And if it turns out it is already gone or something changes, you are not stuck. Nothing is final until you see the paperwork on the actual vehicle and you are happy with it."'},
+    {lab:'The ask', txt:'"So if I get it confirmed today, do I have your word that this is the one? ... Perfect. Let me go get my manager working on it right now."', ask:true, cue:'Then stop talking. Get the yes before you walk to the desk.'}
+  ];
+  if(stage==='after') return [
+    {lab:'Immediately, in front of them', txt:'"I am putting this in front of David right now. The moment I know, you know, and I will text you either way even if the answer is not what we want."'},
+    {lab:'Text once it is requested', txt:'Hi '+N+', '+ag()+' at Sheehy Nissan. Request is in with my manager on the '+V+'. I will text you the second I have a real answer either way. You have my number right here, '+num()+'.'},
+    {lab:'Text when confirmed', txt:'Hi '+N+', good news, we have the '+V+' locked in and headed our way. I will confirm the day with you as soon as I have it from my manager. Nothing for you to do right now, I have got it.'},
+    {lab:'While they wait', txt:'Hi '+N+', quick check in on your '+V+'. No news yet but I have not forgotten you and I am staying on it. I will reach out the moment anything moves.', cue:'Send this even when there is nothing new. Silence is what makes people cancel.'},
+    {lab:'The ask, when it lands', txt:'"It is here and it is yours. When do you want to come get it, later today or tomorrow?"', ask:true}
+  ];
+  return [
+    {lab:'Call fast, do not text this', txt:'"'+N+', I am calling you first because you deserve to hear it from me. The exact '+V+' we were after is gone, another store sold it before we could lock it."'},
+    {lab:'Own it, do not hide behind the process', txt:'"That is on us to have moved faster, and I am sorry. I told you I would tell you either way and I meant it."'},
+    {lab:'Come back with options, not apologies', txt:'"Here is where I already am on it. I am looking at what else matches what you wanted, and if there is another one in the group I will find it. What matters most, holding the exact color or getting you in it sooner?"', cue:'Their answer tells you whether to keep hunting or pivot to what is on the ground.'},
+    {lab:'The ask', txt:'"Give me until tomorrow to bring you the best two options I can find. If neither works, no hard feelings and I will tell you straight. Fair?"', ask:true, cue:'Then stop talking.'}
+  ];
+}
+
+function copyText(text, btn){
+  const done=()=>{ const o=btn.textContent; btn.textContent='Copied'; setTimeout(()=>btn.textContent=o,1000); };
+  if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done,()=>{});
+}
+
+function render(){
+  const cc=$('stageChips'); cc.innerHTML='';
+  STAGES.forEach(([k,lab])=>{
+    const b=document.createElement('button'); b.className='chip'+(stage===k?' on':''); b.textContent=lab;
+    b.onclick=()=>{ stage=k; render(); };
+    cc.appendChild(b);
+  });
+  $('whyBox').innerHTML=WHY[stage];
+  const box=$('out'); box.innerHTML='';
+  scriptFor().forEach(s=>{
+    const st=document.createElement('div'); st.className='stage';
+    const sh=document.createElement('div'); sh.className='sh';
+    const b=document.createElement('b'); b.textContent=s.lab;
+    const cp=document.createElement('button'); cp.className='cpy'; cp.textContent='Copy';
+    cp.onclick=()=>copyText(s.txt,cp);
+    sh.appendChild(b); sh.appendChild(cp);
+    const ln=document.createElement('div'); ln.className='line'+(s.ask?' ask':'');
+    ln.textContent=s.txt;
+    st.appendChild(sh); st.appendChild(ln);
+    if(s.cue){ const c=document.createElement('span'); c.className='cue'; c.textContent=s.cue; st.appendChild(c); }
+    box.appendChild(st);
+  });
+}
+
+document.querySelectorAll('[data-f]').forEach(inp=>{
+  if(F[inp.dataset.f]) inp.value=F[inp.dataset.f];
+  inp.addEventListener('input',()=>{ F[inp.dataset.f]=inp.value.trim(); saveFill(); render(); });
+});
+$('demoVeh').addEventListener('input',render);
+$('diff').addEventListener('change',render);
+render();
+</script>
+</body>
+</html>

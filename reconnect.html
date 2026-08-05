@@ -60,15 +60,23 @@
   .note{font-size:11.5px;color:var(--muted);line-height:1.5;margin-top:8px}
   .flag{background:#fff7ed;border:1px solid #f2d9b8;color:var(--warn);border-radius:9px;padding:8px 11px;font-size:12px;line-height:1.5;margin-top:10px}
   .empty{font-size:13px;color:var(--muted)}
+  .progbar{background:#eaf1ff;border:1px solid #c9dbff;border-radius:10px;padding:10px 12px;margin:0 0 12px;font-size:13px;line-height:1.55;color:#1a2330}
+  .progbar b{font-family:'Space Grotesk',sans-serif}
+  .progbar .pl{position:relative;background:#fff;border:1px solid var(--line);border-radius:8px;padding:9px 40px 9px 10px;margin-top:7px;font-size:13.5px}
+  .progbar .pc{position:absolute;top:6px;right:6px;border:1px solid var(--line);background:#fff;border-radius:6px;padding:3px 8px;font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer}
+  .progbar a{color:var(--accent);font-weight:600}
+
   .foot{text-align:center;color:var(--muted);font-size:11.5px;margin-top:22px;line-height:1.6}
 </style>
 </head>
 <body>
 <script src="./nav.js" defer></script>
+<script src="./programs.js"></script>
 
 <div class="wrap">
   <h1 class="page-title">Reconnect</h1>
   <p class="sub">For people you already touched who have not bought yet. One goal, sell the appointment and get them in the store.</p>
+  <div id="progBar"></div>
 
   <div class="panel">
     <h2>Who and where they left off</h2>
@@ -163,6 +171,28 @@
 </div>
 
 <script>
+
+/* ---- active programs banner (fed by programs.html) ---- */
+(function(){
+  function renderProgBar(channel){
+    var host=document.getElementById('progBar'); if(!host||!window.SHQPrograms) return;
+    var P=window.SHQPrograms, act=P.active(), stale=P.stale();
+    if(!act.length){
+      host.innerHTML='<div class="progbar">No programs switched on. Add the current owner and customer programs on the <a href="programs.html">Programs page</a> and the language shows up here.</div>';
+      return;
+    }
+    var names=act.map(function(p){return p.name;}).join(', ');
+    var lineTxt=P.line(channel);
+    var warn = stale.length ? '<div style="margin-top:6px;color:#8a5a12"><b>Verify first:</b> '+stale.map(function(p){return p.name;}).join(', ')+' is past its end date or has none set.</div>' : '';
+    host.innerHTML='<div class="progbar"><b>Live programs:</b> '+names
+      +'<div class="pl"><span id="progLineTxt"></span><button class="pc" id="progCopy">Copy</button></div>'+warn+'</div>';
+    document.getElementById('progLineTxt').textContent=lineTxt;
+    var b=document.getElementById('progCopy');
+    b.onclick=function(){ if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(lineTxt).then(function(){ b.textContent='Copied'; setTimeout(function(){b.textContent='Copy';},1000); },function(){}); } };
+  }
+  window.renderProgBar=renderProgBar;
+})();
+
 const $=id=>document.getElementById(id);
 
 /* ---------- shared fill profile ---------- */
@@ -499,6 +529,7 @@ $('clearSlot').onclick=()=>{ slotDay=null; slotTod=null; chosenDateIdx=0; render
 renderSlots();
 renderAppts();
 renderAll();
+renderProgBar('call');
 </script>
 </body>
 </html>
