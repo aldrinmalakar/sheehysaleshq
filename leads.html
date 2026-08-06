@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leads · Sheehy Sales HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#1a2330;--muted:#6b7889;--line:#e4e8ee;--paper:#fff;--card:#f6f8fb;--accent:#2f5fe0;--good:#0f8a4d;--bad:#c0334d;--warn:#8a5a12;--bg:#eef1f6}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.5}
+  .wrap{max-width:900px;margin:0 auto;padding:0 14px 60px}
+  .page-title{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;margin:16px 0 2px}
+  .sub{font-size:13px;color:var(--muted);margin:0 0 12px}
+  .panel{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px;margin:0 0 14px}
+  .panel h2{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 10px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:9px}
+  .grid label{display:flex;flex-direction:column;gap:4px;font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+  input,select,textarea{border:1px solid var(--line);border-radius:8px;padding:9px 10px;font-family:inherit;font-size:14.5px;background:#fff;color:var(--ink);text-transform:none;letter-spacing:normal;font-weight:400}
+  textarea{width:100%;resize:vertical;line-height:1.6}
+  .clock{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+  .pill{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;border-radius:20px;padding:5px 13px;border:1px solid var(--line);background:var(--card);color:var(--muted)}
+  .pill.hot{border-color:var(--good);color:var(--good);background:rgba(15,138,77,.07)}
+  .pill.warm{border-color:var(--accent);color:var(--accent);background:rgba(47,95,224,.07)}
+  .pill.cool{border-color:#b07816;color:#b07816;background:rgba(176,120,22,.08)}
+  .pill.cold{border-color:var(--bad);color:var(--bad);background:rgba(192,51,77,.07)}
+  .clockhint{font-size:12.5px;color:var(--muted);flex:1;min-width:230px;line-height:1.5}
+  .chips{display:flex;gap:7px;flex-wrap:wrap}
+  .chip{border:1px solid var(--line);background:var(--paper);border-radius:20px;padding:7px 13px;font-family:'Space Grotesk',sans-serif;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap}
+  .chip.on{color:#fff;background:var(--ink);border-color:var(--ink)}
+  .chip.out.on{background:var(--accent);border-color:var(--accent)}
+  .plan{background:var(--card);border-radius:10px;padding:11px 12px;font-size:13.5px;line-height:1.6;margin-bottom:10px}
+  .plan b{font-family:'Space Grotesk',sans-serif}
+  .step{margin-bottom:12px}
+  .sh{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:5px}
+  .sh b{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--accent)}
+  .cpy{border:1px solid var(--accent);background:transparent;color:var(--accent);border-radius:7px;padding:5px 12px;font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:600;cursor:pointer}
+  .cpy:active{transform:translateY(1px)}
+  .line{border:1px solid var(--line);border-radius:9px;padding:11px;font-size:14.5px;line-height:1.6;background:#fff;white-space:pre-wrap}
+  .line.ask{border-color:var(--good);background:linear-gradient(0deg,rgba(15,138,77,.04),rgba(15,138,77,.04)),#fff}
+  .cue{display:block;font-size:11.5px;color:var(--muted);font-style:italic;margin-top:5px}
+  .next{border:1px solid var(--accent);border-radius:10px;background:linear-gradient(0deg,rgba(47,95,224,.05),rgba(47,95,224,.05)),#fff;padding:11px 12px;margin-top:10px;font-size:13.5px;line-height:1.6}
+  .next b{font-family:'Space Grotesk',sans-serif}
+  .cad{border:1px solid var(--line);border-radius:9px;padding:9px 11px;margin-bottom:7px;background:#fff;display:flex;gap:10px;align-items:flex-start}
+  .cad .d{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:12px;color:var(--accent);min-width:64px;flex-shrink:0;padding-top:1px}
+  .cad .w{font-size:13.5px;line-height:1.5}
+  .cad .w em{color:var(--muted);font-style:normal;font-size:12px;display:block;margin-top:2px}
+  .logrow{display:flex;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:9px;padding:8px 11px;margin-bottom:6px;background:#fff;font-size:13.5px}
+  .logrow .m{font-size:12px;color:var(--muted);margin-top:2px}
+  .qbtn{border:1px solid var(--line);background:transparent;border-radius:7px;padding:5px 10px;font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap}
+  .qbtn.rm:hover{border-color:var(--bad);color:var(--bad)}
+  .primary{border:1px solid var(--good);background:var(--good);color:#fff;border-radius:8px;padding:9px 15px;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;cursor:pointer}
+  .rowbtns{display:flex;gap:8px;margin-top:9px;flex-wrap:wrap}
+  .flag{background:#fff7ed;border:1px solid #f2d9b8;color:var(--warn);border-radius:9px;padding:9px 11px;font-size:12.5px;line-height:1.55;margin-top:10px}
+  .stop{background:#fdeceb;border:1px solid #f3c4c4;color:#8a2230;border-radius:9px;padding:9px 11px;font-size:12.5px;line-height:1.55;margin-top:10px}
+  .empty{font-size:13px;color:var(--muted)}
+  .note{font-size:11.5px;color:var(--muted);line-height:1.5;margin-top:8px}
+  .foot{text-align:center;color:var(--muted);font-size:11.5px;margin-top:22px;line-height:1.6}
+</style>
+</head>
+<body>
+<script src="./nav.js" defer></script>
+<script src="./programs.js"></script>
+
+<div class="wrap">
+  <h1 class="page-title">Internet Leads</h1>
+  <p class="sub">A lead just came in. Call first, then work whatever channel they actually left you. The product here is the appointment.</p>
+  <div id="progBar"></div>
+
+  <div class="panel">
+    <h2>The lead</h2>
+    <div class="grid">
+      <label>Customer name<input data-f="name" autocomplete="off" placeholder="Sarah"></label>
+      <label>Vehicle they asked about<input data-f="vehicle" autocomplete="off" placeholder="2026 Rogue SV"></label>
+      <label>Your name<input data-f="agent" autocomplete="off" placeholder="Aldrin"></label>
+      <label>Your phone<input data-f="number" autocomplete="off" placeholder="703 555 0134"></label>
+      <label>Lead came in at<input type="datetime-local" id="leadAt"></label>
+      <label>What they asked about<select id="askedAbout">
+        <option value="avail">Is it available</option>
+        <option value="price">Price or payment</option>
+        <option value="trade">Trade value</option>
+        <option value="finance">Financing or credit</option>
+        <option value="generic">Nothing specific, just a form</option>
+        <option value="test">Wants a test drive</option>
+      </select></label>
+    </div>
+    <div class="clock">
+      <span class="pill" id="agePill">Set the time it came in</span>
+      <span class="clockhint" id="ageHint">Speed matters more than polish on a fresh lead. Call first, every time, even if they also left an email.</span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>What they gave you</h2>
+    <div class="chips" id="chanChips"></div>
+    <div class="plan" id="planBox" style="margin-top:11px"></div>
+  </div>
+
+  <div class="panel">
+    <h2>What happened when you called</h2>
+    <div class="chips" id="outChips"></div>
+    <div id="out" style="margin-top:12px"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Your cadence from here</h2>
+    <div id="cadBox"></div>
+    <div class="note">Stop the cadence the moment they respond. From there you are setting the appointment, not running a sequence.</div>
+  </div>
+
+  <div class="panel">
+    <h2>Attempt log</h2>
+    <div class="grid" style="grid-template-columns:1fr 1fr">
+      <label>What you did<select id="logWhat">
+        <option>Called, connected</option>
+        <option>Called, left voicemail</option>
+        <option>Called, no answer</option>
+        <option>Texted</option>
+        <option>Emailed</option>
+        <option>Sent video</option>
+      </select></label>
+      <label>Result<select id="logRes">
+        <option>No response yet</option>
+        <option>Replied</option>
+        <option>Appointment set</option>
+        <option>Not interested</option>
+        <option>Bad contact info</option>
+      </select></label>
+    </div>
+    <div class="rowbtns"><button class="primary" id="logAdd">Log this attempt</button></div>
+    <div id="logList" style="margin-top:11px"></div>
+    <div class="note">Saved on this browser only. Once the customer is assigned to you, log it in DriveCentric too so the store can see the work.</div>
+  </div>
+
+  <div class="stop"><b>Bad number or wrong person:</b> stop calling that number. Do not keep dialing a number that reached someone else, and do not text a number a person told you is wrong. Note it and move to email.</div>
+
+  <div class="flag"><b>Compliance:</b> no price, payment, rate or approval language in any of these. Online-sourced customers go to Kiki first. Get the lead list DNC-scrubbed before you dial and honor an opt-out the first time you hear it.</div>
+
+  <div class="foot">Standalone page. Nothing here connects to or changes your main Sales HQ app.</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const FILL_KEY='shq_fill_v1';
+let F=(function(){try{return JSON.parse(localStorage.getItem(FILL_KEY)||'{}');}catch(e){return {};}})();
+function saveFill(){ try{localStorage.setItem(FILL_KEY,JSON.stringify(F));}catch(e){} }
+function tok(k,fb){ return (F[k]&&F[k].trim())||fb; }
+function nm(){ return tok('name','[Name]'); }
+function veh(){ return tok('vehicle','[vehicle]'); }
+function ag(){ return tok('agent','[agent]'); }
+function num(){ return tok('number','[number]'); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+/* ---- channels ---- */
+let chans={phone:true, email:true, text:false};
+function renderChans(){
+  const box=$('chanChips'); box.innerHTML='';
+  [['phone','Phone number'],['email','Email address'],['text','Okay to text']].forEach(([k,lab])=>{
+    const b=document.createElement('button'); b.className='chip'+(chans[k]?' on':''); b.textContent=lab;
+    b.onclick=()=>{ chans[k]=!chans[k]; renderChans(); renderAll(); };
+    box.appendChild(b);
+  });
+}
+
+/* ---- lead age ---- */
+function minsOld(){
+  const v=$('leadAt').value; if(!v) return null;
+  const d=new Date(v); if(isNaN(d)) return null;
+  return Math.max(0, Math.round((Date.now()-d.getTime())/60000));
+}
+function ageTier(m){
+  if(m==null) return null;
+  if(m<=15) return 'hot';
+  if(m<=120) return 'warm';
+  if(m<=1440) return 'cool';
+  return 'cold';
+}
+const AGE={
+  hot:{lab:'Minutes old, call now', hint:'They are probably still on their phone looking at cars. This is the single best chance you will get. Do not write an email first.'},
+  warm:{lab:'A couple hours old', hint:'Still very live. They have likely heard from one or two other stores, so be the one who sounds like a person, not a script.'},
+  cool:{lab:'Same day or yesterday', hint:'Assume other dealers already called. Lead with something useful rather than just checking in, and give them a reason to pick you.'},
+  cold:{lab:'Days old', hint:'Treat it like a reconnect. Acknowledge the gap honestly and ask where they landed instead of pretending it is fresh.'}
+};
+
+/* ---- what they asked ---- */
+function askLine(){
+  const a=$('askedAbout').value, V=veh();
+  if(a==='price') return '"You asked about pricing on the '+V+'. I can get you real numbers, and I would rather get it right than throw a figure at you that changes later. Two quick questions and I will have my manager put it together properly."';
+  if(a==='trade') return '"You mentioned a trade. I will not guess at the value from my desk since miles and condition move it a lot, but we can get you a real number fast once we put eyes on it."';
+  if(a==='finance') return '"You had a question about financing. No judgment on any of it, and our finance team looks at the whole picture rather than one number. The fastest way to real answers is a short conversation with them."';
+  if(a==='test') return '"You wanted to drive the '+V+'. Easy. I can have it pulled up and ready so you are not standing around waiting on paperwork before you even sit in it."';
+  if(a==='generic') return '"You put in a request on the '+V+'. Rather than guess at what you actually need, let me ask you one thing so I do not waste your time."';
+  return '"You asked if the '+V+' is still available. Good news, it is here, and I can hold it for you."';
+}
+
+/* ---- outcomes ---- */
+let outcome='connected';
+const OUTS=[
+  ['connected','They picked up'],
+  ['vm','Went to voicemail'],
+  ['novm','Rang out, no voicemail'],
+  ['bad','Bad number or wrong person'],
+  ['nophone','Email only, no phone'],
+  ['textonly','Text is the only way in']
+];
+function renderOuts(){
+  const box=$('outChips'); box.innerHTML='';
+  OUTS.forEach(([k,lab])=>{
+    const b=document.createElement('button'); b.className='chip out'+(outcome===k?' on':''); b.textContent=lab;
+    b.onclick=()=>{ outcome=k; renderAll(); };
+    box.appendChild(b);
+  });
+}
+
+function blocks(){
+  const N=nm(), V=veh(), A=ag(), P=num();
+  if(outcome==='connected') return {
+    why:'<b>They answered, so stop selling the car and start selling the visit.</b> You have maybe ninety seconds of goodwill. Confirm the vehicle, ask one real question, then ask for a time.',
+    steps:[
+      {lab:'Open fast, sound like a person', txt:'"Hi '+N+', it is '+A+' at Sheehy Nissan in Manassas. You just reached out about the '+V+', did I catch you at an okay time?"', cue:'If they say no, ask what time is better and actually call then.'},
+      {lab:'Reason for the call', txt:askLine()},
+      {lab:'One qualifying question, then be quiet', txt:'"Quick one so I point you the right way. Is this something you are trying to handle this week, or are you still in the early looking stage?"', cue:'Whatever they say is your timeline. Do not argue with it, work with it.'},
+      {lab:'The ask', txt:'"Here is the easy part. The '+V+' is here and I can have it up front and ready for you. What works better, later today or tomorrow?"', ask:true, cue:'Then stop talking. Silence is doing the work.'},
+      {lab:'Lock it', txt:'"Perfect. I have you down and I will have it pulled up. I am going to text you right now so you have my number, and if anything changes just tell me and we move it."'}
+    ],
+    next:'<b>Next:</b> text the confirmation before you hang up, while they still have the phone in their hand. Then log it and set a reminder for the morning of.'
+  };
+  if(outcome==='vm') return {
+    why:'<b>The voicemail sells the callback, not the car.</b> Keep it under thirty seconds, give one reason to call back, and say your number twice, slowly.',
+    steps:[
+      {lab:'The voicemail, under 30 seconds', txt:'Hi '+N+', this is '+A+' at Sheehy Nissan of Manassas. I have a quick question about the '+V+' you asked about, and I want to make sure I point you the right direction. Call or text me back at '+P+'. That is '+P+'. Again, '+A+' at Sheehy. Talk soon.', cue:'Say the number twice and slow down on it. Most people replay a voicemail only for the number.'},
+      {lab:'Text right after, within a minute', txt:'Hi '+N+', '+A+' at Sheehy Nissan. Just left you a voicemail about the '+V+'. Quick question, are you trying to look this week or is this more of a next month thing?', cue:'The text is what actually gets answered. The voicemail just makes the text make sense.'},
+      {lab:'Email the same day if no reply', txt:'Subject: quick question on the '+V+'\n\nHi '+N+', I tried you by phone and left a message. Rather than send you a wall of information you did not ask for, one question. Are you mainly checking availability, comparing options or trying to get a feel for the numbers?\n\nAnswer that and I will send you exactly what is useful and nothing else.\n\nBest,\n'+A},
+      {lab:'The ask, if they call back', txt:'"Glad you got back to me. The '+V+' is here and ready. What is easier, later today or tomorrow?"', ask:true}
+    ],
+    next:'<b>Next:</b> voicemail plus text in the same minute is the play. One without the other is half a touch.'
+  };
+  if(outcome==='novm') return {
+    why:'<b>No voicemail box means the phone is the weakest channel.</b> Do not just redial all day. Switch channels fast and vary the time of day when you do dial.',
+    steps:[
+      {lab:'Text immediately, since you could not leave anything', txt:'Hi '+N+', '+A+' at Sheehy Nissan in Manassas. I just tried you about the '+V+' but could not leave a message. Is this a good number for you, or is email easier?', cue:'Asking which channel they prefer is a real question, and it often gets a reply on its own.'},
+      {lab:'Email the same day', txt:'Subject: tried to reach you about the '+V+'\n\nHi '+N+', I tried calling about the '+V+' and could not get through or leave a message, so I did not want to just keep dialing you.\n\nWhat is the best way to reach you, phone, text or right here in email? And is there a time of day that actually works for you?\n\nBest,\n'+A},
+      {lab:'Second call, different time of day', txt:'"Hi '+N+', '+A+' at Sheehy Nissan. I tried you earlier and we kept missing each other. Do you have thirty seconds?"', cue:'If you tried morning, try after 6. Do not call the same hour twice and call it two attempts.'},
+      {lab:'The ask, once you get them', txt:'"Since I finally caught you, let us just put a time on it. Later today or tomorrow?"', ask:true}
+    ],
+    next:'<b>Next:</b> after two dials with nothing, email becomes your main channel and the phone becomes the backup.'
+  };
+  if(outcome==='bad') return {
+    why:'<b>Stop dialing that number.</b> A wrong person answering is not a lead, and repeat calls to them is exactly the behavior that gets stores in trouble. Note it and switch to email.',
+    steps:[
+      {lab:'If a person answered and it is not them', txt:'"I am sorry to bother you, I was trying to reach '+N+' and I have the wrong number. I will take this off my list. Have a good one."', cue:'Then actually take it off. Do not call it again.'},
+      {lab:'Email instead, and ask for the right number', txt:'Subject: wrong number on my end, '+N+'\n\nHi '+N+', I tried the phone number that came through with your request on the '+V+' and it does not seem to reach you.\n\nIf you would still like help, reply with the best number and a good time, or just answer here and I will work by email. Whatever is easier for you.\n\nBest,\n'+A},
+      {lab:'Flag it so nobody else redials it', txt:'Bad phone number on this lead. Reached a different person. Do not dial. Working by email only until the customer gives us a good number.', cue:'Put this in the notes so the next person does not repeat the call.'}
+    ],
+    next:'<b>Next:</b> mark the number bad in your log and in the CRM once assigned, then run the email-only path.'
+  };
+  if(outcome==='nophone') return {
+    why:'<b>Email only means your subject line is the whole game.</b> You cannot call your way in, so ask one easy question and make replying take five seconds.',
+    steps:[
+      {lab:'First email, short and answerable', txt:'Subject: '+N+', quick question about the '+V+'\n\nHi '+N+', I am '+A+' at Sheehy Nissan of Manassas. Good news first, the '+V+' is here.\n\nBefore I send you a pile of information you did not ask for, one question. Are you mainly checking availability, comparing a couple options or trying to get to real numbers?\n\nOne word back is plenty and I will take it from there.\n\nBest,\n'+A, cue:'One question, one line to answer. Long first emails are what get ignored.'},
+      {lab:'Ask for the phone, tied to their benefit', txt:'"If you send me a number I can hold it for you and text you the details as soon as anything changes. Totally your call if you would rather keep it to email."', cue:'Tie the ask to something they get. Asking for a number so you can call them is about you.'},
+      {lab:'Second email, offer a video', txt:'Subject: want me to just show you the '+V+'?\n\nHi '+N+', rather than describe it, I can shoot you a quick video of the actual '+V+' so you can see exactly what you would be getting.\n\nWant me to send that over? And if it looks right, I can have it ready whenever you want to come by.\n\nBest,\n'+A},
+      {lab:'The ask', txt:'Subject: today or the weekend, '+N+'?\n\nHi '+N+', simple one. If you want to see the '+V+' in person I can have it pulled up and ready. Does later this week or the weekend work better for you?\n\nBest,\n'+A, ask:true}
+    ],
+    next:'<b>Next:</b> the win here is getting a phone number or a time. Either one moves the lead out of email jail.'
+  };
+  return {
+    why:'<b>Text only, so keep it short and human.</b> Long paragraphs read as spam. One thought, one question and never two texts in a row without a reply.',
+    steps:[
+      {lab:'First text', txt:'Hi '+N+', this is '+A+' at Sheehy Nissan of Manassas. I saw your request on the '+V+'. Are you trying to look today or tomorrow?', cue:'Name, dealership, reason, one question. That is the whole format.'},
+      {lab:'If they reply but stay vague', txt:'Got it. So I point you right, is it mainly the '+V+' you want, or are you open to a couple that are close to it?', cue:'One question at a time. Two questions in a text usually gets one answer or none.'},
+      {lab:'Offer the easy version', txt:'I can send you a quick video of the actual one so you can see it without driving out here. Want me to?'},
+      {lab:'The ask', txt:'Easy way to do this. I can have it up front and ready. Does later today or tomorrow work better?', ask:true, cue:'Then leave it alone until they answer.'}
+    ],
+    next:'<b>Next:</b> if two texts go unanswered, switch to email or a call rather than sending a third.'
+  };
+}
+
+function cadence(){
+  const rows=[];
+  const canCall=chans.phone, canText=chans.text, canMail=chans.email;
+  rows.push(['Day 1','Call within minutes. Voicemail if there is a box, then a text right after.' + (canMail?' Email the same day if nothing comes back.':''),'The first hour matters more than everything after it.']);
+  if(canCall) rows.push(['Day 2','Call at a different time of day than yesterday.'+(canMail?' Short email with one question.':''),'Morning person, evening person. You do not know which yet.']);
+  rows.push(['Day 3', (canMail?'Email with an offer to send a video of the actual vehicle.':'Text an offer to send a quick video.'),'Video is the highest response tool you have at this stage.']);
+  if(canCall) rows.push(['Day 5','Call once. If nothing, leave it alone for a couple days.','Do not stack three calls in one day. That is how you get blocked.']);
+  rows.push(['Day 7', (canMail?'Email: still looking or all set? Give them an easy out.':'Text: still looking, or all set?'),'The easy exit is what gets the honest answer.']);
+  rows.push(['Day 10+','Move them to the Reconnect page and work them on a slower rhythm.','Not dead, just not now. Different cadence, same customer.']);
+  return rows;
+}
+
+/* ---- attempt log ---- */
+const L_KEY='shq_lead_log_v1';
+function loadL(){ try{return JSON.parse(localStorage.getItem(L_KEY)||'[]');}catch(e){return [];} }
+function saveL(a){ try{localStorage.setItem(L_KEY,JSON.stringify(a));}catch(e){} }
+function renderLog(){
+  const list=loadL(), box=$('logList');
+  if(!list.length){ box.innerHTML='<span class="empty">No attempts logged yet.</span>'; return; }
+  box.innerHTML='';
+  list.slice().reverse().forEach(e=>{
+    const d=new Date(e.at);
+    const el=document.createElement('div'); el.className='logrow';
+    el.innerHTML='<div><div><b>'+esc(e.who||'Lead')+'</b> · '+esc(e.what)+'</div>'
+      +'<div class="m">'+d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' at '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})+' · '+esc(e.res)+'</div></div>';
+    const rm=document.createElement('button'); rm.className='qbtn rm'; rm.textContent='Remove';
+    rm.onclick=()=>{ saveL(loadL().filter(x=>x.id!==e.id)); renderLog(); };
+    el.appendChild(rm); box.appendChild(el);
+  });
+}
+$('logAdd').onclick=()=>{
+  const list=loadL();
+  list.push({id:'l'+Date.now(), who:(nm()==='[Name]'?'':nm()), what:$('logWhat').value, res:$('logRes').value, at:new Date().toISOString()});
+  saveL(list); renderLog();
+  const b=$('logAdd'), o=b.textContent; b.textContent='Logged'; setTimeout(()=>b.textContent=o,1000);
+};
+
+function copyText(text, btn){
+  const done=()=>{ const o=btn.textContent; btn.textContent='Copied'; setTimeout(()=>btn.textContent=o,1000); };
+  if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done,()=>{});
+}
+
+function renderAll(){
+  const m=minsOld(), t=ageTier(m), pill=$('agePill');
+  if(m==null){ pill.className='pill'; pill.textContent='Set the time it came in'; }
+  else {
+    pill.className='pill '+t;
+    const disp = m<60 ? (m+' min old') : (m<1440 ? (Math.round(m/60)+' hr old') : (Math.round(m/1440)+' day'+(Math.round(m/1440)===1?'':'s')+' old'));
+    pill.textContent=disp+' · '+AGE[t].lab;
+    $('ageHint').textContent=AGE[t].hint;
+  }
+
+  // plan
+  const parts=[];
+  if(chans.phone) parts.push('call first');
+  if(chans.text) parts.push('text right after');
+  if(chans.email) parts.push('email same day if nothing comes back');
+  let plan = parts.length ? ('<b>Your order of operations:</b> '+parts.join(', ')+'.') : '<b>No channels selected.</b> Pick what the lead actually gave you.';
+  if(!chans.phone && chans.email) plan+=' No phone means your first email has to earn a reply on its own, so ask one easy question and stop there.';
+  if(chans.phone && !chans.text) plan+=' You have a number but no text consent noted, so keep it to calls and voicemail until they text you first or say it is fine.';
+  $('planBox').innerHTML=plan;
+
+  // outcome blocks
+  const b=blocks(), box=$('out'); box.innerHTML='';
+  const why=document.createElement('div'); why.className='plan'; why.innerHTML=b.why; box.appendChild(why);
+  b.steps.forEach(s=>{
+    const st=document.createElement('div'); st.className='step';
+    const sh=document.createElement('div'); sh.className='sh';
+    const lab=document.createElement('b'); lab.textContent=s.lab;
+    const cp=document.createElement('button'); cp.className='cpy'; cp.textContent='Copy';
+    cp.onclick=()=>copyText(s.txt,cp);
+    sh.appendChild(lab); sh.appendChild(cp);
+    const ln=document.createElement('div'); ln.className='line'+(s.ask?' ask':''); ln.textContent=s.txt;
+    st.appendChild(sh); st.appendChild(ln);
+    if(s.cue){ const c=document.createElement('span'); c.className='cue'; c.textContent=s.cue; st.appendChild(c); }
+    box.appendChild(st);
+  });
+  const nx=document.createElement('div'); nx.className='next'; nx.innerHTML=b.next; box.appendChild(nx);
+
+  // cadence
+  const cb=$('cadBox'); cb.innerHTML='';
+  cadence().forEach(([d,w,e])=>{
+    const el=document.createElement('div'); el.className='cad';
+    el.innerHTML='<div class="d">'+esc(d)+'</div><div class="w">'+esc(w)+'<em>'+esc(e)+'</em></div>';
+    cb.appendChild(el);
+  });
+
+  if(window.renderProgBar) window.renderProgBar('call');
+}
+
+document.querySelectorAll('[data-f]').forEach(inp=>{
+  if(F[inp.dataset.f]) inp.value=F[inp.dataset.f];
+  inp.addEventListener('input',()=>{ F[inp.dataset.f]=inp.value.trim(); saveFill(); renderAll(); });
+});
+$('leadAt').addEventListener('input',renderAll);
+$('askedAbout').addEventListener('change',renderAll);
+
+/* ---- active programs banner ---- */
+(function(){
+  window.renderProgBar=function(channel){
+    var host=document.getElementById('progBar'); if(!host||!window.SHQPrograms) return;
+    var P=window.SHQPrograms, act=P.active(), stale=P.stale();
+    if(!act.length){ host.innerHTML=''; return; }
+    var warn = stale.length ? '<div style="margin-top:6px;color:#8a5a12"><b>Verify first:</b> '+stale.map(function(p){return p.name;}).join(', ')+' is past its end date or has none set.</div>' : '';
+    host.innerHTML='<div style="background:#eaf1ff;border:1px solid #c9dbff;border-radius:10px;padding:10px 12px;margin:0 0 12px;font-size:13px;line-height:1.55">'
+      +'<b>Live programs:</b> '+act.map(function(p){return p.name;}).join(', ')
+      +'<div style="background:#fff;border:1px solid #e4e8ee;border-radius:8px;padding:9px 10px;margin-top:7px">'+P.line(channel)+'</div>'+warn+'</div>';
+  };
+})();
+
+renderChans();
+renderOuts();
+renderLog();
+renderAll();
+</script>
+</body>
+</html>

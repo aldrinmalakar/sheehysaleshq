@@ -7,6 +7,7 @@
 (function(){
   var LINKS = [
     { href:'index.html',        label:'Sales HQ' },
+    { href:'leads.html',        label:'Leads' },
     { href:'sms-library.html',  label:'SMS Library' },
     { href:'email-library.html',label:'Email Library' },
     { href:'objection-library.html',label:'Objections' },
