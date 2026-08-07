@@ -66,7 +66,7 @@
 
 <div class="wrap">
   <h1 class="page-title">Internet Leads</h1>
-  <p class="sub">A lead just came in. Call first, then work whatever channel they actually left you. The product here is the appointment.</p>
+  <p class="sub">A lead just came in. Make first contact fast, send the DriveCentric video early, then confirm they know where to look. The product here is the appointment.</p>
   <div id="progBar"></div>
 
   <div class="panel">
@@ -88,7 +88,7 @@
     </div>
     <div class="clock">
       <span class="pill" id="agePill">Set the time it came in</span>
-      <span class="clockhint" id="ageHint">Speed matters more than polish on a fresh lead. Call first, every time, even if they also left an email.</span>
+      <span class="clockhint" id="ageHint">Speed matters more than polish on a fresh lead. Call first when you have a number, then use the channels they actually gave you.</span>
     </div>
   </div>
 
@@ -102,6 +102,16 @@
     <h2>What happened when you called</h2>
     <div class="chips" id="outChips"></div>
     <div id="out" style="margin-top:12px"></div>
+  </div>
+
+  <div class="panel">
+    <h2>DriveCentric video follow-up</h2>
+    <div class="plan"><b>Early sequence:</b> make the first contact, send the quick vehicle video, then send a separate heads-up so they know where to look. When both channels are available, use a different channel for the heads-up.</div>
+    <div class="grid">
+      <label>Video sent by<select id="videoVia"></select></label>
+      <label>Notify them by<select id="notifyVia"></select></label>
+    </div>
+    <div id="videoFollowBox" style="margin-top:12px"></div>
   </div>
 
   <div class="panel">
@@ -120,6 +130,10 @@
         <option>Texted</option>
         <option>Emailed</option>
         <option>Sent video</option>
+        <option>Sent video by email</option>
+        <option>Sent video by text</option>
+        <option>Video notice by email</option>
+        <option>Video notice by text</option>
       </select></label>
       <label>Result<select id="logRes">
         <option>No response yet</option>
@@ -151,7 +165,7 @@ function nm(){ return tok('name','[Name]'); }
 function veh(){ return tok('vehicle','[vehicle]'); }
 function ag(){ return tok('agent','[agent]'); }
 function num(){ return tok('number','[number]'); }
-function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c])); }
 
 /* ---- channels ---- */
 let chans={phone:true, email:true, text:false};
@@ -187,12 +201,12 @@ const AGE={
 /* ---- what they asked ---- */
 function askLine(){
   const a=$('askedAbout').value, V=veh();
-  if(a==='price') return '"You asked about pricing on the '+V+'. I can get you real numbers, and I would rather get it right than throw a figure at you that changes later. Two quick questions and I will have my manager put it together properly."';
-  if(a==='trade') return '"You mentioned a trade. I will not guess at the value from my desk since miles and condition move it a lot, but we can get you a real number fast once we put eyes on it."';
-  if(a==='finance') return '"You had a question about financing. No judgment on any of it, and our finance team looks at the whole picture rather than one number. The fastest way to real answers is a short conversation with them."';
-  if(a==='test') return '"You wanted to drive the '+V+'. Easy. I can have it pulled up and ready so you are not standing around waiting on paperwork before you even sit in it."';
-  if(a==='generic') return '"You put in a request on the '+V+'. Rather than guess at what you actually need, let me ask you one thing so I do not waste your time."';
-  return '"You asked if the '+V+' is still available. Good news, it is here, and I can hold it for you."';
+  if(a==='price') return '\"You asked about pricing on the '+V+'. I can get you real numbers, and I would rather get it right than throw a figure at you that changes later. Two quick questions and I will have my manager put it together properly.\"';
+  if(a==='trade') return '\"You mentioned a trade. I will not guess at the value from my desk since miles and condition move it a lot, but we can get you a real number fast once we put eyes on it.\"';
+  if(a==='finance') return '\"You had a question about financing. No judgment on any of it, and our finance team looks at the whole picture rather than one number. The fastest way to real answers is a short conversation with them.\"';
+  if(a==='test') return '\"You wanted to drive the '+V+'. Easy. I can have it pulled up and ready so you are not standing around waiting on paperwork before you even sit in it.\"';
+  if(a==='generic') return '\"You put in a request on the '+V+'. Rather than guess at what you actually need, let me ask you one thing so I do not waste your time.\"';
+  return '\"You asked if the '+V+' is still available. Good news, it is here, and I can hold it for you.\"';
 }
 
 /* ---- outcomes ---- */
@@ -219,13 +233,13 @@ function blocks(){
   if(outcome==='connected') return {
     why:'<b>They answered, so stop selling the car and start selling the visit.</b> You have maybe ninety seconds of goodwill. Confirm the vehicle, ask one real question, then ask for a time.',
     steps:[
-      {lab:'Open fast, sound like a person', txt:'"Hi '+N+', it is '+A+' at Sheehy Nissan in Manassas. You just reached out about the '+V+', did I catch you at an okay time?"', cue:'If they say no, ask what time is better and actually call then.'},
+      {lab:'Open fast, sound like a person', txt:'\"Hi '+N+', it is '+A+' at Sheehy Nissan in Manassas. You just reached out about the '+V+', did I catch you at an okay time?\"', cue:'If they say no, ask what time is better and actually call then.'},
       {lab:'Reason for the call', txt:askLine()},
-      {lab:'One qualifying question, then be quiet', txt:'"Quick one so I point you the right way. Is this something you are trying to handle this week, or are you still in the early looking stage?"', cue:'Whatever they say is your timeline. Do not argue with it, work with it.'},
-      {lab:'The ask', txt:'"Here is the easy part. The '+V+' is here and I can have it up front and ready for you. What works better, later today or tomorrow?"', ask:true, cue:'Then stop talking. Silence is doing the work.'},
-      {lab:'Lock it', txt:'"Perfect. I have you down and I will have it pulled up. I am going to text you right now so you have my number, and if anything changes just tell me and we move it."'}
+      {lab:'One qualifying question, then be quiet', txt:'\"Quick one so I point you the right way. Is this something you are trying to handle this week, or are you still in the early looking stage?\"', cue:'Whatever they say is your timeline. Do not argue with it, work with it.'},
+      {lab:'The ask', txt:'\"Here is the easy part. The '+V+' is here and I can have it up front and ready for you. What works better, later today or tomorrow?\"', ask:true, cue:'Then stop talking. Silence is doing the work.'},
+      {lab:'Lock it', txt:'\"Perfect. I have you down and I will have it pulled up. I am going to text you right now so you have my number, and if anything changes just tell me and we move it.\"'}
     ],
-    next:'<b>Next:</b> text the confirmation before you hang up, while they still have the phone in their hand. Then log it and set a reminder for the morning of.'
+    next:'<b>Next:</b> send the DriveCentric video while the interaction is still fresh, then use the video follow-up below to make sure they know where to look.'
   };
   if(outcome==='vm') return {
     why:'<b>The voicemail sells the callback, not the car.</b> Keep it under thirty seconds, give one reason to call back, and say your number twice, slowly.',
@@ -233,38 +247,38 @@ function blocks(){
       {lab:'The voicemail, under 30 seconds', txt:'Hi '+N+', this is '+A+' at Sheehy Nissan of Manassas. I have a quick question about the '+V+' you asked about, and I want to make sure I point you the right direction. Call or text me back at '+P+'. That is '+P+'. Again, '+A+' at Sheehy. Talk soon.', cue:'Say the number twice and slow down on it. Most people replay a voicemail only for the number.'},
       {lab:'Text right after, within a minute', txt:'Hi '+N+', '+A+' at Sheehy Nissan. Just left you a voicemail about the '+V+'. Quick question, are you trying to look this week or is this more of a next month thing?', cue:'The text is what actually gets answered. The voicemail just makes the text make sense.'},
       {lab:'Email the same day if no reply', txt:'Subject: quick question on the '+V+'\n\nHi '+N+', I tried you by phone and left a message. Rather than send you a wall of information you did not ask for, one question. Are you mainly checking availability, comparing options or trying to get a feel for the numbers?\n\nAnswer that and I will send you exactly what is useful and nothing else.\n\nBest,\n'+A},
-      {lab:'The ask, if they call back', txt:'"Glad you got back to me. The '+V+' is here and ready. What is easier, later today or tomorrow?"', ask:true}
+      {lab:'The ask, if they call back', txt:'\"Glad you got back to me. The '+V+' is here and ready. What is easier, later today or tomorrow?\"', ask:true}
     ],
-    next:'<b>Next:</b> voicemail plus text in the same minute is the play. One without the other is half a touch.'
+    next:'<b>Next:</b> after the first contact attempt, send the DriveCentric video and the separate delivery heads-up below. Do not save the first video for Day 3.'
   };
   if(outcome==='novm') return {
     why:'<b>No voicemail box means the phone is the weakest channel.</b> Do not just redial all day. Switch channels fast and vary the time of day when you do dial.',
     steps:[
       {lab:'Text immediately, since you could not leave anything', txt:'Hi '+N+', '+A+' at Sheehy Nissan in Manassas. I just tried you about the '+V+' but could not leave a message. Is this a good number for you, or is email easier?', cue:'Asking which channel they prefer is a real question, and it often gets a reply on its own.'},
       {lab:'Email the same day', txt:'Subject: tried to reach you about the '+V+'\n\nHi '+N+', I tried calling about the '+V+' and could not get through or leave a message, so I did not want to just keep dialing you.\n\nWhat is the best way to reach you, phone, text or right here in email? And is there a time of day that actually works for you?\n\nBest,\n'+A},
-      {lab:'Second call, different time of day', txt:'"Hi '+N+', '+A+' at Sheehy Nissan. I tried you earlier and we kept missing each other. Do you have thirty seconds?"', cue:'If you tried morning, try after 6. Do not call the same hour twice and call it two attempts.'},
-      {lab:'The ask, once you get them', txt:'"Since I finally caught you, let us just put a time on it. Later today or tomorrow?"', ask:true}
+      {lab:'Second call, different time of day', txt:'\"Hi '+N+', '+A+' at Sheehy Nissan. I tried you earlier and we kept missing each other. Do you have thirty seconds?\"', cue:'If you tried morning, try after 6. Do not call the same hour twice and call it two attempts.'},
+      {lab:'The ask, once you get them', txt:'\"Since I finally caught you, let us just put a time on it. Later today or tomorrow?\"', ask:true}
     ],
-    next:'<b>Next:</b> after two dials with nothing, email becomes your main channel and the phone becomes the backup.'
+    next:'<b>Next:</b> switch channels fast, send the DriveCentric video early, then use the separate delivery heads-up below so the video does not disappear unnoticed.'
   };
   if(outcome==='bad') return {
     why:'<b>Stop dialing that number.</b> A wrong person answering is not a lead, and repeat calls to them is exactly the behavior that gets stores in trouble. Note it and switch to email.',
     steps:[
-      {lab:'If a person answered and it is not them', txt:'"I am sorry to bother you, I was trying to reach '+N+' and I have the wrong number. I will take this off my list. Have a good one."', cue:'Then actually take it off. Do not call it again.'},
+      {lab:'If a person answered and it is not them', txt:'\"I am sorry to bother you, I was trying to reach '+N+' and I have the wrong number. I will take this off my list. Have a good one.\"', cue:'Then actually take it off. Do not call it again.'},
       {lab:'Email instead, and ask for the right number', txt:'Subject: wrong number on my end, '+N+'\n\nHi '+N+', I tried the phone number that came through with your request on the '+V+' and it does not seem to reach you.\n\nIf you would still like help, reply with the best number and a good time, or just answer here and I will work by email. Whatever is easier for you.\n\nBest,\n'+A},
       {lab:'Flag it so nobody else redials it', txt:'Bad phone number on this lead. Reached a different person. Do not dial. Working by email only until the customer gives us a good number.', cue:'Put this in the notes so the next person does not repeat the call.'}
     ],
-    next:'<b>Next:</b> mark the number bad in your log and in the CRM once assigned, then run the email-only path.'
+    next:'<b>Next:</b> mark the number bad in your log and in the CRM once assigned, then run the email-only path. If you send a video by email, use an email heads-up only because the phone number is bad.'
   };
   if(outcome==='nophone') return {
     why:'<b>Email only means your subject line is the whole game.</b> You cannot call your way in, so ask one easy question and make replying take five seconds.',
     steps:[
       {lab:'First email, short and answerable', txt:'Subject: '+N+', quick question about the '+V+'\n\nHi '+N+', I am '+A+' at Sheehy Nissan of Manassas. Good news first, the '+V+' is here.\n\nBefore I send you a pile of information you did not ask for, one question. Are you mainly checking availability, comparing a couple options or trying to get to real numbers?\n\nOne word back is plenty and I will take it from there.\n\nBest,\n'+A, cue:'One question, one line to answer. Long first emails are what get ignored.'},
-      {lab:'Ask for the phone, tied to their benefit', txt:'"If you send me a number I can hold it for you and text you the details as soon as anything changes. Totally your call if you would rather keep it to email."', cue:'Tie the ask to something they get. Asking for a number so you can call them is about you.'},
+      {lab:'Ask for the phone, tied to their benefit', txt:'\"If you send me a number I can hold it for you and text you the details as soon as anything changes. Totally your call if you would rather keep it to email.\"', cue:'Tie the ask to something they get. Asking for a number so you can call them is about you.'},
       {lab:'Second email, offer a video', txt:'Subject: want me to just show you the '+V+'?\n\nHi '+N+', rather than describe it, I can shoot you a quick video of the actual '+V+' so you can see exactly what you would be getting.\n\nWant me to send that over? And if it looks right, I can have it ready whenever you want to come by.\n\nBest,\n'+A},
       {lab:'The ask', txt:'Subject: today or the weekend, '+N+'?\n\nHi '+N+', simple one. If you want to see the '+V+' in person I can have it pulled up and ready. Does later this week or the weekend work better for you?\n\nBest,\n'+A, ask:true}
     ],
-    next:'<b>Next:</b> the win here is getting a phone number or a time. Either one moves the lead out of email jail.'
+    next:'<b>Next:</b> send the DriveCentric video by email after your first contact email, then send the separate plain-email heads-up below so they know to check spam, junk or Promotions.'
   };
   return {
     why:'<b>Text only, so keep it short and human.</b> Long paragraphs read as spam. One thought, one question and never two texts in a row without a reply.',
@@ -274,16 +288,95 @@ function blocks(){
       {lab:'Offer the easy version', txt:'I can send you a quick video of the actual one so you can see it without driving out here. Want me to?'},
       {lab:'The ask', txt:'Easy way to do this. I can have it up front and ready. Does later today or tomorrow work better?', ask:true, cue:'Then leave it alone until they answer.'}
     ],
-    next:'<b>Next:</b> if two texts go unanswered, switch to email or a call rather than sending a third.'
+    next:'<b>Next:</b> send the DriveCentric video by text early. If that is your only channel, use the short same-channel heads-up below and do not stack extra messages after it.'
   };
+}
+
+/* ---- video follow-up ---- */
+let videoVia='email';
+let notifyVia='text';
+function setOptions(sel, opts, current){
+  sel.innerHTML='';
+  opts.forEach(([v,l])=>{
+    const o=document.createElement('option'); o.value=v; o.textContent=l; sel.appendChild(o);
+  });
+  const valid=opts.some(([v])=>v===current);
+  sel.value=valid?current:opts[0][0];
+  return sel.value;
+}
+function syncVideoChannels(){
+  const videoOpts=[];
+  if(chans.email) videoOpts.push(['email','Email']);
+  if(chans.text) videoOpts.push(['text','Text']);
+  if(!videoOpts.length) videoOpts.push(['none','No video channel available']);
+  videoVia=setOptions($('videoVia'),videoOpts,videoVia);
+
+  const notifyOpts=[];
+  if(chans.text) notifyOpts.push(['text','Text']);
+  if(chans.email) notifyOpts.push(['email','Email']);
+  if(!notifyOpts.length) notifyOpts.push(['none','No notification channel available']);
+  notifyVia=setOptions($('notifyVia'),notifyOpts,notifyVia);
+
+  if(videoVia===notifyVia && chans.email && chans.text){
+    notifyVia=videoVia==='email'?'text':'email';
+    $('notifyVia').value=notifyVia;
+  }
+}
+function videoNotice(){
+  const N=nm(), V=veh(), A=ag();
+  if(notifyVia==='text'){
+    if(videoVia==='email') return 'Hi '+N+', '+A+' at Sheehy Nissan. I just sent you a quick video of the '+V+' by email. If you do not see it in your inbox, check spam, junk or Promotions. Let me know when it comes through.';
+    return 'Hi '+N+', '+A+' at Sheehy Nissan. I just sent you a quick video of the '+V+' by text. If it did not come through, let me know and I will resend it another way.';
+  }
+  if(notifyVia==='email'){
+    if(videoVia==='text') return 'Subject: quick heads-up on your '+V+' video\n\nHi '+N+', I just sent you a quick video of the '+V+' by text. If you do not see it, reply here and I will resend it another way.\n\nBest,\n'+A;
+    return 'Subject: quick heads-up on your '+V+' video\n\nHi '+N+', I just sent you a quick video of the '+V+' in a separate email. If it is not in your inbox, please check spam, junk or Promotions. If you still do not see it, reply here and I will resend it another way.\n\nBest,\n'+A;
+  }
+  return '';
+}
+function renderVideoFollow(){
+  syncVideoChannels();
+  const box=$('videoFollowBox'); box.innerHTML='';
+  if(videoVia==='none' || notifyVia==='none'){
+    box.innerHTML='<div class="plan"><b>No usable video channel selected.</b> Turn on Email address or Okay to text above based on what the lead actually gave you.</div>';
+    return;
+  }
+
+  const cross=videoVia!==notifyVia;
+  const intro=document.createElement('div'); intro.className='plan';
+  intro.innerHTML=cross
+    ? '<b>Best setup:</b> video by '+esc(videoVia)+', heads-up by '+esc(notifyVia)+'. The second channel tells them the first message exists instead of trusting the video delivery alone.'
+    : '<b>Same-channel fallback:</b> use this only when that is the only channel you have. Keep the heads-up short so it does not feel like message stacking.';
+  box.appendChild(intro);
+
+  const st=document.createElement('div'); st.className='step';
+  const sh=document.createElement('div'); sh.className='sh';
+  const lab=document.createElement('b'); lab.textContent='Video delivery heads-up';
+  const cp=document.createElement('button'); cp.className='cpy'; cp.textContent='Copy';
+  const txt=videoNotice(); cp.onclick=()=>copyText(txt,cp);
+  sh.appendChild(lab); sh.appendChild(cp);
+  const ln=document.createElement('div'); ln.className='line ask'; ln.textContent=txt;
+  st.appendChild(sh); st.appendChild(ln);
+  const cue=document.createElement('span'); cue.className='cue';
+  cue.textContent=cross?'Send this right after the video so they know where to look.':'This is the fallback when you do not have another channel. Do not add another follow-up immediately after it.';
+  st.appendChild(cue); box.appendChild(st);
+
+  const rb=document.createElement('div'); rb.className='rowbtns';
+  const sent=document.createElement('button'); sent.className='primary'; sent.textContent='Log video sent';
+  sent.onclick=()=>quickLog('Sent video by '+videoVia,sent);
+  const notice=document.createElement('button'); notice.className='qbtn'; notice.textContent='Log heads-up sent';
+  notice.onclick=()=>quickLog('Video notice by '+notifyVia,notice);
+  rb.appendChild(sent); rb.appendChild(notice); box.appendChild(rb);
 }
 
 function cadence(){
   const rows=[];
-  const canCall=chans.phone, canText=chans.text, canMail=chans.email;
-  rows.push(['Day 1','Call within minutes. Voicemail if there is a box, then a text right after.' + (canMail?' Email the same day if nothing comes back.':''),'The first hour matters more than everything after it.']);
+  const canCall=chans.phone, canMail=chans.email;
+  const v=videoVia==='none'?'an available channel':videoVia;
+  const n=notifyVia==='none'?'an available channel':notifyVia;
+  rows.push(['Day 1',(canCall?'Call within minutes. ':'Start on the channel they gave you. ')+'Make the first contact, then send the DriveCentric video by '+v+' and the delivery heads-up by '+n+'.'+(canMail?' Use email the same day if the first contact gets nothing back.':''),'The first video is an early trust touch. Do not save it for Day 3.']);
   if(canCall) rows.push(['Day 2','Call at a different time of day than yesterday.'+(canMail?' Short email with one question.':''),'Morning person, evening person. You do not know which yet.']);
-  rows.push(['Day 3', (canMail?'Email with an offer to send a video of the actual vehicle.':'Text an offer to send a quick video.'),'Video is the highest response tool you have at this stage.']);
+  rows.push(['Day 3', (canMail?'Email one fresh reason to reply or a simple vehicle question.':'Text one fresh question tied to the vehicle.'),'Do not resend the same video unless they ask or you have something new to show.']);
   if(canCall) rows.push(['Day 5','Call once. If nothing, leave it alone for a couple days.','Do not stack three calls in one day. That is how you get blocked.']);
   rows.push(['Day 7', (canMail?'Email: still looking or all set? Give them an easy out.':'Text: still looking, or all set?'),'The easy exit is what gets the honest answer.']);
   rows.push(['Day 10+','Move them to the Reconnect page and work them on a slower rhythm.','Not dead, just not now. Different cadence, same customer.']);
@@ -294,6 +387,12 @@ function cadence(){
 const L_KEY='shq_lead_log_v1';
 function loadL(){ try{return JSON.parse(localStorage.getItem(L_KEY)||'[]');}catch(e){return [];} }
 function saveL(a){ try{localStorage.setItem(L_KEY,JSON.stringify(a));}catch(e){} }
+function quickLog(what,btn){
+  const list=loadL();
+  list.push({id:'l'+Date.now(), who:(nm()==='[Name]'?'':nm()), what:what, res:'No response yet', at:new Date().toISOString()});
+  saveL(list); renderLog();
+  if(btn){ const o=btn.textContent; btn.textContent='Logged'; setTimeout(()=>btn.textContent=o,1000); }
+}
 function renderLog(){
   const list=loadL(), box=$('logList');
   if(!list.length){ box.innerHTML='<span class="empty">No attempts logged yet.</span>'; return; }
@@ -357,6 +456,9 @@ function renderAll(){
   });
   const nx=document.createElement('div'); nx.className='next'; nx.innerHTML=b.next; box.appendChild(nx);
 
+  // video follow-up
+  renderVideoFollow();
+
   // cadence
   const cb=$('cadBox'); cb.innerHTML='';
   cadence().forEach(([d,w,e])=>{
@@ -374,6 +476,8 @@ document.querySelectorAll('[data-f]').forEach(inp=>{
 });
 $('leadAt').addEventListener('input',renderAll);
 $('askedAbout').addEventListener('change',renderAll);
+$('videoVia').addEventListener('change',()=>{ videoVia=$('videoVia').value; renderAll(); });
+$('notifyVia').addEventListener('change',()=>{ notifyVia=$('notifyVia').value; renderAll(); });
 
 /* ---- active programs banner ---- */
 (function(){
