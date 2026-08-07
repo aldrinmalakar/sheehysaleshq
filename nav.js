@@ -51,6 +51,177 @@
     document.body.insertBefore(bar, document.body.firstChild);
   }
 
-  if(document.body) build();
-  else document.addEventListener('DOMContentLoaded', build);
+  /* ------------------------------------------------------------
+     Customer-facing email subject convention
+     Applies only to Leads, Reconnect and Email Library.
+     Title Case, preserve customer/vehicle casing, maximum one
+     relevant emoji and no forced emoji when it adds no value.
+  ------------------------------------------------------------ */
+  var SUBJECT_PAGES = {
+    'leads.html':true,
+    'reconnect.html':true,
+    'email-library.html':true
+  };
+  var SUBJECT_EMOJIS = ['🎥','📅','⭐','🚙','🌧️','⚡','🔑','👋'];
+  var SMALL_WORDS = {
+    a:1, an:1, and:1, as:1, at:1, but:1, by:1, for:1, from:1,
+    in:1, into:1, nor:1, of:1, on:1, or:1, per:1, the:1, to:1,
+    via:1, vs:1, with:1
+  };
+
+  function stripKnownEmoji(s){
+    var out=String(s||'').trim();
+    SUBJECT_EMOJIS.forEach(function(e){
+      if(out.indexOf(e+' ')===0) out=out.slice((e+' ').length).trim();
+    });
+    return out;
+  }
+
+  function splitToken(token){
+    var lead=(token.match(/^[^A-Za-z0-9\[]*/) || [''])[0];
+    var tail=(token.match(/[^A-Za-z0-9\]\?!.,:;'-]*$/) || [''])[0];
+    return {lead:lead, core:token.slice(lead.length, token.length-tail.length), tail:tail};
+  }
+
+  function titlePart(part, isFirst, isLast){
+    if(!part) return part;
+    if(/^\[[^\]]+\]$/.test(part)) return part;
+    if(/[A-Z]/.test(part) || /\d/.test(part)) return part;
+    var low=part.toLowerCase();
+    if(!isFirst && !isLast && SMALL_WORDS[low]) return low;
+    return low.charAt(0).toUpperCase()+low.slice(1);
+  }
+
+  function titleToken(token, isFirst, isLast){
+    var p=splitToken(token);
+    if(!p.core) return token;
+    if(/^\[[^\]]+\]$/.test(p.core)) return p.lead+p.core+p.tail;
+    if(/[A-Z]/.test(p.core) || /\d/.test(p.core)) return p.lead+p.core+p.tail;
+
+    var pieces=p.core.split(/([\/-])/);
+    var words=[];
+    pieces.forEach(function(x){ if(x!=='/' && x!=='-' && x!=='') words.push(x); });
+    var wi=0;
+    pieces=pieces.map(function(x){
+      if(x==='/' || x==='-' || x==='') return x;
+      var result=titlePart(x, isFirst && wi===0, isLast && wi===words.length-1);
+      wi++;
+      return result;
+    });
+    return p.lead+pieces.join('')+p.tail;
+  }
+
+  function titleCaseSubject(subject){
+    var s=stripKnownEmoji(subject);
+    var parts=s.split(/(\s+)/);
+    var wordIndexes=[];
+    parts.forEach(function(p,i){ if(p && !/^\s+$/.test(p)) wordIndexes.push(i); });
+    if(!wordIndexes.length) return s;
+    var first=wordIndexes[0], last=wordIndexes[wordIndexes.length-1];
+    return parts.map(function(p,i){
+      if(/^\s+$/.test(p)) return p;
+      return titleToken(p, i===first, i===last);
+    }).join('');
+  }
+
+  function subjectEmoji(subject){
+    var s=stripKnownEmoji(subject).toLowerCase();
+    if(/video|show you/.test(s)) return '🎥';
+    if(/appointment|you are set|set for|today or the weekend|today or tomorrow|reserve a slot/.test(s)) return '📅';
+    if(/review/.test(s)) return '⭐';
+    if(/back in stock|started arriving|new inventory/.test(s)) return '🚙';
+    if(/storm|bad weather|weather turning/.test(s)) return '🌧️';
+    if(/fuel|electric|ev\b/.test(s)) return '⚡';
+    if(/first night|thank you/.test(s)) return '🔑';
+    if(/still thinking|still on your mind|missed you|been a while|close this out|picking .* back up/.test(s)) return '👋';
+    return '';
+  }
+
+  function formatSubject(subject){
+    var clean=stripKnownEmoji(subject);
+    if(!clean) return clean;
+    var titled=titleCaseSubject(clean);
+    var emoji=subjectEmoji(clean);
+    return emoji ? emoji+' '+titled : titled;
+  }
+
+  function formatSubjectInText(text){
+    return String(text==null?'':text).replace(/^Subject:\s*([^\r\n]+)/i,function(_,subj){
+      return 'Subject: '+formatSubject(subj);
+    });
+  }
+
+  function applySubjectStyle(){
+    if(!SUBJECT_PAGES[here]) return;
+
+    if(here==='leads.html'){
+      document.querySelectorAll('.line').forEach(function(el){
+        if(/^Subject:/i.test(el.textContent||'')){
+          var next=formatSubjectInText(el.textContent);
+          if(next!==el.textContent) el.textContent=next;
+        }
+      });
+    }
+
+    if(here==='reconnect.html'){
+      var reconnectSubject=document.getElementById('subjOut');
+      if(reconnectSubject && reconnectSubject.value){
+        var rs=formatSubject(reconnectSubject.value);
+        if(rs!==reconnectSubject.value) reconnectSubject.value=rs;
+      }
+    }
+
+    if(here==='email-library.html'){
+      document.querySelectorAll('input.subject').forEach(function(input){
+        if(input.value){
+          var es=formatSubject(input.value);
+          if(es!==input.value) input.value=es;
+        }
+      });
+    }
+  }
+
+  function protectLeadCopy(){
+    if(here!=='leads.html' || typeof window.copyText!=='function' || window.copyText.__shqSubjectStyle) return;
+    var original=window.copyText;
+    var wrapped=function(text,btn){
+      return original(formatSubjectInText(text),btn);
+    };
+    wrapped.__shqSubjectStyle=true;
+    window.copyText=wrapped;
+  }
+
+  function initSubjectStyle(){
+    if(!SUBJECT_PAGES[here]) return;
+    protectLeadCopy();
+    applySubjectStyle();
+
+    document.addEventListener('change',function(){ setTimeout(applySubjectStyle,0); });
+    document.addEventListener('click',function(){ setTimeout(applySubjectStyle,0); });
+    document.addEventListener('input',function(e){
+      var t=e.target;
+      if(t && (t.id==='subjOut' || (t.classList && t.classList.contains('subject')))) return;
+      setTimeout(applySubjectStyle,0);
+    });
+
+    if(window.MutationObserver && document.body){
+      var queued=false;
+      var observer=new MutationObserver(function(){
+        if(queued) return;
+        queued=true;
+        setTimeout(function(){ queued=false; applySubjectStyle(); },0);
+      });
+      observer.observe(document.body,{childList:true,subtree:true,characterData:true});
+    }
+  }
+
+  if(document.body){
+    build();
+    initSubjectStyle();
+  } else {
+    document.addEventListener('DOMContentLoaded',function(){
+      build();
+      initSubjectStyle();
+    });
+  }
 })();
