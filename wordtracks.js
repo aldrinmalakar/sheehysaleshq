@@ -22,14 +22,19 @@
 
   function get(id){ return BY_ID[id] || null; }
 
+  function fieldElement(name){
+    return document.querySelector('[data-f="'+name+'"]');
+  }
+
   function field(name, fallback){
-    var el=document.querySelector('[data-f="'+name+'"]');
+    var el=fieldElement(name);
     var v=el && typeof el.value==='string' ? el.value.trim() : '';
     return v || fallback;
   }
 
   function pageVars(){
-    var daytime=field('daytime','[day/time]');
+    var timeEl=fieldElement('daytime');
+    var daytime=timeEl ? ((timeEl.value||'').trim()||'[day/time]') : 'today';
     return {
       name:field('name','[Name]'),
       vehicle:field('vehicle','[vehicle]'),
@@ -133,7 +138,10 @@
 
       if(channel==='sms'){
         var msg=card.querySelector('textarea.msg');
-        if(msg) msg.value=text(id,'sms',vars);
+        if(msg){
+          msg.value=text(id,'sms',vars);
+          try{ msg.dispatchEvent(new Event('input')); }catch(e){}
+        }
       }else{
         var subj=card.querySelector('input.subject');
         var body=card.querySelector('textarea.body');
@@ -162,6 +170,31 @@
     applyLibrary(channel);
   }
 
+  function leadOutcome(){
+    var active=document.querySelector('#outChips .chip.out.on');
+    if(!active) return '';
+    var map={
+      'They picked up':'connected',
+      'Went to voicemail':'vm',
+      'Rang out, no voicemail':'novm',
+      'Bad number or wrong person':'bad',
+      'Email only, no phone':'nophone',
+      'Text is the only way in':'textonly'
+    };
+    return map[(active.textContent||'').trim()]||'';
+  }
+
+  function bindLeadCopy(line, value){
+    if(!line) return;
+    var step=line.closest ? line.closest('.step') : null;
+    var btn=step ? step.querySelector('.cpy') : null;
+    if(!btn) return;
+    btn.onclick=function(){
+      if(typeof g.copyText==='function') g.copyText(value,btn);
+      else if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(value);
+    };
+  }
+
   /* ------------------------------------------------------------
      Leads migration
      Keep the page's multi-step coaching flow, but make the shared
@@ -171,21 +204,36 @@
   function applyLeads(){
     var vars=pageVars();
     var out=document.getElementById('out');
-    var outcome=(typeof g.outcome==='string') ? g.outcome : '';
+    var outcome=leadOutcome();
 
     if(out){
       var steps=out.querySelectorAll('.step');
       if(outcome==='vm' && steps.length){
         var vmLine=steps[0].querySelector('.line');
-        if(vmLine){ vmLine.textContent=text('fresh-standard','vm',vars); vmLine.dataset.canonicalWordtrack='fresh-standard'; }
+        if(vmLine){
+          var vmValue=text('fresh-standard','vm',vars);
+          vmLine.textContent=vmValue;
+          vmLine.dataset.canonicalWordtrack='fresh-standard';
+          bindLeadCopy(vmLine,vmValue);
+        }
       }
       if(outcome==='nophone' && steps.length){
         var emailLine=steps[0].querySelector('.line');
-        if(emailLine){ emailLine.textContent=emailText('fresh-email-only',vars); emailLine.dataset.canonicalWordtrack='fresh-email-only'; }
+        if(emailLine){
+          var emailValue=emailText('fresh-email-only',vars);
+          emailLine.textContent=emailValue;
+          emailLine.dataset.canonicalWordtrack='fresh-email-only';
+          bindLeadCopy(emailLine,emailValue);
+        }
       }
       if(outcome==='textonly' && steps.length){
         var smsLine=steps[0].querySelector('.line');
-        if(smsLine){ smsLine.textContent=text('fresh-standard','sms',vars); smsLine.dataset.canonicalWordtrack='fresh-standard'; }
+        if(smsLine){
+          var smsValue=text('fresh-standard','sms',vars);
+          smsLine.textContent=smsValue;
+          smsLine.dataset.canonicalWordtrack='fresh-standard';
+          bindLeadCopy(smsLine,smsValue);
+        }
       }
     }
 
@@ -196,8 +244,10 @@
       var scenario=videoSel.value==='text'?'video-text-notice':'video-email-notice';
       var notice=vf.querySelector('.line.ask');
       if(notice){
-        notice.textContent=notifySel.value==='email' ? emailText(scenario,vars) : text(scenario,'sms',vars);
+        var noticeValue=notifySel.value==='email' ? emailText(scenario,vars) : text(scenario,'sms',vars);
+        notice.textContent=noticeValue;
         notice.dataset.canonicalWordtrack=scenario;
+        bindLeadCopy(notice,noticeValue);
       }
     }
   }
