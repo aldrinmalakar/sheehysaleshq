@@ -12,6 +12,7 @@
     { href:'email-library.html',label:'Email Library' },
     { href:'objection-library.html',label:'Objections' },
     { href:'reconnect.html',    label:'Reconnect' },
+    { href:'survey.html',       label:'Survey' },
     { href:'sister-store.html', label:'Sister Store' },
     { href:'programs.html',     label:'Programs' }
   ];
