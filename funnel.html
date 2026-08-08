@@ -24,11 +24,13 @@ button{font:inherit}.btn{border:0;border-radius:9px;padding:8px 11px;background:
 </style>
 <script src="./nav.js" defer></script>
 <script src="./funnel-data.js"></script>
+<script src="./funnel-lead-data.js"></script>
+<script src="./funnel-lead-ops.js" defer></script>
 </head>
 <body>
 <div class="wrap">
   <h1>Behavior Funnel</h1>
-  <div class="sub">Pick where you are in the sale, then pick what the customer just did. The page gives you the next move plus copy-ready call, voicemail, text, email and video language.</div>
+  <div class="sub">One execution page from first contact through ownership. Pick where you are, pick what the customer just did and use the channel you actually have. Fresh-lead timing, DriveCentric video delivery and attempt logging are built in here now.</div>
 
   <div class="banner"><b>Use this as the execution layer, not the CRM.</b> DriveCentric remains the system of record. Verify inventory, price, incentives and any deal-specific figures before you state them. Finance-specific payment, APR, approval and protection questions go to finance rather than being guessed here.</div>
 
@@ -60,18 +62,25 @@ button{font:inherit}.btn{border:0;border-radius:9px;padding:8px 11px;background:
   <div class="move" id="move"></div>
   <div class="grid" id="scripts"></div>
 
-  <div class="foot">The funnel is organized around customer behavior rather than CRM labels so you can get to usable language in seconds. If the behavior is unusual, use the fallback pattern: acknowledge, clarify, isolate, answer briefly, then ask for the next step.</div>
+  <div class="foot">The Funnel is organized around customer behavior rather than CRM labels. If the behavior is unusual, use the fallback pattern: acknowledge, clarify, isolate, answer briefly, then ask for the next step.</div>
 </div>
 <script>
 (function(){
   var PROFILE_KEY='shq_fill_v1';
-  var state={stage:'new', scenario:'fresh-standard', fill:{}};
   var DATA=window.SHQFunnel||{stages:[],scenarios:[]};
+  var qp;
+  try{qp=new URLSearchParams(location.search);}catch(e){qp={get:function(){return null;}};}
+  var requestedStage=qp.get('stage')||'new';
+  var requestedScenario=qp.get('scenario')||'fresh-standard';
+  if(!DATA.stages.some(function(x){return x.id===requestedStage;})) requestedStage='new';
+  if(!DATA.scenarios.some(function(x){return x.id===requestedScenario && x.stage===requestedStage;})){
+    var firstRequested=DATA.scenarios.filter(function(x){return x.stage===requestedStage;})[0];
+    requestedScenario=firstRequested?firstRequested.id:'fresh-standard';
+  }
+  var state={stage:requestedStage,scenario:requestedScenario,fill:{}};
 
   function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
-  function loadFill(){
-    try{return JSON.parse(localStorage.getItem(PROFILE_KEY)||'{}');}catch(e){return {};}
-  }
+  function loadFill(){try{return JSON.parse(localStorage.getItem(PROFILE_KEY)||'{}');}catch(e){return {};}}
   function saveFill(){try{localStorage.setItem(PROFILE_KEY,JSON.stringify(state.fill));}catch(e){}}
   function seed(){
     state.fill=loadFill();
@@ -84,28 +93,16 @@ button{font:inherit}.btn{border:0;border-radius:9px;padding:8px 11px;background:
   }
   function tokens(text){
     var f=state.fill||{};
-    var map={
-      '[Name]':f.name||'[Name]', '[vehicle]':f.vehicle||'[vehicle]', '[current]':f.current||'[current]',
-      '[day/time]':f.daytime||'[day/time]', '[alt time]':f.alttime||'[alt time]', '[agent]':f.agent||'[agent]',
-      '[number]':f.number||'[number]', '[email]':f.email||'[email]'
-    };
-    var out=String(text||'');
-    Object.keys(map).forEach(function(k){out=out.split(k).join(map[k]);});
-    return out;
+    var map={'[Name]':f.name||'[Name]','[vehicle]':f.vehicle||'[vehicle]','[current]':f.current||'[current]','[day/time]':f.daytime||'[day/time]','[alt time]':f.alttime||'[alt time]','[agent]':f.agent||'[agent]','[number]':f.number||'[number]','[email]':f.email||'[email]'};
+    var out=String(text||'');Object.keys(map).forEach(function(k){out=out.split(k).join(map[k]);});return out;
   }
-  function scenario(){
-    return DATA.scenarios.filter(function(x){return x.id===state.scenario;})[0]
-      || DATA.scenarios.filter(function(x){return x.stage===state.stage;})[0]
-      || DATA.scenarios[0];
-  }
+  function scenario(){return DATA.scenarios.filter(function(x){return x.id===state.scenario;})[0]||DATA.scenarios.filter(function(x){return x.stage===state.stage;})[0]||DATA.scenarios[0];}
   function renderStages(){
     var box=document.getElementById('stages');
     box.innerHTML=DATA.stages.map(function(s){return '<button type="button" class="stage'+(s.id===state.stage?' on':'')+'" data-stage="'+esc(s.id)+'">'+esc(s.label)+'</button>';}).join('');
     box.querySelectorAll('[data-stage]').forEach(function(btn){btn.addEventListener('click',function(){
       state.stage=btn.getAttribute('data-stage');
-      var first=DATA.scenarios.filter(function(x){return x.stage===state.stage;})[0];
-      state.scenario=first?first.id:'fallback';
-      render();
+      var first=DATA.scenarios.filter(function(x){return x.stage===state.stage;})[0];state.scenario=first?first.id:'fallback';render();
     });});
   }
   function renderBehavior(){
@@ -113,48 +110,29 @@ button{font:inherit}.btn{border:0;border-radius:9px;padding:8px 11px;background:
     document.getElementById('stageHint').textContent=stage?stage.hint:'';
     var list=DATA.scenarios.filter(function(x){return x.stage===state.stage;});
     var fallback=DATA.scenarios.filter(function(x){return x.id==='fallback';})[0];
-    if(fallback && !list.some(function(x){return x.id==='fallback';})) list=list.concat([fallback]);
+    if(fallback&&!list.some(function(x){return x.id==='fallback';}))list=list.concat([fallback]);
     var sel=document.getElementById('behavior');
     sel.innerHTML=list.map(function(x){return '<option value="'+esc(x.id)+'"'+(x.id===state.scenario?' selected':'')+'>'+esc(x.label)+'</option>';}).join('');
-    if(!list.some(function(x){return x.id===state.scenario;}) && list[0]){state.scenario=list[0].id;sel.value=state.scenario;}
+    if(!list.some(function(x){return x.id===state.scenario;})&&list[0]){state.scenario=list[0].id;sel.value=state.scenario;}
   }
   function copy(text,btn){
     var done=function(){var old=btn.textContent;btn.textContent='Copied';setTimeout(function(){btn.textContent=old;},900);};
-    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done).catch(function(){fallbackCopy(text);done();});}
-    else{fallbackCopy(text);done();}
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(done).catch(function(){fallbackCopy(text);done();});else{fallbackCopy(text);done();}
   }
   function fallbackCopy(text){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);}
-  function card(title,sub,text,extraClass){
-    return '<div class="card '+(extraClass||'')+'"><div class="card-head"><div class="channel">'+esc(title)+(sub?'<small>'+esc(sub)+'</small>':'')+'</div><button class="btn ghost copyBtn" type="button">Copy</button></div><div class="script">'+esc(tokens(text))+'</div></div>';
-  }
+  function card(title,sub,text,extraClass){return '<div class="card '+(extraClass||'')+'"><div class="card-head"><div class="channel">'+esc(title)+(sub?'<small>'+esc(sub)+'</small>':'')+'</div><button class="btn ghost copyBtn" type="button">Copy</button></div><div class="script">'+esc(tokens(text))+'</div></div>';}
   function render(){
-    renderStages();
-    renderBehavior();
-    var x=scenario(); if(!x) return;
+    renderStages();renderBehavior();var x=scenario();if(!x)return;
     document.getElementById('move').innerHTML='<h2>'+esc(x.label)+'</h2><div class="meta"><div class="meta-box"><div class="meta-title">What this means</div><div class="meta-text">'+esc(x.when)+'</div></div><div class="meta-box"><div class="meta-title">Your goal</div><div class="meta-text">'+esc(x.goal)+'</div></div></div><div class="next"><b>Next move:</b> '+esc(x.next)+'</div>';
-    var emailText='Subject: '+tokens(x.subject)+'\n\n'+tokens(x.email);
-    var html='';
-    html+=card('Call','live wordtrack',x.call,'');
-    html+=card('Voicemail','sell the callback',x.vm,'');
-    html+=card('SMS','one clear ask',x.sms,'');
+    var emailText='Subject: '+tokens(x.subject)+'\n\n'+tokens(x.email),html='';
+    html+=card('Call','live wordtrack',x.call,'');html+=card('Voicemail','sell the callback',x.vm,'');html+=card('SMS','one clear ask',x.sms,'');
     html+='<div class="card"><div class="card-head"><div class="channel">Email <small>subject + body</small></div><button class="btn ghost copyBtn emailCopy" type="button">Copy</button></div><div class="email-subject">'+esc(tokens(x.subject))+'</div><div class="script">'+esc(tokens(x.email))+'</div></div>';
-    html+=card('Video','DriveCentric',x.video,'full');
-    document.getElementById('scripts').innerHTML=html;
-    var cards=document.querySelectorAll('#scripts .card');
-    cards.forEach(function(c){
-      var b=c.querySelector('.copyBtn'); if(!b)return;
-      if(b.classList.contains('emailCopy')) b.addEventListener('click',function(){copy(emailText,b);});
-      else b.addEventListener('click',function(){copy((c.querySelector('.script')||{}).textContent||'',b);});
-    });
+    html+=card('Video','DriveCentric',x.video,'full');document.getElementById('scripts').innerHTML=html;
+    document.querySelectorAll('#scripts .card').forEach(function(c){var b=c.querySelector('.copyBtn');if(!b)return;if(b.classList.contains('emailCopy'))b.addEventListener('click',function(){copy(emailText,b);});else b.addEventListener('click',function(){copy((c.querySelector('.script')||{}).textContent||'',b);});});
   }
 
   document.getElementById('behavior').addEventListener('change',function(){state.scenario=this.value;render();});
-  document.getElementById('clearCustomer').addEventListener('click',function(){
-    ['name','vehicle','current','daytime','alttime'].forEach(function(k){state.fill[k]='';});
-    saveFill();
-    document.querySelectorAll('[data-f]').forEach(function(el){var k=el.getAttribute('data-f');el.value=state.fill[k]||'';});
-    render();
-  });
+  document.getElementById('clearCustomer').addEventListener('click',function(){['name','vehicle','current','daytime','alttime'].forEach(function(k){state.fill[k]='';});saveFill();document.querySelectorAll('[data-f]').forEach(function(el){var k=el.getAttribute('data-f');el.value=state.fill[k]||'';});render();});
   seed();render();
 })();
 </script>
