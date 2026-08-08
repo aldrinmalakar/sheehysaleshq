@@ -99,7 +99,6 @@
       'Competitor compare|Straight comparison':'competitor-shop',
       'Appt confirm|You are set':'booked',
       'No-show|No worries, reschedule':'no-show',
-      'After test drive|How did it sit':'unsure-after-drive',
       'Left with proposals|Same-day recap':'left-with-numbers',
       'Sold or swap|It sold, here is close':'unit-gone',
       'Post-sale|Thank you':'sold-thankyou'
@@ -116,7 +115,6 @@
       'Competitor compare|Straight comparison':'competitor-shop',
       'Appt confirm|Confirmation':'booked',
       'No-show|Reschedule, no worries':'no-show',
-      'After test drive|How did it sit':'unsure-after-drive',
       'Left with proposals|Same-day recap':'left-with-numbers',
       'Sold or swap|It sold, here is close':'unit-gone',
       'Post-sale|Thank you and check-in':'sold-thankyou'
@@ -261,13 +259,12 @@
      Reconnect migration
      The page's long call script intentionally remains age-aware.
      Phase 1 moves the duplicated quick VM/SMS/email wordtracks for
-     the two strongest overlaps into Funnel for leads <= 30 days.
+     the strongest exact overlap into Funnel for leads <= 30 days.
      Older reconnect language stays local until age variants are
      represented in the canonical model.
   ------------------------------------------------------------ */
   var RECONNECT_MAP={
-    pencil:'left-with-numbers',
-    quiet:'ghost-after-visit'
+    pencil:'left-with-numbers'
   };
 
   function reconnectAgeDays(){
