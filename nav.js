@@ -116,7 +116,7 @@
     for(var d=0;d<=7;d++){
       var day=(now.day+d)%7, list=UP_WINDOWS[day]||[];
       for(var j=0;j<list.length;j++){
-        var diff=d*1440+list[j][0]-(d===0?cur:0);
+        var diff=d===0 ? list[j][0]-cur : (1440-cur)+((d-1)*1440)+list[j][0];
         if(diff>0){
           var soon=diff<=10;
           var when=(d===0?'Today':d===1?'Tomorrow':DAY_NAME[day])+' '+fmtMin(list[j][0]);
