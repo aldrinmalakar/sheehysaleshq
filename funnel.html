@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Behavior Funnel | Sheehy Sales HQ</title>
+<style>
+:root{--ink:#1a2330;--muted:#6b7889;--line:#e4e8ee;--blue:#2f5fe0;--soft:#f6f8fb;--green:#16794a;--amber:#9a5b00}
+*{box-sizing:border-box}
+body{margin:0;background:#f4f6f9;color:var(--ink);font-family:"Space Grotesk",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 16px 60px}
+h1{font-size:30px;margin:0 0 6px}.sub{color:var(--muted);font-size:14px;line-height:1.5;margin-bottom:20px}
+.banner{background:#fff8e8;border:1px solid #f0d599;border-radius:12px;padding:11px 13px;font-size:13px;line-height:1.45;margin-bottom:16px}
+.fillbar,.control,.move,.card{background:#fff;border:1px solid var(--line);border-radius:14px}
+.fillbar{padding:14px;margin-bottom:16px}.fill-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+label{display:block;color:var(--muted);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}input,select{width:100%;margin-top:5px;border:1px solid #d8dee7;border-radius:9px;background:#fff;color:var(--ink);padding:10px 11px;font:inherit;font-size:14px;outline:none}input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(47,95,224,.10)}
+.fill-actions{display:flex;gap:10px;align-items:center;margin-top:10px}.note{font-size:12px;color:var(--muted)}
+button{font:inherit}.btn{border:0;border-radius:9px;padding:8px 11px;background:var(--blue);color:#fff;font-size:12px;font-weight:700;cursor:pointer}.btn.ghost{background:#fff;color:var(--muted);border:1px solid var(--line)}.btn:hover{filter:brightness(.97)}
+.control{padding:16px;margin-bottom:16px}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:800;margin-bottom:8px}.stages{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}.stage{border:1px solid var(--line);background:#fff;color:#566375;border-radius:999px;padding:7px 11px;font-size:12px;font-weight:700;cursor:pointer}.stage.on{background:var(--blue);border-color:var(--blue);color:#fff}.stage-hint{font-size:12px;color:var(--muted);margin-top:7px}.behavior-row{display:grid;grid-template-columns:1fr;gap:8px;max-width:650px}
+.move{padding:16px;margin-bottom:16px;border-left:4px solid var(--blue)}.move h2{font-size:20px;margin:0 0 7px}.meta{display:grid;grid-template-columns:1fr 1fr;gap:12px}.meta-box{background:var(--soft);border-radius:10px;padding:10px 11px}.meta-title{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:800;margin-bottom:4px}.meta-text{font-size:13px;line-height:1.45}.next{margin-top:10px;padding:10px 11px;background:#edf7f1;border-radius:10px;color:#24583d;font-size:13px;line-height:1.45}.next b{color:var(--green)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.card{padding:14px;min-width:0}.card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}.channel{font-size:13px;font-weight:800}.channel small{font-weight:500;color:var(--muted);margin-left:5px}.script{white-space:pre-wrap;font-size:14px;line-height:1.55;background:var(--soft);border-radius:10px;padding:12px;min-height:105px;overflow-wrap:anywhere}.email-subject{font-size:13px;font-weight:750;margin-bottom:8px;padding:9px 10px;border:1px dashed #ccd5e1;border-radius:9px;background:#fff}.full{grid-column:1/-1}.foot{margin-top:22px;color:var(--muted);font-size:12px;line-height:1.5;text-align:center}
+@media(max-width:820px){.fill-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.grid,.meta{grid-template-columns:1fr}.full{grid-column:auto}}
+@media(max-width:520px){.fill-grid{grid-template-columns:1fr}.wrap{padding:18px 10px 44px}h1{font-size:25px}.stages{gap:5px}.stage{font-size:11px;padding:6px 9px}}
+</style>
+<script src="./nav.js" defer></script>
+<script src="./funnel-data.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <h1>Behavior Funnel</h1>
+  <div class="sub">Pick where you are in the sale, then pick what the customer just did. The page gives you the next move plus copy-ready call, voicemail, text, email and video language.</div>
+
+  <div class="banner"><b>Use this as the execution layer, not the CRM.</b> DriveCentric remains the system of record. Verify inventory, price, incentives and any deal-specific figures before you state them. Finance-specific payment, APR, approval and protection questions go to finance rather than being guessed here.</div>
+
+  <div class="fillbar">
+    <div class="fill-grid">
+      <label>Customer first name<input data-f="name" autocomplete="off" placeholder="Sarah"></label>
+      <label>Vehicle of interest<input data-f="vehicle" autocomplete="off" placeholder="2026 Rogue SV"></label>
+      <label>Current / trade vehicle<input data-f="current" autocomplete="off" placeholder="2021 RAV4"></label>
+      <label>Primary time<input data-f="daytime" autocomplete="off" placeholder="Today at 5:30"></label>
+      <label>Alternate time<input data-f="alttime" autocomplete="off" placeholder="Tomorrow at 11:00"></label>
+      <label>Your name<input data-f="agent" autocomplete="off" placeholder="Aldrin"></label>
+      <label>Your phone<input data-f="number" autocomplete="off" placeholder="Your direct number"></label>
+      <label>Your email<input data-f="email" autocomplete="off" placeholder="you@sheehy.com"></label>
+    </div>
+    <div class="fill-actions"><button class="btn ghost" id="clearCustomer" type="button">Clear customer</button><span class="note">Uses the same browser fill profile as the other Sales HQ pages. Blank fields stay visible as tokens.</span></div>
+  </div>
+
+  <div class="control">
+    <div class="eyebrow">Where are you in the sale?</div>
+    <div class="stages" id="stages"></div>
+    <div class="stage-hint" id="stageHint"></div>
+    <div class="behavior-row">
+      <label>What did the customer just do?
+        <select id="behavior"></select>
+      </label>
+    </div>
+  </div>
+
+  <div class="move" id="move"></div>
+  <div class="grid" id="scripts"></div>
+
+  <div class="foot">The funnel is organized around customer behavior rather than CRM labels so you can get to usable language in seconds. If the behavior is unusual, use the fallback pattern: acknowledge, clarify, isolate, answer briefly, then ask for the next step.</div>
+</div>
+<script>
+(function(){
+  var PROFILE_KEY='shq_fill_v1';
+  var state={stage:'new', scenario:'fresh-standard', fill:{}};
+  var DATA=window.SHQFunnel||{stages:[],scenarios:[]};
+
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function loadFill(){
+    try{return JSON.parse(localStorage.getItem(PROFILE_KEY)||'{}');}catch(e){return {};}
+  }
+  function saveFill(){try{localStorage.setItem(PROFILE_KEY,JSON.stringify(state.fill));}catch(e){}}
+  function seed(){
+    state.fill=loadFill();
+    if(!state.fill.agent) state.fill.agent='Aldrin';
+    document.querySelectorAll('[data-f]').forEach(function(el){
+      var k=el.getAttribute('data-f');
+      el.value=state.fill[k]||'';
+      el.addEventListener('input',function(){state.fill[k]=el.value;saveFill();render();});
+    });
+  }
+  function tokens(text){
+    var f=state.fill||{};
+    var map={
+      '[Name]':f.name||'[Name]', '[vehicle]':f.vehicle||'[vehicle]', '[current]':f.current||'[current]',
+      '[day/time]':f.daytime||'[day/time]', '[alt time]':f.alttime||'[alt time]', '[agent]':f.agent||'[agent]',
+      '[number]':f.number||'[number]', '[email]':f.email||'[email]'
+    };
+    var out=String(text||'');
+    Object.keys(map).forEach(function(k){out=out.split(k).join(map[k]);});
+    return out;
+  }
+  function scenario(){
+    return DATA.scenarios.filter(function(x){return x.id===state.scenario;})[0]
+      || DATA.scenarios.filter(function(x){return x.stage===state.stage;})[0]
+      || DATA.scenarios[0];
+  }
+  function renderStages(){
+    var box=document.getElementById('stages');
+    box.innerHTML=DATA.stages.map(function(s){return '<button type="button" class="stage'+(s.id===state.stage?' on':'')+'" data-stage="'+esc(s.id)+'">'+esc(s.label)+'</button>';}).join('');
+    box.querySelectorAll('[data-stage]').forEach(function(btn){btn.addEventListener('click',function(){
+      state.stage=btn.getAttribute('data-stage');
+      var first=DATA.scenarios.filter(function(x){return x.stage===state.stage;})[0];
+      state.scenario=first?first.id:'fallback';
+      render();
+    });});
+  }
+  function renderBehavior(){
+    var stage=DATA.stages.filter(function(x){return x.id===state.stage;})[0];
+    document.getElementById('stageHint').textContent=stage?stage.hint:'';
+    var list=DATA.scenarios.filter(function(x){return x.stage===state.stage;});
+    var fallback=DATA.scenarios.filter(function(x){return x.id==='fallback';})[0];
+    if(fallback && !list.some(function(x){return x.id==='fallback';})) list=list.concat([fallback]);
+    var sel=document.getElementById('behavior');
+    sel.innerHTML=list.map(function(x){return '<option value="'+esc(x.id)+'"'+(x.id===state.scenario?' selected':'')+'>'+esc(x.label)+'</option>';}).join('');
+    if(!list.some(function(x){return x.id===state.scenario;}) && list[0]){state.scenario=list[0].id;sel.value=state.scenario;}
+  }
+  function copy(text,btn){
+    var done=function(){var old=btn.textContent;btn.textContent='Copied';setTimeout(function(){btn.textContent=old;},900);};
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done).catch(function(){fallbackCopy(text);done();});}
+    else{fallbackCopy(text);done();}
+  }
+  function fallbackCopy(text){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);}
+  function card(title,sub,text,extraClass){
+    return '<div class="card '+(extraClass||'')+'"><div class="card-head"><div class="channel">'+esc(title)+(sub?'<small>'+esc(sub)+'</small>':'')+'</div><button class="btn ghost copyBtn" type="button">Copy</button></div><div class="script">'+esc(tokens(text))+'</div></div>';
+  }
+  function render(){
+    renderStages();
+    renderBehavior();
+    var x=scenario(); if(!x) return;
+    document.getElementById('move').innerHTML='<h2>'+esc(x.label)+'</h2><div class="meta"><div class="meta-box"><div class="meta-title">What this means</div><div class="meta-text">'+esc(x.when)+'</div></div><div class="meta-box"><div class="meta-title">Your goal</div><div class="meta-text">'+esc(x.goal)+'</div></div></div><div class="next"><b>Next move:</b> '+esc(x.next)+'</div>';
+    var emailText='Subject: '+tokens(x.subject)+'\n\n'+tokens(x.email);
+    var html='';
+    html+=card('Call','live wordtrack',x.call,'');
+    html+=card('Voicemail','sell the callback',x.vm,'');
+    html+=card('SMS','one clear ask',x.sms,'');
+    html+='<div class="card"><div class="card-head"><div class="channel">Email <small>subject + body</small></div><button class="btn ghost copyBtn emailCopy" type="button">Copy</button></div><div class="email-subject">'+esc(tokens(x.subject))+'</div><div class="script">'+esc(tokens(x.email))+'</div></div>';
+    html+=card('Video','DriveCentric',x.video,'full');
+    document.getElementById('scripts').innerHTML=html;
+    var cards=document.querySelectorAll('#scripts .card');
+    cards.forEach(function(c){
+      var b=c.querySelector('.copyBtn'); if(!b)return;
+      if(b.classList.contains('emailCopy')) b.addEventListener('click',function(){copy(emailText,b);});
+      else b.addEventListener('click',function(){copy((c.querySelector('.script')||{}).textContent||'',b);});
+    });
+  }
+
+  document.getElementById('behavior').addEventListener('change',function(){state.scenario=this.value;render();});
+  document.getElementById('clearCustomer').addEventListener('click',function(){
+    ['name','vehicle','current','daytime','alttime'].forEach(function(k){state.fill[k]='';});
+    saveFill();
+    document.querySelectorAll('[data-f]').forEach(function(el){var k=el.getAttribute('data-f');el.value=state.fill[k]||'';});
+    render();
+  });
+  seed();render();
+})();
+</script>
+</body>
+</html>
