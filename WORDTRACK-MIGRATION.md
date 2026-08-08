@@ -1,52 +1,72 @@
 # Canonical Wordtrack Migration
 
-`funnel-data.js` is the canonical source for customer-facing wordtracks that have been migrated.
+The Behavior Funnel is the canonical customer-response model for Sales HQ.
 
-`wordtracks.js` is the compatibility adapter. It lets the existing Leads, SMS Library, Email Library and Reconnect pages consume Funnel scenarios without rewriting those pages all at once.
+Customer-facing wordtracks that represent a specific customer behavior belong in Funnel data. Other pages should consume those scenarios rather than maintain a second version of the same call, voicemail, SMS, email or video script.
+
+## Data layout
+
+- `funnel-data.js` contains the core behavior funnel and shared lifecycle scenarios.
+- `funnel-lead-data.js` extends that model with exact fresh-lead contact outcomes and Owner / Outbound scenarios.
+- `funnel-lead-ops.js` contains operational UI only: lead timing, available-channel controls, DriveCentric delivery follow-up and attempt logging. It should not become another wordtrack library.
+- `wordtracks.js` is the compatibility adapter for SMS Library, Email Library and Reconnect while those older surfaces still contain local templates.
 
 ## Phase 1
 
-### SMS Library
-The following existing cards now render their customer-facing copy from Funnel:
+The first migration made Funnel authoritative for exact overlaps in the SMS Library and Email Library, including:
 
-- New lead / Fast first touch -> `fresh-standard`
-- No reply / Day one nudge -> `no-response-day1`
-- No reply / Last touch, 1 or 2 -> `final-nudge`
-- Price shopper / Real number, not a guess -> `price-first`
-- Payment focused / No guessing on payment -> `payment-apr`
-- Trade interest / Appraise it properly -> `trade-value`
-- Credit rebuild / No judgment -> `credit-concern`
-- Family decision / Bring everyone -> `decision-maker`
-- Competitor compare / Straight comparison -> `competitor-shop`
-- Appt confirm / You are set -> `booked`
-- No-show / No worries, reschedule -> `no-show`
-- Left with proposals / Same-day recap -> `left-with-numbers`
-- Sold or swap / It sold, here is close -> `unit-gone`
-- Post-sale / Thank you -> `sold-thankyou`
+- Fresh lead
+- Day-one no response
+- Final no-response attempt
+- Price-first shopper
+- Payment / APR inquiry
+- Trade-value inquiry
+- Credit concern
+- Family / decision maker
+- Competitor shopping
+- Appointment confirmation
+- No-show
+- Left with proposal
+- Requested vehicle sold
+- Post-sale check-in
 
-### Email Library
-The equivalent core cards for new lead, no reply, price, payment, trade, credit, family decision, competitor comparison, appointment confirmation, no-show, left with proposal, sold unit and post-sale now render from the same Funnel scenarios.
+Reconnect keeps its richer age-aware call coaching. The exact `Saw numbers, then left` overlap can use Funnel for the shorter channel messages on newer leads.
 
-Generic test-drive follow-up stays local for now because the existing library card does not establish whether the customer loved the vehicle, was unsure or decided it was the wrong fit. Those behaviors have separate Funnel scenarios and should not be collapsed.
+Generic test-drive follow-up stays local until the customer behavior is known. A customer who loved the drive, is unsure after the drive and rejected the vehicle are three different Funnel behaviors and should not be collapsed into one generic script.
 
-### Leads
-The first migrated direct-channel outputs are:
+## Phase 2: Leads merged into Funnel
 
-- Fresh-lead voicemail -> `fresh-standard`
-- Email-only first email -> `fresh-email-only`
-- Text-only first text -> `fresh-standard`
-- DriveCentric video email notice -> `video-email-notice`
-- DriveCentric video text notice -> `video-text-notice`
+The standalone Leads workflow has been retired. `leads.html` now redirects to Funnel so there is only one place to decide what to say next.
 
-The Leads page keeps its multi-step coaching flow and attempt logging.
+Lead-specific operational features were moved into Funnel rather than discarded:
 
-### Reconnect
-Reconnect keeps its richer age-aware call coaching. For leads up to 30 days old, the duplicated quick voicemail, SMS and email outputs for "Saw numbers, then left" now come from `left-with-numbers`.
+- Lead-arrival timing and urgency cue
+- Phone / email / text availability
+- Exact first-contact outcomes
+- DriveCentric video delivery and cross-channel heads-up
+- Existing `shq_lead_log_v1` attempt history
 
-Other reconnect situations remain local until the Funnel model has an exact behavior match and, where needed, age-specific variants. In particular, "we talked, then went quiet" is not automatically treated as an in-store ghost.
+Exact lead-contact wordtracks now live in `funnel-lead-data.js`:
+
+- Text-only fresh lead
+- First call went to voicemail
+- First call had no voicemail available
+- Bad number / wrong person
+
+The same Funnel model now includes an `Owner / Outbound` stage for program-manifest work:
+
+- First owner contact
+- No answer
+- Owner wants a real value
+- Call later
+- Not interested
+
+The outbound manifest itself lives on Programs and hands the selected owner into Funnel instead of recreating a call workspace.
 
 ## Migration rule
 
-Do not add a second copy of a wordtrack that already exists in Funnel. Add or improve the Funnel scenario, then map the legacy surface to it in `wordtracks.js`.
+Do not add a second customer-facing wordtrack when an exact behavior already exists in Funnel. Improve the canonical Funnel scenario and map the other surface to it.
 
-Specialty templates that do not yet have a Funnel scenario remain local until they are deliberately migrated. This avoids deleting useful coverage during the refactor.
+Do not force a mapping merely because two scripts sound similar. A mapping is valid only when the customer behavior, sales objective and next move are materially the same.
+
+Specialty templates can remain local until an exact Funnel behavior exists. This protects useful coverage while the refactor continues.
