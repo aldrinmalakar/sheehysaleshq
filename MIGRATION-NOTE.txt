@@ -1,0 +1,1 @@
+Phase 1 canonical wordtracks: Funnel remains the source of truth. Legacy page text is overridden only for explicitly mapped scenarios. Unmapped templates remain untouched until later migration.
