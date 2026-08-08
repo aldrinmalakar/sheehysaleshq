@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nissan Survey Follow-Up · Sheehy Sales HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#1a2330;--muted:#6b7889;--line:#e4e8ee;--paper:#fff;--card:#f6f8fb;--accent:#2f5fe0;--good:#0f8a4d;--bad:#c0334d;--warn:#8a5a12;--bg:#eef1f6}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.5}
+  .wrap{max-width:920px;margin:0 auto;padding:0 14px 60px}
+  .page-title{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;margin:16px 0 2px}
+  .sub{font-size:13px;color:var(--muted);margin:0 0 12px}
+  .panel{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px;margin:0 0 14px}
+  .panel h2{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 10px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:9px}
+  .grid label{display:flex;flex-direction:column;gap:4px;font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+  input,select,textarea{border:1px solid var(--line);border-radius:8px;padding:9px 10px;font-family:inherit;font-size:14.5px;background:#fff;color:var(--ink);text-transform:none;letter-spacing:normal;font-weight:400}
+  textarea{width:100%;resize:vertical;line-height:1.6}
+  .weights{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:8px}
+  .weight{border:1px solid var(--line);border-radius:10px;padding:9px 10px;background:#fff}
+  .weight-top{display:flex;justify-content:space-between;gap:10px;align-items:center;font-size:13px;margin-bottom:6px}
+  .weight-top b{font-family:'Space Grotesk',sans-serif;font-size:13px}
+  .pct{font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--accent)}
+  .bar{height:6px;border-radius:999px;background:#edf0f5;overflow:hidden}
+  .fill{height:100%;background:var(--accent);border-radius:999px}
+  .weight-note{font-size:11.5px;color:var(--muted);margin-top:9px;line-height:1.5}
+  .callout{border:1px solid #c9dbff;background:#eef4ff;border-radius:10px;padding:10px 11px;font-size:13px;line-height:1.55;margin-bottom:10px}
+  .callout b{font-family:'Space Grotesk',sans-serif}
+  .warn{border:1px solid #f2d9b8;background:#fff7ed;color:var(--warn);border-radius:10px;padding:10px 11px;font-size:12.5px;line-height:1.55;margin-top:10px}
+  .stop{border:1px solid #f3c4c4;background:#fdeceb;color:#8a2230;border-radius:10px;padding:10px 11px;font-size:12.5px;line-height:1.55;margin-top:10px}
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px}
+  .timing{border:1px solid var(--line);border-radius:10px;padding:9px 10px;background:var(--card)}
+  .timing b{font-family:'Space Grotesk',sans-serif;font-size:12px;color:var(--accent)}
+  .timing div{font-size:12.5px;margin-top:3px}
+  .script{margin-bottom:13px}
+  .sh{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:5px}
+  .sh b{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--accent)}
+  .cpy{border:1px solid var(--accent);background:transparent;color:var(--accent);border-radius:7px;padding:5px 12px;font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:600;cursor:pointer}
+  .cpy:active{transform:translateY(1px)}
+  .line{border:1px solid var(--line);border-radius:9px;padding:11px;font-size:14.5px;line-height:1.6;background:#fff;white-space:pre-wrap}
+  .line.ask{border-color:var(--good);background:linear-gradient(0deg,rgba(15,138,77,.04),rgba(15,138,77,.04)),#fff}
+  .cue{display:block;font-size:11.5px;color:var(--muted);font-style:italic;margin-top:5px}
+  .route{border:1px solid var(--good);border-radius:10px;background:rgba(15,138,77,.05);padding:10px 11px;font-size:13px;line-height:1.55}
+  .route b{font-family:'Space Grotesk',sans-serif}
+  .foot{text-align:center;color:var(--muted);font-size:11.5px;margin-top:22px;line-height:1.6}
+</style>
+</head>
+<body>
+<script src="./nav.js" defer></script>
+
+<div class="wrap">
+  <h1 class="page-title">Nissan Survey Follow-Up</h1>
+  <p class="sub">Post-sale word tracks for new Nissan buyers. Protect the ownership experience, surface unresolved problems and make sure the customer recognizes the Nissan survey when it arrives.</p>
+
+  <div class="panel">
+    <h2>Customer and situation</h2>
+    <div class="grid">
+      <label>Customer name<input data-f="name" autocomplete="off" placeholder="Sarah"></label>
+      <label>New Nissan<input data-f="vehicle" autocomplete="off" placeholder="2026 Rogue SV"></label>
+      <label>Your name<input data-f="agent" autocomplete="off" placeholder="Aldrin"></label>
+      <label>Your phone<input data-f="number" autocomplete="off" placeholder="703 996 9877"></label>
+      <label>Delivery date<input type="date" id="deliveryDate"></label>
+      <label>Survey situation<select id="scenario">
+        <option value="pre">Survey may be coming soon</option>
+        <option value="arrived">Survey likely arrived</option>
+        <option value="notreceived">Customer cannot find the survey</option>
+        <option value="issue">Customer has an unresolved issue</option>
+        <option value="completed">Customer already completed it</option>
+      </select></label>
+      <label>Issue type, if applicable<select id="concern">
+        <option value="sales">Sales experience</option>
+        <option value="finance">Financing or paperwork</option>
+        <option value="features">Features or controls</option>
+        <option value="condition">Vehicle condition at delivery</option>
+        <option value="other">Something else</option>
+      </select></label>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>How this sample survey is weighted</h2>
+    <div class="callout"><b>What matters operationally:</b> overall satisfaction and willingness to recommend make up half of the sample score. The rest is driven by the sales consultant, finance/paperwork, feature explanation and delivery condition. That means survey protection starts during the sale and delivery, not when the email arrives.</div>
+    <div class="weights">
+      <div class="weight"><div class="weight-top"><b>Overall Purchase / Lease Satisfaction</b><span class="pct">25%</span></div><div class="bar"><div class="fill" style="width:100%"></div></div></div>
+      <div class="weight"><div class="weight-top"><b>Recommend the Dealer</b><span class="pct">25%</span></div><div class="bar"><div class="fill" style="width:100%"></div></div></div>
+      <div class="weight"><div class="weight-top"><b>Your Sales Consultant</b><span class="pct">17.5%</span></div><div class="bar"><div class="fill" style="width:70%"></div></div></div>
+      <div class="weight"><div class="weight-top"><b>Financing / Paperwork Process</b><span class="pct">15%</span></div><div class="bar"><div class="fill" style="width:60%"></div></div></div>
+      <div class="weight"><div class="weight-top"><b>Explanation of Features / Controls</b><span class="pct">8.75%</span></div><div class="bar"><div class="fill" style="width:35%"></div></div></div>
+      <div class="weight"><div class="weight-top"><b>Vehicle Condition at Delivery</b><span class="pct">8.75%</span></div><div class="bar"><div class="fill" style="width:35%"></div></div></div>
+    </div>
+    <div class="weight-note">Based on the sample Nissan survey provided. The open-ended feedback box in the sample is marked “Not scored.” Survey wording and weighting can change, so treat this page as a working guide unless the current Nissan survey is verified.</div>
+  </div>
+
+  <div class="panel">
+    <h2>Follow-up rhythm</h2>
+    <div class="steps">
+      <div class="timing"><b>Within 24 hours</b><div>Check the vehicle, feature setup and anything promised at delivery.</div></div>
+      <div class="timing"><b>Next few days</b><div>Give a light survey heads-up and ask if anything still needs attention.</div></div>
+      <div class="timing"><b>If survey arrives</b><div>Help them recognize it. One clean reminder is enough.</div></div>
+      <div class="timing"><b>If there is a problem</b><div>Stop talking about the survey. Clarify the issue and work the recovery.</div></div>
+      <div class="timing"><b>After completion</b><div>Thank them and go back to ownership care. Do not ask what score they gave.</div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Call word track</h2>
+    <div class="script">
+      <div class="sh"><b>What to say</b><button class="cpy" data-copy="callOut">Copy</button></div>
+      <div class="line ask" id="callOut"></div>
+      <span class="cue" id="callCue"></span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Voicemail</h2>
+    <div class="script">
+      <div class="sh"><b>Keep it short</b><button class="cpy" data-copy="vmOut">Copy</button></div>
+      <div class="line" id="vmOut"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>SMS</h2>
+    <div class="script">
+      <div class="sh"><b>Text</b><button class="cpy" data-copy="smsOut">Copy</button></div>
+      <div class="line" id="smsOut"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Email</h2>
+    <div class="script">
+      <div class="sh"><b>Subject</b><button class="cpy" data-copy="subjOut">Copy</button></div>
+      <div class="line" id="subjOut"></div>
+    </div>
+    <div class="script">
+      <div class="sh"><b>Body</b><button class="cpy" data-copy="emailOut">Copy</button></div>
+      <div class="line" id="emailOut"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Internal next step</h2>
+    <div class="route" id="routeOut"></div>
+    <div class="stop"><b>Do not coach the score:</b> do not ask for “all 10s,” tell the customer a lower score hurts you, tell them which boxes to mark or ask them to hold the survey until they can score it a certain way. Ask for honest feedback and fix what you can.</div>
+    <div class="warn"><b>Issue recovery:</b> if the customer raises a real problem, the survey stops being the conversation. Clarify exactly what happened, isolate whether anything else is wrong, involve the right person and give the customer a clear next step. Do not promise a finance correction, payment change, reimbursement or other outcome you have not verified.</div>
+  </div>
+
+  <div class="foot">Saved customer fields use the same local browser fill data as the other Sales HQ pages. This page does not send messages or connect to Nissan survey systems.</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const FILL_KEY='shq_fill_v1';
+let F=(function(){try{return JSON.parse(localStorage.getItem(FILL_KEY)||'{}');}catch(e){return {};}})();
+function saveFill(){try{localStorage.setItem(FILL_KEY,JSON.stringify(F));}catch(e){}}
+function tok(k,fb){return (F[k]&&String(F[k]).trim())||fb;}
+function nm(){return tok('name','[Name]');}
+function veh(){return tok('vehicle','[vehicle]');}
+function ag(){return tok('agent','[agent]');}
+function num(){return tok('number','[number]');}
+
+function concernLabel(){
+  const c=$('concern').value;
+  if(c==='finance') return 'the financing or paperwork';
+  if(c==='features') return 'the features or controls';
+  if(c==='condition') return 'the vehicle condition at delivery';
+  if(c==='other') return 'what happened';
+  return 'the sales experience';
+}
+
+function outputs(){
+  const N=nm(), V=veh(), A=ag(), P=num(), sc=$('scenario').value, issue=concernLabel();
+
+  if(sc==='pre') return {
+    call:'Hi '+N+', this is '+A+' at Sheehy Nissan. I wanted to check on you now that you have had a little time with the '+V+'. How is it treating you so far?\n\n[Let them answer.]\n\nNissan may send you a short survey about your purchase experience. If it comes through, I would appreciate you taking a minute to answer it honestly. Before that, is there anything from the purchase, delivery or vehicle setup that you still need me to help with?',
+    cue:'Lead with ownership, not the survey. The question you care about is whether anything is still unresolved.',
+    vm:'Hi '+N+', this is '+A+' at Sheehy Nissan. I am just checking on you and the '+V+' after delivery. Nissan may send a short survey as well, and I mainly want to make sure nothing from your purchase or delivery still needs attention. Call or text me at '+P+'. Thanks.',
+    sms:'Hi '+N+', '+A+' at Sheehy Nissan. Quick ownership check, how is the '+V+' treating you? Nissan may send a short purchase survey. If it comes through, please answer it honestly. Anything from the purchase or delivery I still need to help with?',
+    subject:'⭐ Quick Check-In on Your New '+V,
+    email:'Hi '+N+',\n\nI wanted to check in now that you have had a little time with the '+V+'. How is everything going so far?\n\nNissan may also send you a short survey about your purchase experience. If you see it, I would appreciate you taking a minute to answer it honestly. More importantly, if anything from the purchase, delivery or vehicle setup still needs attention, reply to me and let me know.\n\nI want to make sure you are taken care of after the sale too.\n\nBest,\n'+A,
+    route:'<b>Goal:</b> uncover anything unresolved before it becomes a frustration. If everything is good, leave it there. Do not turn a good ownership check-in into a speech about survey scores.'
+  };
+
+  if(sc==='arrived') return {
+    call:'Hi '+N+', '+A+' at Sheehy Nissan. Quick follow-up on the '+V+'. Nissan may have sent the purchase survey by now, and sometimes those emails get buried. I wanted to make sure you recognized it if it came through.\n\nMore importantly, before we talk about the survey, is everything from your purchase, paperwork, vehicle setup and delivery where it needs to be?',
+    cue:'If they say something is wrong, stop the survey conversation and move into issue recovery.',
+    vm:'Hi '+N+', this is '+A+' at Sheehy Nissan. Quick check-in on the '+V+'. Nissan may have sent a short purchase survey, so check spam or junk if you do not see it. More importantly, I want to make sure everything from your purchase and delivery is taken care of. Call or text me at '+P+'.',
+    sms:'Hi '+N+', '+A+' at Sheehy Nissan. Nissan may have sent your purchase survey by now. If you do not see it, check spam or junk. More importantly, is there anything from the purchase, paperwork, vehicle setup or delivery that still needs attention?',
+    subject:'⭐ A Quick Nissan Survey Check-In, '+N,
+    email:'Hi '+N+',\n\nI wanted to check in on the '+V+'. Nissan may have sent a short survey about your purchase experience by now. If you do not see it in your inbox, it may be worth checking spam or junk.\n\nPlease answer it honestly based on your experience. If anything from the purchase, paperwork, vehicle setup or delivery still needs attention, tell me what happened and I will work on the right next step.\n\nBest,\n'+A,
+    route:'<b>Goal:</b> make the survey recognizable without pressuring the customer. One reminder is enough. If they have a concern, work the concern instead of repeating the survey ask.'
+  };
+
+  if(sc==='notreceived') return {
+    call:'No problem, '+N+'. I would not spend a lot of time hunting for it. Check your inbox, spam or junk and try searching for Nissan. If it is not there, leave it alone and it may show up later.\n\nWhile I have you, how is the '+V+' treating you? Anything you need help with?',
+    cue:'Do not invent a sender address, subject line or resend process unless you have verified it.',
+    vm:'Hi '+N+', '+A+' at Sheehy Nissan. About the Nissan survey, if you have not seen it, check spam or junk and try searching for Nissan. No need to chase it beyond that. I also wanted to make sure the '+V+' is treating you well. Call or text me at '+P+' if you need anything.',
+    sms:'No problem if you have not seen the Nissan survey, '+N+'. Check spam or junk and try searching for Nissan. If it is not there, do not worry about it. How is the '+V+' treating you so far?',
+    subject:'⭐ Looking for Your Nissan Survey, '+N,
+    email:'Hi '+N+',\n\nNo problem if the Nissan survey has not shown up. It may be worth checking spam or junk and searching your mailbox for Nissan. If it is not there, I would not spend time chasing it.\n\nIf it arrives later, please answer it honestly based on your experience. In the meantime, if you need anything with the '+V+', just reply to me.\n\nBest,\n'+A,
+    route:'<b>Goal:</b> help them locate it without making claims about delivery timing or the exact sender. Do not repeatedly contact them just because the survey has not appeared.'
+  };
+
+  if(sc==='issue') return {
+    call:'Thank you for telling me, '+N+'. Forget the survey for a moment. I want to deal with the actual issue first. When you say there was a problem with '+issue+', what specifically happened?\n\n[Listen and clarify.]\n\nOther than that, is there anything else from the purchase or delivery that is not where it should be?\n\nGot it. I am going to get the right person involved rather than guess, and I will come back to you with the next step.',
+    cue:'Clarify, isolate, then act. Do not defend the store before you understand the complaint.',
+    vm:'Hi '+N+', this is '+A+' at Sheehy Nissan. I am following up on the concern you raised about '+issue+'. I want to make sure I understand it correctly and get the right person involved. Call or text me at '+P+' when you have a minute.',
+    sms:'Thanks for telling me, '+N+'. I want to focus on the issue, not the survey. When you say there was a problem with '+issue+', what specifically happened? I will get the right person involved once I understand it clearly.',
+    subject:'🔧 Let’s Get This Handled, '+N,
+    email:'Hi '+N+',\n\nThank you for telling me about the issue with '+issue+'. I do not want to guess at the solution or turn this into a survey conversation while something is unresolved.\n\nPlease reply with what specifically happened and what you expected instead. I will make sure the right person is involved and come back to you with the next step.\n\nBest,\n'+A,
+    route:issueRoute()
+  };
+
+  return {
+    call:'Hi '+N+', '+A+' at Sheehy Nissan. I just wanted to thank you for taking the time to complete the Nissan survey. I appreciate the feedback. I am not calling to ask what score you gave. I wanted to check on the '+V+' and make sure you are still taken care of. Any feature, service or ownership question I can help with?',
+    cue:'Do not ask what score they gave. Move the relationship forward into ownership care and referrals later, when appropriate.',
+    vm:'Hi '+N+', '+A+' at Sheehy Nissan. Thank you for taking the time to complete the Nissan survey. I appreciate the feedback. I am also checking on the '+V+' and making sure you have everything you need. Call or text me at '+P+' if anything comes up.',
+    sms:'Hi '+N+', '+A+' at Sheehy Nissan. Thanks for taking the time to complete the Nissan survey. I appreciate the feedback. How is the '+V+' treating you? Any feature or ownership question I can help with?',
+    subject:'🔑 Thank You for Your Feedback, '+N,
+    email:'Hi '+N+',\n\nThank you for taking the time to complete the Nissan survey. I appreciate the feedback.\n\nI also wanted to check on the '+V+'. If any feature, service or ownership question comes up, reply to me first and I will help get you pointed in the right direction.\n\nEnjoy the new Nissan.\n\nBest,\n'+A,
+    route:'<b>Goal:</b> thank them and continue ownership care. Do not ask what score they submitted or try to debate feedback after the fact.'
+  };
+}
+
+function issueRoute(){
+  const c=$('concern').value;
+  if(c==='finance') return '<b>Finance / paperwork:</b> involve the appropriate finance manager. Do not guess at APR, lender decisions, contract changes, refunds, payment changes or protection products.';
+  if(c==='features') return '<b>Features / controls:</b> own this one first. Offer a short feature reset in person or by phone/video. If the question involves service or a technical fault, bring in the right department.';
+  if(c==='condition') return '<b>Vehicle condition at delivery:</b> document exactly what the customer is seeing, when they noticed it and what they were told. Involve the appropriate manager, service or detail team rather than promising a remedy.';
+  if(c==='sales') return '<b>Sales experience:</b> clarify the exact breakdown, acknowledge it without arguing and brief your sales manager cleanly. Do not blame another employee to the customer.';
+  return '<b>Other concern:</b> identify the real owner of the problem before promising a fix. Give the customer a clear next step and keep responsibility for the follow-up.';
+}
+
+function render(){
+  const o=outputs();
+  $('callOut').textContent=o.call;
+  $('callCue').textContent=o.cue;
+  $('vmOut').textContent=o.vm;
+  $('smsOut').textContent=o.sms;
+  $('subjOut').textContent=o.subject;
+  $('emailOut').textContent=o.email;
+  $('routeOut').innerHTML=o.route;
+}
+
+function copyText(text,btn){
+  const done=()=>{const old=btn.textContent;btn.textContent='Copied';setTimeout(()=>btn.textContent=old,1000);};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done,()=>{});}
+}
+
+document.querySelectorAll('[data-copy]').forEach(btn=>{
+  btn.addEventListener('click',()=>copyText($(btn.dataset.copy).textContent,btn));
+});
+
+document.querySelectorAll('[data-f]').forEach(inp=>{
+  if(F[inp.dataset.f]) inp.value=F[inp.dataset.f];
+  inp.addEventListener('input',()=>{F[inp.dataset.f]=inp.value.trim();saveFill();render();});
+});
+$('scenario').addEventListener('change',render);
+$('concern').addEventListener('change',render);
+render();
+</script>
+</body>
+</html>
