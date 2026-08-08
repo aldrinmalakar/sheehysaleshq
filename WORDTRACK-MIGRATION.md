@@ -20,13 +20,14 @@ The following existing cards now render their customer-facing copy from Funnel:
 - Competitor compare / Straight comparison -> `competitor-shop`
 - Appt confirm / You are set -> `booked`
 - No-show / No worries, reschedule -> `no-show`
-- After test drive / How did it sit -> `unsure-after-drive`
 - Left with proposals / Same-day recap -> `left-with-numbers`
 - Sold or swap / It sold, here is close -> `unit-gone`
 - Post-sale / Thank you -> `sold-thankyou`
 
 ### Email Library
-The equivalent core cards for new lead, no reply, price, payment, trade, credit, family decision, competitor comparison, appointment confirmation, no-show, after test drive, left with proposal, sold unit and post-sale now render from the same Funnel scenarios.
+The equivalent core cards for new lead, no reply, price, payment, trade, credit, family decision, competitor comparison, appointment confirmation, no-show, left with proposal, sold unit and post-sale now render from the same Funnel scenarios.
+
+Generic test-drive follow-up stays local for now because the existing library card does not establish whether the customer loved the vehicle, was unsure or decided it was the wrong fit. Those behaviors have separate Funnel scenarios and should not be collapsed.
 
 ### Leads
 The first migrated direct-channel outputs are:
@@ -40,12 +41,9 @@ The first migrated direct-channel outputs are:
 The Leads page keeps its multi-step coaching flow and attempt logging.
 
 ### Reconnect
-Reconnect keeps its richer age-aware call coaching. For leads up to 30 days old, the duplicated quick voicemail, SMS and email outputs are now shared for:
+Reconnect keeps its richer age-aware call coaching. For leads up to 30 days old, the duplicated quick voicemail, SMS and email outputs for "Saw numbers, then left" now come from `left-with-numbers`.
 
-- Saw numbers, then left -> `left-with-numbers`
-- Talked, then went quiet -> `ghost-after-visit`
-
-Older age bands remain local until age variants are modeled in the Funnel data itself.
+Other reconnect situations remain local until the Funnel model has an exact behavior match and, where needed, age-specific variants. In particular, "we talked, then went quiet" is not automatically treated as an in-store ghost.
 
 ## Migration rule
 
