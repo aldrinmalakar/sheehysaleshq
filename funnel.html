@@ -4,28 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Behavior Funnel | Sheehy Sales HQ</title>
-<style>
-:root{--ink:#1a2330;--muted:#6b7889;--line:#e4e8ee;--blue:#2f5fe0;--soft:#f6f8fb;--green:#16794a;--amber:#9a5b00}
-*{box-sizing:border-box}
-body{margin:0;background:#f4f6f9;color:var(--ink);font-family:"Space Grotesk",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-.wrap{max-width:1080px;margin:0 auto;padding:28px 16px 60px}
-h1{font-size:30px;margin:0 0 6px}.sub{color:var(--muted);font-size:14px;line-height:1.5;margin-bottom:20px}
-.banner{background:#fff8e8;border:1px solid #f0d599;border-radius:12px;padding:11px 13px;font-size:13px;line-height:1.45;margin-bottom:16px}
-.workflow,.move,.card{background:#fff;border:1px solid var(--line);border-radius:14px}
-.workflow{overflow:hidden;margin-bottom:16px}.flow-section{padding:16px}.flow-section+.flow-section{border-top:1px solid var(--line)}
-.flow-title{font-size:17px;font-weight:800;margin:0 0 3px}.flow-desc{font-size:12px;color:var(--muted);line-height:1.45;margin-bottom:13px}
-.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:800;margin-bottom:8px}
-.fill-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-label{display:block;color:var(--muted);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}input,select{width:100%;margin-top:5px;border:1px solid #d8dee7;border-radius:9px;background:#fff;color:var(--ink);padding:10px 11px;font:inherit;font-size:14px;outline:none}input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(47,95,224,.10)}
-.fill-actions{display:flex;gap:10px;align-items:center;margin-top:10px}.note{font-size:12px;color:var(--muted)}
-button{font:inherit}.btn{border:0;border-radius:9px;padding:8px 11px;background:var(--blue);color:#fff;font-size:12px;font-weight:700;cursor:pointer}.btn.ghost{background:#fff;color:var(--muted);border:1px solid var(--line)}.btn:hover{filter:brightness(.97)}
-.stages{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}.stage{border:1px solid var(--line);background:#fff;color:#566375;border-radius:999px;padding:7px 11px;font-size:12px;font-weight:700;cursor:pointer}.stage.on{background:var(--blue);border-color:var(--blue);color:#fff}.stage-hint{font-size:12px;color:var(--muted);margin:0 0 12px;line-height:1.45}.behavior-row{display:grid;grid-template-columns:1fr;gap:8px;max-width:720px}
-#stageOpsMount{margin-top:14px}
-.move{padding:16px;margin-bottom:16px;border-left:4px solid var(--blue)}.move h2{font-size:20px;margin:0 0 7px}.meta{display:grid;grid-template-columns:1fr 1fr;gap:12px}.meta-box{background:var(--soft);border-radius:10px;padding:10px 11px}.meta-title{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:800;margin-bottom:4px}.meta-text{font-size:13px;line-height:1.45}.next{margin-top:10px;padding:10px 11px;background:#edf7f1;border-radius:10px;color:#24583d;font-size:13px;line-height:1.45}.next b{color:var(--green)}.strategy{margin-top:10px;padding:10px 11px;background:#f3f6ff;border:1px solid #d8e2ff;border-radius:10px;color:#415474;font-size:12.5px;line-height:1.5}.strategy b{color:#244fbf}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.card{padding:14px;min-width:0}.card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}.channel{font-size:13px;font-weight:800}.channel small{font-weight:500;color:var(--muted);margin-left:5px}.script{white-space:pre-wrap;font-size:14px;line-height:1.55;background:var(--soft);border-radius:10px;padding:12px;min-height:105px;overflow-wrap:anywhere}.email-subject{font-size:13px;font-weight:750;margin-bottom:8px;padding:9px 10px;border:1px dashed #ccd5e1;border-radius:9px;background:#fff}.full{grid-column:1/-1}.foot{margin-top:22px;color:var(--muted);font-size:12px;line-height:1.5;text-align:center}
-@media(max-width:820px){.fill-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.grid,.meta{grid-template-columns:1fr}.full{grid-column:auto}}
-@media(max-width:520px){.fill-grid{grid-template-columns:1fr}.wrap{padding:18px 10px 44px}h1{font-size:25px}.stages{gap:5px}.stage{font-size:11px;padding:6px 9px}.flow-section{padding:13px}}
-</style>
+<link rel="stylesheet" href="./funnel-ui.css">
 <script src="./nav.js" defer></script>
 <script src="./funnel-data.js"></script>
 <script src="./funnel-lead-data.js"></script>
@@ -35,141 +14,62 @@ button{font:inherit}.btn{border:0;border-radius:9px;padding:8px 11px;background:
 <body>
 <div class="wrap">
   <h1>Behavior Funnel</h1>
-  <div class="sub">Choose what the customer is actually doing, then let the available channels change the strategy. Email-only, text-only and phone access are execution constraints, not substitute customer behaviors.</div>
 
-  <div class="banner"><b>Use this as the execution layer, not the CRM.</b> DriveCentric remains the system of record. Verify inventory, price, incentives and any deal-specific figures before you state them. Finance-specific payment, APR, approval and protection questions go to finance rather than being guessed here.</div>
-
-  <section class="workflow">
-    <div class="flow-section">
-      <div class="eyebrow">1. Customer behavior</div>
-      <div class="flow-title">Where are you in the sale?</div>
-      <div class="flow-desc">Pick the stage, then pick what the customer actually did, asked or said. Do not use the behavior selector to describe whether you have their phone number.</div>
-      <div class="stages" id="stages"></div>
-      <div class="stage-hint" id="stageHint"></div>
-      <div class="behavior-row">
-        <label>What did they do or ask?
-          <select id="behavior"></select>
-        </label>
-      </div>
+  <section class="panel" id="customerContext">
+    <div class="panel-title"><div><div class="kicker">1 · Start here</div><h2>Customer context</h2></div><button class="mini-btn" id="clearCustomer" type="button">Clear customer</button></div>
+    <div class="context-grid">
+      <label>Customer first name<input data-f="name" autocomplete="off" placeholder="Sarah"></label>
+      <label>Vehicle of interest<input data-f="vehicle" autocomplete="off" placeholder="2026 Rogue SV"></label>
+      <label>Current / trade vehicle<input data-f="current" autocomplete="off" placeholder="2021 RAV4"></label>
+      <label>Customer ZIP code<input data-f="zipcode" id="customerZip" inputmode="numeric" maxlength="5" autocomplete="postal-code" placeholder="22102"></label>
+      <label>Primary appointment time<input data-f="daytime" autocomplete="off" placeholder="Today at 5:30"></label>
+      <label>Alternate appointment time<input data-f="alttime" autocomplete="off" placeholder="Tomorrow at 11:00"></label>
+      <label>Your name<input data-f="agent" autocomplete="off" placeholder="Aldrin"></label>
+      <label>Your phone<input data-f="number" autocomplete="off" placeholder="Your direct number"></label>
+      <label>Your email<input data-f="email" autocomplete="off" placeholder="you@sheehy.com"></label>
     </div>
 
-    <div class="flow-section">
-      <div class="eyebrow">2. Customer context</div>
-      <div class="fill-grid">
-        <label>Customer first name<input data-f="name" autocomplete="off" placeholder="Sarah"></label>
-        <label>Vehicle of interest<input data-f="vehicle" autocomplete="off" placeholder="2026 Rogue SV"></label>
-        <label>Current / trade vehicle<input data-f="current" autocomplete="off" placeholder="2021 RAV4"></label>
-        <label>Primary time<input data-f="daytime" autocomplete="off" placeholder="Today at 5:30"></label>
-        <label>Alternate time<input data-f="alttime" autocomplete="off" placeholder="Tomorrow at 11:00"></label>
-        <label>Your name<input data-f="agent" autocomplete="off" placeholder="Aldrin"></label>
-        <label>Your phone<input data-f="number" autocomplete="off" placeholder="Your direct number"></label>
-        <label>Your email<input data-f="email" autocomplete="off" placeholder="you@sheehy.com"></label>
+    <div class="context-tools">
+      <div class="context-box">
+        <div class="box-title">How can you reach them?</div>
+        <div class="channel-chips" id="channelChips"></div>
+        <div class="context-status"><span class="status-pill blue" id="contactMode">Phone + Email</span><span class="status-pill" id="distanceStatus">Add ZIP for distance</span></div>
       </div>
-      <div class="fill-actions"><button class="btn ghost" id="clearCustomer" type="button">Clear customer</button><span class="note">Blank fields remain visible as tokens. Nothing is guessed.</span></div>
-    </div>
-
-    <div class="flow-section" id="executionSection">
-      <div class="eyebrow">3. How can you reach them?</div>
-      <div id="stageOpsMount"></div>
+      <div class="context-box" id="leadTimingBox">
+        <div class="box-title">Lead timing</div>
+        <div class="inline-row"><input type="datetime-local" id="leadAt"><button class="mini-btn" id="leadNow" type="button">Now</button><span class="status-pill" id="leadAge">Not set</span></div>
+      </div>
     </div>
   </section>
 
-  <div class="move" id="move"></div>
-  <div class="grid" id="scripts"></div>
+  <section class="panel">
+    <div class="panel-title"><div><div class="kicker">2 · Behavior</div><h2>What is happening?</h2></div></div>
+    <div class="situation-grid">
+      <label>Where are you in the sale?<select id="stageSelect"></select></label>
+      <label>What did the customer do or ask?<select id="behavior"></select></label>
+    </div>
+    <div class="behavior-bar"><span class="status-pill blue" id="behaviorTag">Behavior</span><span class="status-pill" id="contextTag">Context</span></div>
+  </section>
 
-  <div class="foot">Behavior decides the message. Channel access changes the delivery strategy. If the behavior is unusual, use the fallback pattern: acknowledge, clarify, isolate, answer briefly, then ask for the next step.</div>
+  <h2 class="scripts-title">Wordtracks</h2>
+  <div class="scripts-grid" id="scripts"></div>
+
+  <section class="panel video-panel" id="videoPanel" style="margin-top:15px">
+    <div class="panel-title"><div><div class="kicker">3 · 60 seconds</div><h2>DriveCentric 6PO video</h2></div></div>
+    <div class="video-grid">
+      <div class="sixpo" id="sixpo"></div>
+      <div class="companion" id="videoCompanion"></div>
+    </div>
+  </section>
+
+  <section class="panel" id="videoFollowupPanel">
+    <div class="panel-title"><div><div class="kicker">4 · After send</div><h2>DriveCentric video follow-up</h2></div></div>
+    <div id="videoDeliveryControls"></div>
+    <div class="notice" id="videoNotice"></div>
+    <div class="delivery-actions"><button class="mini-btn primary" id="copyNotice" type="button">Copy follow-up</button><button class="mini-btn" id="logVideo" type="button">Log video sent</button><button class="mini-btn" id="logNotice" type="button">Log follow-up</button></div>
+    <details class="attempts" id="attemptDetails"><summary id="attemptSummary">Attempt log</summary><div class="attempt-body"><div class="attempt-grid"><label>Activity<select id="logWhat"><option>Called, connected</option><option>Called, left voicemail</option><option>Called, no answer</option><option>Texted</option><option>Emailed</option><option>Sent video by email</option><option>Sent video by SMS</option><option>Video follow-up by email</option><option>Video follow-up by SMS</option></select></label><label>Result<select id="logResult"><option>No response yet</option><option>Replied</option><option>Appointment set</option><option>Callback scheduled</option><option>Not interested</option><option>Bad contact info</option></select></label><button class="mini-btn primary" id="logAdd" type="button">Log attempt</button></div><div id="leadLog"></div></div></details>
+  </section>
 </div>
-<script>
-(function(){
-  var PROFILE_KEY='shq_fill_v1';
-  var DATA=window.SHQFunnel||{stages:[],scenarios:[]};
-  var qp;
-  try{qp=new URLSearchParams(location.search);}catch(e){qp={get:function(){return null;}};}
-
-  function allowedInStage(x,stage){return !!x&&!x.hiddenBehavior&&(x.stage===stage||(Array.isArray(x.alsoStages)&&x.alsoStages.indexOf(stage)>-1));}
-  function listForStage(stage){
-    var list=DATA.scenarios.filter(function(x){return allowedInStage(x,stage);});
-    var fallback=DATA.scenarios.filter(function(x){return x.id==='fallback';})[0];
-    if(fallback&&!list.some(function(x){return x.id==='fallback';}))list=list.concat([fallback]);
-    return list;
-  }
-
-  var requestedStage=qp.get('stage')||'new';
-  var requestedScenario=qp.get('scenario')||'fresh-standard';
-  if(!DATA.stages.some(function(x){return x.id===requestedStage;}))requestedStage='new';
-  var requestedObj=DATA.scenarios.filter(function(x){return x.id===requestedScenario;})[0];
-  if(!allowedInStage(requestedObj,requestedStage)){
-    var firstRequested=listForStage(requestedStage)[0];
-    requestedScenario=firstRequested?firstRequested.id:'fresh-standard';
-  }
-  var state={stage:requestedStage,scenario:requestedScenario,fill:{}};
-
-  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
-  function loadFill(){try{return JSON.parse(localStorage.getItem(PROFILE_KEY)||'{}');}catch(e){return {};}}
-  function saveFill(){try{localStorage.setItem(PROFILE_KEY,JSON.stringify(state.fill));}catch(e){}}
-  function seed(){
-    state.fill=loadFill();
-    if(!state.fill.agent)state.fill.agent='Aldrin';
-    document.querySelectorAll('[data-f]').forEach(function(el){
-      var k=el.getAttribute('data-f');
-      el.value=state.fill[k]||'';
-      el.addEventListener('input',function(){state.fill[k]=el.value;saveFill();render();});
-    });
-  }
-  function tokens(text){
-    var f=state.fill||{};
-    var map={'[Name]':f.name||'[Name]','[vehicle]':f.vehicle||'[vehicle]','[current]':f.current||'[current]','[day/time]':f.daytime||'[day/time]','[alt time]':f.alttime||'[alt time]','[agent]':f.agent||'[agent]','[number]':f.number||'[number]','[email]':f.email||'[email]'};
-    var out=String(text||'');Object.keys(map).forEach(function(k){out=out.split(k).join(map[k]);});return out;
-  }
-  function rawScenario(){return DATA.scenarios.filter(function(x){return x.id===state.scenario;})[0]||listForStage(state.stage)[0]||DATA.scenarios[0];}
-  function executionContext(){
-    if(window.SHQFunnelExecution&&typeof window.SHQFunnelExecution.getContext==='function')return window.SHQFunnelExecution.getContext();
-    return {phone:true,email:true,text:false,emailOnly:false,textOnly:false,stage:state.stage};
-  }
-  function scenario(){var raw=rawScenario();return typeof DATA.resolveScenario==='function'?DATA.resolveScenario(raw,executionContext()):raw;}
-
-  function renderStages(){
-    var box=document.getElementById('stages');
-    box.innerHTML=DATA.stages.map(function(s){return '<button type="button" class="stage'+(s.id===state.stage?' on':'')+'" data-stage="'+esc(s.id)+'">'+esc(s.label)+'</button>';}).join('');
-    box.querySelectorAll('[data-stage]').forEach(function(btn){btn.addEventListener('click',function(){
-      state.stage=btn.getAttribute('data-stage');
-      var first=listForStage(state.stage)[0];state.scenario=first?first.id:'fallback';render();
-    });});
-  }
-  function renderBehavior(){
-    var stage=DATA.stages.filter(function(x){return x.id===state.stage;})[0];
-    document.getElementById('stageHint').textContent=stage?stage.hint:'';
-    var list=listForStage(state.stage),sel=document.getElementById('behavior');
-    if(!list.some(function(x){return x.id===state.scenario;})&&list[0])state.scenario=list[0].id;
-    sel.innerHTML=list.map(function(x){return '<option value="'+esc(x.id)+'"'+(x.id===state.scenario?' selected':'')+'>'+esc(x.label)+'</option>';}).join('');
-  }
-  function copy(text,btn){
-    var done=function(){var old=btn.textContent;btn.textContent='Copied';setTimeout(function(){btn.textContent=old;},900);};
-    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(done).catch(function(){fallbackCopy(text);done();});else{fallbackCopy(text);done();}
-  }
-  function fallbackCopy(text){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);}
-  function card(title,sub,text,extraClass){return '<div class="card '+(extraClass||'')+'"><div class="card-head"><div class="channel">'+esc(title)+(sub?'<small>'+esc(sub)+'</small>':'')+'</div><button class="btn ghost copyBtn" type="button">Copy</button></div><div class="script">'+esc(tokens(text))+'</div></div>';}
-
-  function render(){
-    renderStages();renderBehavior();var x=scenario();if(!x)return;
-    var strategy=x.channelStrategy?'<div class="strategy"><b>Channel strategy:</b> '+esc(x.channelStrategy)+'</div>':'';
-    document.getElementById('move').innerHTML='<h2>'+esc(x.label)+'</h2><div class="meta"><div class="meta-box"><div class="meta-title">What this means</div><div class="meta-text">'+esc(x.when)+'</div></div><div class="meta-box"><div class="meta-title">Your goal</div><div class="meta-text">'+esc(x.goal)+'</div></div></div><div class="next"><b>Next move:</b> '+esc(x.next)+'</div>'+strategy;
-    var emailText='Subject: '+tokens(x.subject)+'\n\n'+tokens(x.email),html='';
-    html+=card('Call','live wordtrack',x.call,'');
-    html+=card('Voicemail','sell the callback',x.vm,'');
-    html+=card('SMS','one clear ask',x.sms,'');
-    html+='<div class="card"><div class="card-head"><div class="channel">Email <small>behavior-matched subject + body</small></div><button class="btn ghost copyBtn emailCopy" type="button">Copy</button></div><div class="email-subject">'+esc(tokens(x.subject))+'</div><div class="script">'+esc(tokens(x.email))+'</div></div>';
-    html+=card('Video','DriveCentric',x.video,'full');
-    document.getElementById('scripts').innerHTML=html;
-    document.querySelectorAll('#scripts .card').forEach(function(c){var b=c.querySelector('.copyBtn');if(!b)return;if(b.classList.contains('emailCopy'))b.addEventListener('click',function(){copy(emailText,b);});else b.addEventListener('click',function(){copy((c.querySelector('.script')||{}).textContent||'',b);});});
-    window.dispatchEvent(new CustomEvent('shq:funnel-rendered'));
-  }
-
-  document.getElementById('behavior').addEventListener('change',function(){state.scenario=this.value;render();});
-  document.getElementById('clearCustomer').addEventListener('click',function(){['name','vehicle','current','daytime','alttime'].forEach(function(k){state.fill[k]='';});saveFill();document.querySelectorAll('[data-f]').forEach(function(el){var k=el.getAttribute('data-f');el.value=state.fill[k]||'';});render();});
-  window.addEventListener('shq:funnel-context-change',render);
-  seed();render();
-})();
-</script>
+<script src="./funnel-ui.js"></script>
 </body>
 </html>
