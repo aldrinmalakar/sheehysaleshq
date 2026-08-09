@@ -56,58 +56,60 @@
 
   function focusFor(id){
     var map={
-      'availability-first':'Show physical proof of the exact unit only after you have verified it. If status is still being checked, say that plainly.',
-      'price-first':'Show the exact vehicle, window label or stock context. Do not quote an unverified number on video. Tell them you are working the comparison they asked for.',
-      'test-drive-request':'Show the exact vehicle, driver area and keys. Make the video feel like the car is being prepared for their visit.',
-      'wants-details':'Spend most of the video on the exact feature or detail they asked about. Do not turn it into a feature dump.',
-      'payment-apr':'Show the vehicle and keep the finance piece process-focused. Do not state a payment, APR or approval expectation.',
-      'trade-value':'Show the vehicle they want, then explain that the trade needs a real appraisal. Ask them to bring the trade with them.',
-      'credit-concern':'Keep the video neutral and private. Do not say “credit” where someone else could overhear it. Say you received their note and can handle the next step privately.',
-      'competitor-shop':'Show one visible reason the vehicle deserves comparison. Do not invent a competitor disadvantage.',
-      'decision-maker':'Show the one or two items most likely to matter to both decision makers, then invite both to the same visit or call.',
-      'unit-gone':'Do not film a random replacement. If you have a verified alternative, show it and state exactly how it differs. Otherwise make this a face-to-name update.',
-      'no-response-day1':'Use the vehicle as visual proof that a real person is working the lead. Ask for one simple reply: status, numbers or a time to see it.',
-      'final-nudge':'Keep it short. One face-to-name shot, one vehicle shot and one clean “still looking or all set?” close.'
+      'availability-first':'Show proof of the exact unit only after verification. Say what you verified. Then stop and move to the time choice.',
+      'price-first':'Show the exact vehicle or stock context. Say: “I am working the comparison you asked for. I will not invent a number on camera.”',
+      'test-drive-request':'Show the exact vehicle, driver area and keys. Make it obvious this is the vehicle they are coming to drive, subject to final verification.',
+      'wants-details':'Spend this entire section on the exact feature or detail they asked about. One proof point, not a feature dump.',
+      'payment-apr':'Show the vehicle. Say you will keep the finance answer real and route it correctly. Do not state payment, APR or approval expectations.',
+      'trade-value':'Show the vehicle they want. Then say the trade gets a real appraisal when the actual trade is in front of the right manager.',
+      'credit-concern':'Keep the video neutral and private. Say you received the note and the next step can be handled privately. Do not say sensitive details on video.',
+      'competitor-shop':'Show one visible reason this vehicle deserves the comparison. State the comparison point. Do not invent a weakness on the other vehicle.',
+      'decision-maker':'Show the one or two things both decision makers need to see. Close by getting both people into the same visit or call.',
+      'unit-gone':'Do not film a random replacement. If you have a verified alternative, show it and name the difference immediately. Otherwise make this a direct face-to-name update.',
+      'no-response-day1':'Use the vehicle as proof that a real person is working the lead. Close with one choice: status, numbers or a time to see it.',
+      'final-nudge':'One face shot, one vehicle shot, one question: still shopping, already bought or pause?'
     };
-    return map[id]||'Show the exact vehicle and one relevant detail tied to why they submitted the lead. Do not give a generic walkaround.';
+    return map[id]||'One proof point only. Tie it directly to why they reached out. Do not turn the video into a walkaround.';
   }
   function videoPlan(){
-    var ctx=executionContext(),name=tokens('[Name]'),veh=tokens('[vehicle]'),agent=tokens('[agent]'),close=ctx.distanceFar?'Because they are coming from a distance, say you will verify the relevant vehicle details before they leave home, then ask for a firm time.':'Ask for the appointment with the two times already entered: '+tokens('[day/time]')+' or '+tokens('[alt time]')+'.';
-    if(ctx.emailOnly)close+=' If a quick call would save back-and-forth, invite them to reply with the best number and time.';
+    var ctx=executionContext(),name=tokens('[Name]'),veh=tokens('[vehicle]'),agent=tokens('[agent]');
+    var close=ctx.distanceFar?'Close: “Before you leave home I will verify the relevant vehicle details again. I have '+tokens('[day/time]')+' or '+tokens('[alt time]')+'. Which works?”':'Close: “I have '+tokens('[day/time]')+' or '+tokens('[alt time]')+'. Which works better?” Do not end with “let me know.”';
+    if(ctx.emailOnly)close+=' If a 5-minute call would save the email back-and-forth, add: “Send me the best number and a 5-minute window.”';
     return [
-      ['0–7 sec','Face + name','Camera on you. “Hi '+name+', '+agent+' at Sheehy Nissan.” One sentence on why you made the video.'],
-      ['7–17 sec','Confirm the request','Show '+veh+' or the exact verified vehicle context. State the year/model/trim they asked about so they know this is personal.'],
-      ['17–28 sec','Exterior proof','Front 3/4 plus the exterior detail that matters: color, wheels, condition or exact stock identity. Only say what you can physically verify.'],
-      ['28–40 sec','Inside proof','Driver area, second row or cargo area. Pick one area that helps this customer decide instead of showing everything.'],
-      ['40–51 sec','Behavior proof',focusFor(state.scenario)],
-      ['51–60 sec','Appointment close',close]
+      ['0–6 sec','Face + reason','Camera on you. “Hi '+name+', '+agent+' at Sheehy Nissan. You reached out on the '+veh+', so I made this specifically for your request.”'],
+      ['6–16 sec','Prove it is personal','Show '+veh+' or the exact verified vehicle context. State the year, model and trim they asked about. No generic intro.'],
+      ['16–27 sec','Exterior proof','Front 3/4 plus one exterior proof point: color, wheels, condition or stock identity. Show proof, do not narrate the brochure.'],
+      ['27–38 sec','Interior proof','Show the single interior area most likely to matter: driver seat, second row, cargo or the requested feature. One point only.'],
+      ['38–50 sec','Behavior proof',focusFor(state.scenario)],
+      ['50–60 sec','Close',close]
     ];
   }
   function companionFocus(id){
     var map={
-      'availability-first':'I focused on the exact vehicle and the details tied to the availability question you sent.',
-      'price-first':'I focused on the exact vehicle so we are talking about the same unit while I work the comparison you asked for.',
-      'test-drive-request':'I focused on what you will want to see before you make the trip for the drive.',
-      'wants-details':'I focused on the specific vehicle detail you asked about instead of giving you a generic walkaround.',
-      'payment-apr':'I focused on the vehicle itself. I will keep the finance side accurate rather than guessing at a payment, rate or approval.',
-      'trade-value':'I focused on the vehicle you are considering. Your trade still needs a real appraisal, and I can make that part easy when you come in.',
-      'credit-concern':'I kept the video focused on the vehicle. I received your note and can handle the next step privately.',
-      'competitor-shop':'I focused on the parts that make this vehicle worth comparing with the other option you are considering.',
-      'decision-maker':'I focused on the items that are easiest for both decision makers to compare together.',
-      'unit-gone':'I made this as an honest update on the requested vehicle and the closest verified direction I found.',
-      'no-response-day1':'I kept this short so you can see a real person is working the request and tell me what you still need.',
-      'final-nudge':'I kept this to one quick update so you can tell me whether the vehicle is still in play or you are all set.'
+      'availability-first':'I focused on the exact vehicle context tied to your availability question.',
+      'price-first':'I focused on the exact vehicle so we are comparing the same unit while I work the number question.',
+      'test-drive-request':'I focused on what you need to see before you make the trip for the drive.',
+      'wants-details':'I focused on the exact detail you asked about, not a generic feature tour.',
+      'payment-apr':'I kept the video on the vehicle. I will keep the finance answer real instead of guessing.',
+      'trade-value':'I focused on the vehicle you are considering. Your trade gets a real appraisal when we put eyes on it.',
+      'credit-concern':'I kept the video on the vehicle. I received your note and the next step can stay private.',
+      'competitor-shop':'I focused on a real comparison point instead of giving you a generic pitch.',
+      'decision-maker':'I focused on the pieces both decision makers can compare together.',
+      'unit-gone':'I made this as a straight update and only used a verified alternative if I had one.',
+      'no-response-day1':'I kept it short so you can tell me what you still need: status, numbers or a time to see it.',
+      'final-nudge':'I kept it to one clean update so you can tell me whether you are still shopping, already bought or pausing.'
     };return map[id]||'I kept it focused on the exact vehicle and the reason you reached out.';
   }
   function videoCompanion(){
-    var ctx=executionContext(),subject='🎥 '+tokens('[Name]')+', Quick Video on the '+tokens('[vehicle]');
-    var body='Hi '+tokens('[Name]')+',\n\nI made you a quick video on the '+tokens('[vehicle]')+'. '+companionFocus(state.scenario);
-    if(ctx.distanceFar)body+='\n\nSince you are coming from a good distance away, I focused on the things that help you decide whether the trip makes sense. Before you head this way, I will verify the relevant vehicle details.';
-    body+='\n\nReply with anything specific you want me to show.';
-    if(ctx.emailOnly)body+=' If a quick call is easier after you watch it, include the best number and a good time.';
+    var ctx=executionContext(),subject='🎥 '+tokens('[Name]')+', I Made This for Your '+tokens('[vehicle]')+' Request';
+    var body='Hi '+tokens('[Name]')+',\n\nI made you a 60-second video on the '+tokens('[vehicle]')+'. '+companionFocus(state.scenario);
+    if(ctx.distanceFar)body+='\n\nBecause you are coming from a distance, I will re-verify the relevant vehicle details before you leave home.';
+    body+='\n\nWatch it, then tell me the one thing you want me to work next.';
+    if(['new','attempting','engaged','appointment','outbound'].indexOf(state.stage)>-1)body+=' I have '+tokens('[day/time]')+' or '+tokens('[alt time]')+'. Which works better?';
+    if(ctx.emailOnly)body+=' If a 5-minute call is faster than an email chain, send the best number and a 5-minute window.';
     body+='\n\n'+tokens('[agent]');
     if(ctx.email)return {label:'Companion email',subject:subject,body:body};
-    if(ctx.text)return {label:'Companion SMS',subject:'',body:'Hi '+tokens('[Name]')+', '+tokens('[agent]')+' at Sheehy Nissan. I just sent you a quick video on the '+tokens('[vehicle]')+'. '+companionFocus(state.scenario)+' Tell me what you want me to check next.'};
+    if(ctx.text)return {label:'Companion SMS',subject:'',body:'Hi '+tokens('[Name]')+', '+tokens('[agent]')+' at Sheehy Nissan. I sent you a 60-second video on the '+tokens('[vehicle]')+'. '+companionFocus(state.scenario)+' Watch it, then tell me what you want me to work next.'};
     return {label:'Companion message',subject:'',body:'No email or text channel is enabled. Use the video only after you have a valid digital delivery path.'};
   }
   function renderVideo(){
