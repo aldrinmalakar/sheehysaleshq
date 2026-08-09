@@ -1,0 +1,72 @@
+(function(){
+'use strict';
+var FILL_KEY='shq_fill_v1',F=(function(){try{return JSON.parse(localStorage.getItem(FILL_KEY)||'{}');}catch(e){return {};}})();
+function $(id){return document.getElementById(id);}function save(){try{localStorage.setItem(FILL_KEY,JSON.stringify(F));}catch(e){}}function tok(k,fb){return F[k]&&F[k].trim()?F[k].trim():fb;}function name(){return tok('name','[Name]');}function req(){return tok('vehicle','[requested vehicle]');}function av(){return $('availableVeh').value.trim()||'[available vehicle]';}function agent(){return tok('agent','[agent]');}function number(){return tok('number','[number]');}function t1(){return tok('daytime','[day/time]');}function t2(){return tok('alttime','[alt time]');}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function diff(){return $('difference').value;}function response(){return $('response').value;}function location(){return $('location').value;}
+var DIFF={
+'exact-sister':{label:'Exact match · sister store',line:'The specification matches what they asked for, but the vehicle is not on our Manassas lot.',proof:'Show the requested specification on screen or in the verified listing. Do not say the unit is secured until management confirms it.'},
+'color':{label:'Color only',line:'Same year, model and trim. Color is the only material difference.',proof:'Show the actual color clearly in daylight and say that color is the difference.'},
+'trim':{label:'Trim difference',line:'Same year and model, but the trim changes. Treat the equipment difference as real.',proof:'Show the trim badge and one visible feature that differs. Name what is not the same.'},
+'year':{label:'Model-year difference',line:'Same model and trim, but the model year changes. Do not present the years as identical.',proof:'Show the model year and the areas that matter to the customer. Verify any feature changes before stating them.'},
+'trim-color':{label:'Trim + color',line:'Same model/year, but both trim and color differ.',proof:'Show both differences early so the customer never feels switched.'},
+'year-trim':{label:'Year + trim',line:'Same model, but year and trim both differ.',proof:'Show the actual year and trim first. Use it as a comparison, not as a substitute disguised as the requested vehicle.'},
+'year-color':{label:'Year + color',line:'Same model/trim, but year and color differ.',proof:'Show both differences before showing similarities.'},
+'all':{label:'Year + trim + color',line:'It is the same model family, but year, trim and color all differ.',proof:'Call it a driving/size comparison only. Do not imply it represents the exact requested configuration.'},
+'brand':{label:'Different brand comparable',line:'This is a different brand vehicle being offered only as a comparable option.',proof:'Say the brand/model difference out loud. Show why it may be worth comparing based on the customer’s stated priorities, without inventing a competitor weakness.'}
+};
+function d(){return DIFF[diff()]||DIFF.color;}
+function placeLine(){if(location()==='sister'||diff()==='exact-sister')return 'I found '+av()+' in our group at a sister store. I can have my manager verify whether it can be secured, but I will not call it ours until that is confirmed.';return 'I do have '+av()+' here at our Manassas store and I can put it in front of you.';}
+function differenceLine(){var k=diff();if(k==='exact-sister')return 'It matches the request, with the only issue being that it is not physically here yet.';if(k==='color')return 'It is the same year, model and trim. The color is the only difference.';if(k==='trim')return 'It is the same year and model, but a different trim, so I will show you exactly what changes and what stays the same.';if(k==='year')return 'It is the same model and trim, but a different model year, so I will not pretend they are identical.';if(k==='trim-color')return 'The trim and color are different. I will call out both differences before we compare anything else.';if(k==='year-trim')return 'The year and trim are different, so this is a comparison vehicle, not the exact build you asked for.';if(k==='year-color')return 'The model year and color are different. I will show both differences plainly.';if(k==='all')return 'The year, trim and color all differ. This is useful for the drive and basic fit, not as a claim that it is the same configuration.';return 'It is a different brand comparable. I am not presenting it as the same vehicle, only as another option worth comparing if you are open to it.';}
+function intro(){return 'Hi '+name()+', this is '+agent()+' at Sheehy Nissan of Manassas. I saw your inquiry on the '+req()+'.';}
+function subjectFor(){var k=diff();if(k==='exact-sister')return '🚙 '+name()+', I Found the '+req()+' Match';if(k==='color')return '🎨 '+name()+', Same '+req()+' Setup, Different Color';if(k==='trim')return '🚙 '+name()+', '+req()+' Update: Different Trim';if(k==='year')return '🚙 '+name()+', '+req()+' Update: Different Model Year';if(k==='brand')return '⚖️ '+name()+', One Honest Alternative to the '+req();return '🚙 '+name()+', Update on the '+req();}
+function firstScripts(){var loc=placeLine(),dif=differenceLine();return {
+call:intro()+' I checked what I can actually put in front of you. '+loc+' '+dif+' I do not want to switch you into something you did not ask for. I do want to give you a useful option. Would you be open to seeing it '+t1()+' or is '+t2()+' better?',
+vm:'Hi '+name()+', '+agent()+' at Sheehy Nissan. I am calling about the '+req()+' you asked about. I checked the closest real option and I want to explain the exact difference before you spend any time on it. Call or text me at '+number()+'.',
+sms:'Hi '+name()+', '+agent()+' at Sheehy Nissan. I checked the '+req()+' request. I have a real option, but there is a difference I want to be upfront about: '+d().line+' Are you open to seeing the closest match '+t1()+' or '+t2()+'?',
+subject:subjectFor(),
+email:'Hi '+name()+',\n\nI checked the '+req()+' you asked about.\n\n'+loc+' '+dif+'\n\nI do not want to send you a substitute and pretend it is what you requested. If you are open to comparing the closest real option, I can have it ready '+t1()+' or '+t2()+'.\n\n'+agent()
+};}
+function pushbackScripts(){return {
+call:'That is fair, '+name()+'. You asked for the '+req()+', not something else. I am not going to argue with you about that. The reason I mentioned '+av()+' is simple: '+differenceLine()+' If that difference is a dealbreaker, tell me and I will stay focused on the exact request. If it is not, would seeing the closest real option help while I keep working the exact one?',
+vm:'Hi '+name()+', '+agent()+' at Sheehy Nissan. I heard you on wanting the exact '+req()+'. I am not trying to replace your request. I have one clean option to compare and I will explain exactly how it differs. Call or text me at '+number()+'.',
+sms:'You are right, '+name()+'. You asked for the '+req()+'. I am not trying to disguise '+av()+' as the same vehicle. '+differenceLine()+' If that difference kills it, say so and I will stay on the exact request. If not, I can show you the closest real option.',
+subject:name()+', You Are Right About the '+req(),
+email:'Hi '+name()+',\n\nYou are right. You asked for the '+req()+', not a random substitute.\n\n'+differenceLine()+'\n\nIf that difference is a dealbreaker, tell me and I will stay focused on the exact request. If it is not, I can show you the closest real option while I keep checking the exact one.\n\n'+agent()
+};}
+function openScripts(){return {
+call:'Perfect. Then I will make the comparison easy. '+differenceLine()+' I will have '+av()+' ready and I will show the differences first, not hide them. Is '+t1()+' or '+t2()+' better?',
+vm:'Hi '+name()+', '+agent()+' at Sheehy Nissan. I have the '+av()+' comparison ready to make simple for you. I will show the differences first so you can decide fast. Call or text me at '+number()+'.',
+sms:'Perfect. I will have '+av()+' ready and I will show you the differences first. Is '+t1()+' or '+t2()+' better?',
+subject:'📅 '+name()+', Let’s Compare the '+av(),
+email:'Hi '+name()+',\n\nI will make the comparison straightforward. '+differenceLine()+'\n\nI can have '+av()+' ready so you can decide quickly whether the difference matters in person. Is '+t1()+' or '+t2()+' better?\n\n'+agent()
+};}
+function pendingScripts(){return {
+call:'Hi '+name()+', '+agent()+' at Sheehy Nissan. Quick update on the '+req()+'. My manager is checking the sister-store vehicle now. I do not have a confirmed transfer yet, so I am not going to tell you it is ours until it is locked. The moment I have a real yes or no, I will contact you.',
+vm:'Hi '+name()+', '+agent()+' at Sheehy Nissan. Quick update on the '+req()+'. My manager is checking the sister-store vehicle now. It is not confirmed yet. I will contact you as soon as I have a real answer.',
+sms:'Hi '+name()+', quick update on the '+req()+'. My manager is checking the sister-store vehicle now. It is not confirmed yet. I will message you as soon as I have a real yes or no.',
+subject:'🔎 '+name()+', Update on the '+req(),
+email:'Hi '+name()+',\n\nQuick update on the '+req()+'. My manager is checking the sister-store vehicle now. It is not confirmed yet, so I am not going to tell you it is secured until I have that confirmation.\n\nI will contact you as soon as I have a real answer.\n\n'+agent()
+};}
+function failedScripts(){return {
+call:'Hi '+name()+', I wanted you to hear this from me first. We were not able to secure the exact '+req()+'. I know that is not the answer we wanted. I am already looking at the closest real alternatives. What matters more now, staying exact on the configuration or getting the closest match sooner?',
+vm:'Hi '+name()+', '+agent()+' at Sheehy Nissan. I have an update on the '+req()+'. We were not able to secure that exact unit, and I want to give you the options directly rather than hide behind a text. Call me at '+number()+'.',
+sms:'Hi '+name()+', I wanted to tell you directly that we were not able to secure the exact '+req()+'. I am checking the closest real alternatives now. What matters more, staying exact on the configuration or getting the closest match sooner?',
+subject:name()+', Update on the '+req(),
+email:'Hi '+name()+',\n\nI wanted to tell you directly that we were not able to secure the exact '+req()+'.\n\nI am already checking the closest real alternatives. What matters more now: staying exact on the configuration, or getting the closest match sooner?\n\nReply with which direction matters more and I will work that first.\n\n'+agent()
+};}
+function scripts(){var r=response();if(r==='pushback')return pushbackScripts();if(r==='open')return openScripts();if(r==='pending')return pendingScripts();if(r==='failed')return failedScripts();return firstScripts();}
+function videoPlan(){var r=response(),focus=d().proof,close=r==='pending'?'Close with: “I will update you as soon as management confirms whether the sister-store vehicle can be secured.”':r==='failed'?'Close with a choice: stay exact on the requested configuration or move to the closest match sooner.':'Close with the appointment choice: '+t1()+' or '+t2()+'.';return [
+['1 · Face + reason','Hi '+name()+', '+agent()+' at Sheehy Nissan. Say you made the video specifically for their '+req()+' inquiry.'],
+['2 · Show the real vehicle','Show '+av()+' or the verified sister-store listing. Do not show a random substitute.'],
+['3 · Name the difference',differenceLine()],
+['4 · Prove the difference',focus],
+['5 · Show the useful similarity','Show only the area that genuinely helps them compare: size, seating, cargo, driving position or the feature they asked about.'],
+['6 · Ask for the next step',close]
+];}
+function fallbackCopy(text){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}ta.remove();}
+function copy(text,btn){var done=function(){var o=btn.textContent;btn.textContent='Copied';setTimeout(function(){btn.textContent=o;},900);};if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(done).catch(function(){fallbackCopy(text);done();});else{fallbackCopy(text);done();}}
+function card(kind,title,text,subject){return '<div class="card '+kind+'"><div class="head"><b>'+esc(title)+'</b><button class="copy" type="button">Copy</button></div>'+(subject?'<div class="subject">'+esc(subject)+'</div>':'')+'<div class="body">'+esc(text)+'</div></div>';}
+function render(){var s=scripts(),html=card('call','Call',s.call)+card('vm','Voicemail',s.vm)+card('sms','SMS',s.sms)+card('email','Email',s.email,s.subject);var vp=videoPlan(),pts='';vp.forEach(function(p){pts+='<div class="point"><b>'+esc(p[0])+'</b><span>'+esc(p[1])+'</span></div>';});var videoText=vp.map(function(p){return p[0]+'\n'+p[1];}).join('\n\n');html+='<div class="card video"><div class="head"><b>Video · 6PO, about 60 seconds</b><button class="copy" type="button">Copy pointers</button></div><div class="video-grid">'+pts+'</div></div>';$('scripts').innerHTML=html;var cards=$('scripts').querySelectorAll('.card');cards.forEach(function(c,i){var b=c.querySelector('.copy');if(i===3)b.onclick=function(){copy('Subject: '+s.subject+'\n\n'+s.email,b);};else if(i===4)b.onclick=function(){copy(videoText,b);};else b.onclick=function(){copy(c.querySelector('.body').textContent,b);};});$('differenceTag').textContent=d().label;$('locationTag').textContent=location()==='sister'||diff()==='exact-sister'?'Sister store':'Our lot';var labels={first:'First response',pushback:'Mismatch pushback',open:'Open to compare',pending:'Transfer check pending',failed:'Exact unit unavailable'};$('responseTag').textContent=labels[response()]||'First response';$('matchSummary').innerHTML='<b>What is different:</b> '+esc(d().line)+' <b>How to frame it:</b> '+esc(differenceLine());}
+document.querySelectorAll('[data-f]').forEach(function(el){var k=el.getAttribute('data-f');if(F[k])el.value=F[k];el.addEventListener('input',function(){F[k]=el.value.trim();save();render();});});['availableVeh','location','difference','response'].forEach(function(id){$(id).addEventListener(id==='availableVeh'?'input':'change',render);});render();
+})();
