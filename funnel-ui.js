@@ -19,14 +19,21 @@
   function rawScenario(){return DATA.scenarios.filter(function(x){return x.id===state.scenario;})[0]||listForStage(state.stage)[0]||DATA.scenarios[0];}
   function clone(x){var o={};for(var k in x)if(Object.prototype.hasOwnProperty.call(x,k))o[k]=x[k];return o;}
   function insertBeforeAgent(body,paragraph){var marker='\n\n[agent]';return body.indexOf(marker)>-1?body.replace(marker,'\n\n'+paragraph+marker):body+'\n\n'+paragraph;}
+  function travelLine(){
+    if(state.scenario==='unit-gone')return 'Since you are coming from a good distance away, I do not want you traveling for a random replacement. I will verify the alternative you actually want to see and send you proof before you head this way.';
+    if(state.scenario==='availability-first')return 'Since you are coming from a good distance away, I do not want you making the trip on an unchecked status. I will re-verify the exact vehicle before you head this way.';
+    if(state.scenario==='price-first')return 'Since you are coming from a good distance away, I want the vehicle and comparison verified before you spend time on the trip.';
+    if(state.scenario==='test-drive-request')return 'Since you are coming from a good distance away, I will re-verify the exact vehicle and have the visit lined up before you leave home.';
+    return 'Since you are coming from a good distance away, I do not want you making the trip on a guess. Before you head this way, I will re-verify the vehicle and the important details with you.';
+  }
   function applyDistance(x,ctx){
     if(!ctx.distanceFar||['new','attempting','engaged','appointment','outbound','longterm'].indexOf(state.stage)<0)return x;
-    var o=clone(x),travel='Since you are coming from a good distance away, I do not want you making the trip on a guess. Before you head this way, I will re-verify the exact vehicle and the important details with you.';
-    o.call=String(o.call||'')+'\n\n'+travel+' Then we can lock the visit around [day/time] or [alt time].';
+    var o=clone(x),travel=travelLine();
+    o.call=String(o.call||'')+'\n\n'+travel;
     o.vm=String(o.vm||'')+' I see you are coming from a distance, so I want to make sure the trip is worth it before you head this way.';
-    o.sms=String(o.sms||'')+' Since you are coming from a distance, I will re-verify the vehicle before you head this way.';
+    o.sms=String(o.sms||'')+' '+travel;
     o.email=insertBeforeAgent(String(o.email||''),travel);
-    o.channelStrategy=(o.channelStrategy?o.channelStrategy+' ':'')+'Long-distance lead: protect the trip, establish two-way contact and confirm the vehicle before travel.';
+    o.channelStrategy=(o.channelStrategy?o.channelStrategy+' ':'')+'Long-distance lead: protect the trip, establish two-way contact and confirm the relevant vehicle details before travel.';
     return o;
   }
   function scenario(){var ctx=executionContext(),x=rawScenario();if(typeof DATA.resolveScenario==='function')x=DATA.resolveScenario(x,ctx);return applyDistance(x,ctx);}
@@ -65,7 +72,7 @@
     return map[id]||'Show the exact vehicle and one relevant detail tied to why they submitted the lead. Do not give a generic walkaround.';
   }
   function videoPlan(){
-    var ctx=executionContext(),name=tokens('[Name]'),veh=tokens('[vehicle]'),agent=tokens('[agent]'),close=ctx.distanceFar?'Because they are coming from a distance, say you will re-verify the exact vehicle before they leave home, then ask for a firm time.':'Ask for the appointment with the two times already entered: '+tokens('[day/time]')+' or '+tokens('[alt time]')+'.';
+    var ctx=executionContext(),name=tokens('[Name]'),veh=tokens('[vehicle]'),agent=tokens('[agent]'),close=ctx.distanceFar?'Because they are coming from a distance, say you will verify the relevant vehicle details before they leave home, then ask for a firm time.':'Ask for the appointment with the two times already entered: '+tokens('[day/time]')+' or '+tokens('[alt time]')+'.';
     if(ctx.emailOnly)close+=' If a quick call would save back-and-forth, invite them to reply with the best number and time.';
     return [
       ['0–7 sec','Face + name','Camera on you. “Hi '+name+', '+agent+' at Sheehy Nissan.” One sentence on why you made the video.'],
@@ -95,7 +102,7 @@
   function videoCompanion(){
     var ctx=executionContext(),subject='🎥 '+tokens('[Name]')+', Quick Video on the '+tokens('[vehicle]');
     var body='Hi '+tokens('[Name]')+',\n\nI made you a quick video on the '+tokens('[vehicle]')+'. '+companionFocus(state.scenario);
-    if(ctx.distanceFar)body+='\n\nSince you are coming from a good distance away, I focused on the things that help you decide whether the trip makes sense. Before you head this way, I will re-verify the vehicle.';
+    if(ctx.distanceFar)body+='\n\nSince you are coming from a good distance away, I focused on the things that help you decide whether the trip makes sense. Before you head this way, I will verify the relevant vehicle details.';
     body+='\n\nReply with anything specific you want me to show.';
     if(ctx.emailOnly)body+=' If a quick call is easier after you watch it, include the best number and a good time.';
     body+='\n\n'+tokens('[agent]');
