@@ -26,20 +26,20 @@ function checkZip(){clearTimeout(zipTimer);zipTimer=setTimeout(function(){var z=
 function opts(sel,items,wanted){sel.innerHTML='';items.forEach(function(v){var o=document.createElement('option');o.value=v;o.textContent=v==='sms'?'SMS':'Email';sel.appendChild(o);});if(items.indexOf(wanted)>-1)sel.value=wanted;}
 function behaviorVariant(){var F=g.SHQFunnel,c=context();return F&&typeof F.getChannelVariant==='function'?F.getChannelVariant(behavior(),c):null;}
 function followupFocus(id){var m={
-'availability-first':'I sent it so you can see the exact vehicle context I am checking for you.',
-'price-first':'I sent it so we are both looking at the same vehicle while I work the comparison you asked for.',
-'test-drive-request':'I sent it so you can see the vehicle before we lock the test-drive time.',
-'wants-details':'I sent it around the specific detail you asked about, not a generic walkaround.',
-'payment-apr':'I sent it so you can see the vehicle while I keep the finance answer accurate instead of guessing.',
-'trade-value':'I sent it so you can see the vehicle you are considering before we handle the appraisal on your trade.',
-'credit-concern':'I kept the video focused on the vehicle and your next step stays private.',
-'competitor-shop':'I sent it so you have something real to compare with the other option you are considering.',
-'decision-maker':'I sent it so both decision makers can see the same vehicle and the same information.',
-'unit-gone':'I sent a quick video update on the requested vehicle and the closest verified direction I found.',
-'no-response-day1':'I kept it short so you can tell me whether you still need vehicle status, numbers or a time to see it.',
-'final-nudge':'I kept it to one quick update so you can tell me whether you are still looking or already handled it.'};return m[id]||'I sent it so you can see the vehicle and exactly what I am working on for you.';}
+'availability-first':'I sent it so you can see exactly what I am verifying before you make a trip.',
+'price-first':'I sent it so we are talking about the exact same vehicle before we compare numbers.',
+'test-drive-request':'I sent it so you know exactly what you are coming to drive before we lock the time.',
+'wants-details':'I built it around the exact detail you asked about, not a generic walkaround.',
+'payment-apr':'I kept the video on the vehicle while I keep the finance answer accurate instead of guessing.',
+'trade-value':'I showed the vehicle you are considering. The trade gets a real appraisal when we put eyes on it.',
+'credit-concern':'I kept the video on the vehicle and the next step stays private.',
+'competitor-shop':'I gave you something real to compare against the other option you are considering.',
+'decision-maker':'I sent it so both decision makers can look at the same vehicle and the same facts.',
+'unit-gone':'I made the video as a straight update and only used a verified alternative if I had one.',
+'no-response-day1':'I kept it short. After you watch it, tell me whether you need status, numbers or a time to see it.',
+'final-nudge':'I kept it to one clean update. After you watch it, tell me whether you are still shopping, already bought or pausing.'};return m[id]||'I made it specifically around the vehicle and the reason you reached out.';}
 function distanceFollowup(){var id=behavior();if(id==='unit-gone')return 'Since you are coming from a good distance away, I will verify the alternative you actually want to see before you head this way.';if(id==='availability-first'||id==='test-drive-request')return 'Since you are coming from a good distance away, I will re-verify the exact vehicle before you head this way.';if(id==='price-first')return 'Since you are coming from a good distance away, I will make sure the vehicle and comparison are verified before you make the trip.';return 'Since you are coming from a good distance away, I will verify the relevant vehicle details before you head this way.';}
-function genericVideoNotice(method){var f=followupFocus(behavior());if(method==='email')return 'Subject: 🎥 '+fill('[Name]')+', Quick Video on the '+fill('[vehicle]')+'\n\nHi '+fill('[Name]')+',\n\nI just sent you a quick video on the '+fill('[vehicle]')+'. '+f+'\n\nDid it come through?\n\n'+fill('[agent]');return 'Hi '+fill('[Name]')+', I just sent you a quick video on the '+fill('[vehicle]')+'. '+f+' Did it come through?';}
+function genericVideoNotice(method){var f=followupFocus(behavior());if(method==='email')return 'Subject: 🎥 '+fill('[Name]')+', I Made This for Your '+fill('[vehicle]')+' Request\n\nHi '+fill('[Name]')+',\n\nI just sent you a 60-second video on the '+fill('[vehicle]')+'. '+f+'\n\nWatch it, then tell me the one thing you want me to work next. Did it come through?\n\n'+fill('[agent]');return 'Hi '+fill('[Name]')+', I just sent you a 60-second video on the '+fill('[vehicle]')+'. '+f+' Watch it, then tell me what you want me to work next. Did it land?';}
 function videoNotice(method){var c=context(),v=behaviorVariant(),base;if(method==='email'&&c.emailOnly&&v&&v.videoNoticeEmail)base='Subject: '+fill(v.videoNoticeSubject||'🎥 [Name], Quick Video on the [vehicle]')+'\n\n'+fill(v.videoNoticeEmail);else base=genericVideoNotice(method);if(c.distanceFar&&base)base+='\n\n'+distanceFollowup();return base;}
 function renderDelivery(){var host=$('videoDeliveryControls'),notice=$('videoNotice'),c=context();if(!host||!notice)return;var methods=[];if(c.email)methods.push('email');if(c.text)methods.push('sms');if(!methods.length){host.innerHTML='<div class="empty-channels">No digital video-delivery channel is available. Enable Email or Text OK in Customer Context.</div>';notice.textContent='';['copyNotice','logVideo','logNotice'].forEach(function(id){if($(id))$(id).disabled=true;});return;}['copyNotice','logVideo','logNotice'].forEach(function(id){if($(id))$(id).disabled=false;});host.innerHTML='<div class="delivery-grid"><label>Video sent by<select id="videoVia"></select></label><label>Follow-up by<select id="notifyVia"></select></label></div>';var vv=$('videoVia'),nv=$('notifyVia'),defaultVideo=c.emailOnly?'email':(c.text&&!c.email?'sms':methods[0]);opts(vv,methods,defaultVideo);opts(nv,methods,methods.length>1?(vv.value==='email'?'sms':'email'):vv.value);if(methods.length>1&&nv.value===vv.value)nv.value=vv.value==='email'?'sms':'email';function refresh(){if(methods.length>1&&nv.value===vv.value)nv.value=vv.value==='email'?'sms':'email';notice.textContent=videoNotice(nv.value);}vv.onchange=refresh;nv.onchange=refresh;refresh();}
 function currentFollowup(){var nv=$('notifyVia');return nv?videoNotice(nv.value):'';}
