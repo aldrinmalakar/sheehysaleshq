@@ -20,12 +20,14 @@ function placeLine(){if(location()==='sister'||diff()==='exact-sister')return 'I
 function differenceLine(){var k=diff();if(k==='exact-sister')return 'It matches the request, with the only issue being that it is not physically here yet.';if(k==='color')return 'It is the same year, model and trim. The color is the only difference.';if(k==='trim')return 'It is the same year and model, but a different trim, so I will show you exactly what changes and what stays the same.';if(k==='year')return 'It is the same model and trim, but a different model year, so I will not pretend they are identical.';if(k==='trim-color')return 'The trim and color are different. I will call out both differences before we compare anything else.';if(k==='year-trim')return 'The year and trim are different, so this is a comparison vehicle, not the exact build you asked for.';if(k==='year-color')return 'The model year and color are different. I will show both differences plainly.';if(k==='all')return 'The year, trim and color all differ. This is useful for the drive and basic fit, not as a claim that it is the same configuration.';return 'It is a different brand comparable. I am not presenting it as the same vehicle, only as another option worth comparing if you are open to it.';}
 function intro(){return 'Hi '+name()+', this is '+agent()+' at Sheehy Nissan of Manassas. I saw your inquiry on the '+req()+'.';}
 function subjectFor(){var k=diff();if(k==='exact-sister')return '🚙 '+name()+', I Found the '+req()+' Match';if(k==='color')return '🎨 '+name()+', Same '+req()+' Setup, Different Color';if(k==='trim')return '🚙 '+name()+', '+req()+' Update: Different Trim';if(k==='year')return '🚙 '+name()+', '+req()+' Update: Different Model Year';if(k==='brand')return '⚖️ '+name()+', One Honest Alternative to the '+req();return '🚙 '+name()+', Update on the '+req();}
-function firstScripts(){var loc=placeLine(),dif=differenceLine();return {
-call:intro()+' I checked what I can actually put in front of you. '+loc+' '+dif+' I do not want to switch you into something you did not ask for. I do want to give you a useful option. Would you be open to seeing it '+t1()+' or is '+t2()+' better?',
+function sisterLocation(){return location()==='sister'||diff()==='exact-sister';}
+function visitAsk(){return sisterLocation()?'If my manager confirms the vehicle can be secured, is '+t1()+' or '+t2()+' the better window for you?':'Would you be open to seeing it '+t1()+' or is '+t2()+' better?';}
+function firstScripts(){var loc=placeLine(),dif=differenceLine(),ask=visitAsk();return {
+call:intro()+' I checked what I can actually put in front of you. '+loc+' '+dif+' I do not want to switch you into something you did not ask for. I do want to give you a useful option. '+ask,
 vm:'Hi '+name()+', '+agent()+' at Sheehy Nissan. I am calling about the '+req()+' you asked about. I checked the closest real option and I want to explain the exact difference before you spend any time on it. Call or text me at '+number()+'.',
-sms:'Hi '+name()+', '+agent()+' at Sheehy Nissan. I checked the '+req()+' request. I have a real option, but there is a difference I want to be upfront about: '+d().line+' Are you open to seeing the closest match '+t1()+' or '+t2()+'?',
+sms:'Hi '+name()+', '+agent()+' at Sheehy Nissan. I checked the '+req()+' request. I have a real option, but there is a difference I want to be upfront about: '+d().line+' '+ask,
 subject:subjectFor(),
-email:'Hi '+name()+',\n\nI checked the '+req()+' you asked about.\n\n'+loc+' '+dif+'\n\nI do not want to send you a substitute and pretend it is what you requested. If you are open to comparing the closest real option, I can have it ready '+t1()+' or '+t2()+'.\n\n'+agent()
+email:'Hi '+name()+',\n\nI checked the '+req()+' you asked about.\n\n'+loc+' '+dif+'\n\nI do not want to send you a substitute and pretend it is what you requested. '+ask+'\n\n'+agent()
 };}
 function pushbackScripts(){return {
 call:'That is fair, '+name()+'. You asked for the '+req()+', not something else. I am not going to argue with you about that. The reason I mentioned '+av()+' is simple: '+differenceLine()+' If that difference is a dealbreaker, tell me and I will stay focused on the exact request. If it is not, would seeing the closest real option help while I keep working the exact one?',
@@ -34,12 +36,12 @@ sms:'You are right, '+name()+'. You asked for the '+req()+'. I am not trying to 
 subject:name()+', You Are Right About the '+req(),
 email:'Hi '+name()+',\n\nYou are right. You asked for the '+req()+', not a random substitute.\n\n'+differenceLine()+'\n\nIf that difference is a dealbreaker, tell me and I will stay focused on the exact request. If it is not, I can show you the closest real option while I keep checking the exact one.\n\n'+agent()
 };}
-function openScripts(){return {
-call:'Perfect. Then I will make the comparison easy. '+differenceLine()+' I will have '+av()+' ready and I will show the differences first, not hide them. Is '+t1()+' or '+t2()+' better?',
-vm:'Hi '+name()+', '+agent()+' at Sheehy Nissan. I have the '+av()+' comparison ready to make simple for you. I will show the differences first so you can decide fast. Call or text me at '+number()+'.',
-sms:'Perfect. I will have '+av()+' ready and I will show you the differences first. Is '+t1()+' or '+t2()+' better?',
+function openScripts(){var ask=sisterLocation()?'Perfect. I will have my manager verify whether '+av()+' can be secured. If it is confirmed, is '+t1()+' or '+t2()+' better?':'Perfect. I will have '+av()+' ready and show the differences first. Is '+t1()+' or '+t2()+' better?';return {
+call:'Perfect. Then I will make the comparison easy. '+differenceLine()+' '+ask,
+vm:sisterLocation()?'Hi '+name()+', '+agent()+' at Sheehy Nissan. I am checking whether the '+av()+' can be secured from our sister store. I will give you the real answer as soon as my manager confirms it. Call or text me at '+number()+'.':'Hi '+name()+', '+agent()+' at Sheehy Nissan. I have the '+av()+' comparison ready to make simple for you. I will show the differences first so you can decide fast. Call or text me at '+number()+'.',
+sms:sisterLocation()?'Perfect. I am having my manager verify whether '+av()+' can be secured. If it is confirmed, is '+t1()+' or '+t2()+' better?':'Perfect. I will have '+av()+' ready and show you the differences first. Is '+t1()+' or '+t2()+' better?',
 subject:'📅 '+name()+', Let’s Compare the '+av(),
-email:'Hi '+name()+',\n\nI will make the comparison straightforward. '+differenceLine()+'\n\nI can have '+av()+' ready so you can decide quickly whether the difference matters in person. Is '+t1()+' or '+t2()+' better?\n\n'+agent()
+email:'Hi '+name()+',\n\nI will make the comparison straightforward. '+differenceLine()+'\n\n'+ask+'\n\n'+agent()
 };}
 function pendingScripts(){return {
 call:'Hi '+name()+', '+agent()+' at Sheehy Nissan. Quick update on the '+req()+'. My manager is checking the sister-store vehicle now. I do not have a confirmed transfer yet, so I am not going to tell you it is ours until it is locked. The moment I have a real yes or no, I will contact you.',
