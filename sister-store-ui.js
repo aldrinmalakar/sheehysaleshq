@@ -2,7 +2,7 @@
 'use strict';
 var FILL_KEY='shq_fill_v1',F=(function(){try{return JSON.parse(localStorage.getItem(FILL_KEY)||'{}');}catch(e){return {};}})();
 function $(id){return document.getElementById(id);}function save(){try{localStorage.setItem(FILL_KEY,JSON.stringify(F));}catch(e){}}function tok(k,fb){return F[k]&&F[k].trim()?F[k].trim():fb;}function name(){return tok('name','[Name]');}function req(){return tok('vehicle','[requested vehicle]');}function av(){return $('availableVeh').value.trim()||'[available vehicle]';}function agent(){return tok('agent','[agent]');}function number(){return tok('number','[number]');}function t1(){return tok('daytime','[day/time]');}function t2(){return tok('alttime','[alt time]');}
-function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c];});}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function diff(){return $('difference').value;}function response(){return $('response').value;}function location(){return $('location').value;}
 var DIFF={
 'exact-sister':{label:'Exact match · sister store',line:'The specification matches what they asked for, but the vehicle is not on our Manassas lot.',proof:'Show the requested specification on screen or in the verified listing. Do not say the unit is secured until management confirms it.'},
