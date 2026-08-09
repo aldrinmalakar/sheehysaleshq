@@ -71,7 +71,12 @@
   /* Funnel remains canonical for migrated SMS, Email and Reconnect wordtracks. */
   var WORDTRACK_PAGES={'sms-library.html':true,'email-library.html':true,'reconnect.html':true};
   function loadScriptOnce(id,src,done){if(document.getElementById(id)){if(done)done();return;}var s=document.createElement('script');s.id=id;s.src=src;s.onload=function(){if(done)done();};s.onerror=function(){if(window.console&&console.warn)console.warn('Sales HQ could not load '+src);};(document.head||document.documentElement).appendChild(s);}
-  function initCanonicalWordtracks(){if(!WORDTRACK_PAGES[here])return;function install(){if(window.SHQWordtracks){window.SHQWordtracks.install(here);return;}loadScriptOnce('shqWordtracksScript','./wordtracks.js',function(){if(window.SHQWordtracks)window.SHQWordtracks.install(here);});}if(window.SHQFunnel)install();else loadScriptOnce('shqFunnelDataScript','./funnel-data.js',install);}
+  function initCanonicalWordtracks(){
+    if(!WORDTRACK_PAGES[here])return;
+    function install(){if(window.SHQWordtracks){window.SHQWordtracks.install(here);return;}loadScriptOnce('shqWordtracksScript','./wordtracks.js',function(){if(window.SHQWordtracks)window.SHQWordtracks.install(here);});}
+    function loadConfidence(){loadScriptOnce('shqFunnelConfidenceScript','./funnel-confidence.js',install);}
+    if(window.SHQFunnel)loadConfidence();else loadScriptOnce('shqFunnelDataScript','./funnel-data.js',loadConfidence);
+  }
 
   function init(){build();disableLegacyAI();initSubjectStyle();initCanonicalWordtracks();}
   if(document.body)init();else document.addEventListener('DOMContentLoaded',init);
