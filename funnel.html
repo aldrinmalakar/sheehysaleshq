@@ -10,6 +10,7 @@
 <script src="./funnel-lead-data.js"></script>
 <script src="./funnel-behavior-variants.js"></script>
 <script src="./funnel-confidence.js"></script>
+<script src="./funnel-context.js"></script>
 <script src="./funnel-lead-ops.js" defer></script>
 </head>
 <body>
@@ -23,6 +24,30 @@
       <label>Vehicle of interest<input data-f="vehicle" autocomplete="off" placeholder="2026 Rogue SV"></label>
       <label>Current / trade vehicle<input data-f="current" autocomplete="off" placeholder="2021 RAV4"></label>
       <label>Customer ZIP code<input data-f="zipcode" id="customerZip" inputmode="numeric" maxlength="5" autocomplete="postal-code" placeholder="22102"></label>
+      <label>Interaction style<select id="interactionStyle">
+        <option value="neutral">Balanced / not established</option>
+        <option value="direct">Direct / decisive</option>
+        <option value="warm">Warm / relationship-first</option>
+        <option value="formal">Formal / respectful</option>
+        <option value="analytical">Analytical / detail-driven</option>
+      </select></label>
+      <label>Decision structure<select id="decisionStructure">
+        <option value="unknown">Not established</option>
+        <option value="solo">Solo decision</option>
+        <option value="partner">Partner / spouse involved</option>
+        <option value="family">Family / group involved</option>
+        <option value="elder">Parent / elder involved</option>
+      </select></label>
+      <label>Buying priority<select id="buyingPriority">
+        <option value="unknown">Not established</option>
+        <option value="value">Price / value</option>
+        <option value="comfort">Comfort</option>
+        <option value="reliability">Reliability</option>
+        <option value="safety">Safety</option>
+        <option value="technology">Technology</option>
+        <option value="space">Space / utility</option>
+        <option value="ownership">Ownership cost</option>
+      </select></label>
       <label>Primary appointment time<input data-f="daytime" autocomplete="off" placeholder="Today at 5:30"></label>
       <label>Alternate appointment time<input data-f="alttime" autocomplete="off" placeholder="Tomorrow at 11:00"></label>
       <label>Your name<input data-f="agent" autocomplete="off" placeholder="Aldrin"></label>
