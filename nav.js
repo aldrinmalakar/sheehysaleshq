@@ -79,6 +79,11 @@
     if(window.SHQFunnel)loadConfidence();else loadScriptOnce('shqFunnelDataScript','./funnel-data.js',loadConfidence);
   }
 
-  function init(){build();disableLegacyAI();initSubjectStyle();initCanonicalWordtracks();}
+  function initVocSalesSurvey(){
+    if(here!=='survey.html'&&here!=='after-sale.html')return;
+    loadScriptOnce('shqVocSalesSurvey','./voc-sales-survey.js');
+  }
+
+  function init(){build();disableLegacyAI();initSubjectStyle();initCanonicalWordtracks();initVocSalesSurvey();}
   if(document.body)init();else document.addEventListener('DOMContentLoaded',init);
 })();
