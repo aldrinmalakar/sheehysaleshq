@@ -123,6 +123,11 @@
     return s.slice(0,cut+2)+sentence+' '+s.slice(cut+2);
   }
 
+  function customerTrack(text){
+    var s=String(text||'').trim();
+    if(!s)return false;
+    return !/^(Not a |No voicemail|No SMS|No email|No live-call|No phone number|Use the Survey page|Email-only lead|Do not leave|Do not text)/i.test(s);
+  }
   function contextualize(base,ctx){
     var o=clone(base),id=o.id||ctx.scenario||'';
     var remote=['new','attempting','engaged','appointment','outbound','longterm'].indexOf(ctx.stage)>-1;
@@ -132,12 +137,12 @@
     var short=longDistance?distanceSentence(id,ctx,true):profile;
 
     if(main){
-      o.call=insertBeforeQuestion(o.call,main);
-      o.email=insertEmail(o.email,main);
+      if(customerTrack(o.call))o.call=insertBeforeQuestion(o.call,main);
+      if(customerTrack(o.email))o.email=insertEmail(o.email,main);
     }
     if(short){
-      o.vm=insertBeforeCallback(o.vm,short);
-      o.sms=insertBeforeQuestion(o.sms,short);
+      if(customerTrack(o.vm))o.vm=insertBeforeCallback(o.vm,short);
+      if(customerTrack(o.sms))o.sms=insertBeforeQuestion(o.sms,short);
     }
     o.contextSummary=[ctx.interaction!=='neutral'?ctx.interaction:'',ctx.decision!=='unknown'?ctx.decision:'',ctx.priority!=='unknown'?ctx.priority:'',longDistance?'long-distance':''].filter(Boolean).join(' · ');
     return o;
