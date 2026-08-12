@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>After Sale | Sheehy Sales HQ</title>
+<link rel="stylesheet" href="./after-sale-ui.css">
+<script src="./nav.js" defer></script>
+</head>
+<body>
+<div class="wrap">
+  <h1>After Sale</h1>
+  <p class="lede">Ownership follow-through, handwritten touches, Nissan survey protection, reviews, referrals and relationship-building after delivery.</p>
+
+  <section class="panel">
+    <div class="panel-title"><div><div class="kicker">1 · Customer</div><h2>Ownership context</h2></div><button class="mini-btn" id="clearCase" type="button">Clear case</button></div>
+    <div class="grid">
+      <label>Customer first name<input data-f="name" autocomplete="off" placeholder="Sarah"></label>
+      <label>Vehicle<input data-f="vehicle" autocomplete="off" placeholder="2026 Rogue SV"></label>
+      <label>Delivery date<input type="date" id="deliveryDate"></label>
+      <label>Purchase type<select id="purchaseType"><option value="new-nissan">New Nissan</option><option value="other">Used / non-Nissan</option></select></label>
+      <label>Ownership issue<select id="issueState"><option value="clear">No open issue</option><option value="open">Open issue</option><option value="resolved">Issue resolved</option></select></label>
+      <label>Nissan survey status<select id="surveyState"><option value="unknown">Not sure / not yet</option><option value="arrived">Survey received</option><option value="completed">Survey completed</option></select></label>
+      <label>Your name<input data-f="agent" autocomplete="off" placeholder="Aldrin"></label>
+      <label>Your phone<input data-f="number" autocomplete="off" placeholder="Your direct number"></label>
+      <label>Your email<input data-f="email" autocomplete="off" placeholder="you@sheehy.com"></label>
+      <label style="grid-column:span 2">Personal ownership cue<input id="personalCue" autocomplete="off" placeholder="Dog rides in back, long commute, first new car, family road trips"></label>
+    </div>
+  </section>
+
+  <section class="panel now-panel">
+    <div class="panel-title"><div><div class="kicker">2 · Today</div><h2>Next move</h2></div></div>
+    <div class="now-grid">
+      <div><div class="now-copy" id="nextMove">Add a delivery date to start the ownership timeline.</div><div class="now-sub" id="nextSub"></div></div>
+      <div class="now-meta" id="nowMeta"></div>
+    </div>
+  </section>
+
+  <section class="panel" id="kpiPanel">
+    <div class="panel-title"><div><div class="kicker">New Nissan</div><h2>Purchase survey checkpoints</h2></div><a class="link-btn survey" href="survey.html">Open Nissan Survey</a></div>
+    <div class="kpi-grid">
+      <div class="kpi"><b>Overall satisfaction</b><span>25%</span></div>
+      <div class="kpi"><b>Recommend dealer</b><span>25%</span></div>
+      <div class="kpi"><b>Sales consultant</b><span>17.5%</span></div>
+      <div class="kpi"><b>Finance / paperwork</b><span>15%</span></div>
+      <div class="kpi"><b>Features / controls</b><span>8.75%</span></div>
+      <div class="kpi"><b>Delivery condition</b><span>8.75%</span></div>
+    </div>
+    <div class="kpi-foot"><span>Working weights from the sample Nissan survey already used in Sales HQ. The experience is the KPI work. The dedicated Survey page handles survey-specific messaging.</span><span id="surveyBadge" class="pill blue">Survey not established</span></div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-title"><div><div class="kicker">3 · Cadence</div><h2>Ownership timeline</h2></div></div>
+    <div class="issue-banner" id="issueBanner">There is an open ownership issue. Recovery stays ahead of survey, referral and gift asks. Google review requests remain on the same neutral cadence and are never conditioned on resolution or rating.</div>
+    <div class="timeline" id="timeline"></div>
+    <div class="note">Progress is saved only in this browser. DriveCentric remains the customer record. This page intentionally does not store a mailing address.</div>
+  </section>
+
+  <section class="panel" id="workspace">
+    <div class="workspace-title"><div><div class="kicker">4 · Execute</div><h2 id="workTitle">Select a milestone</h2><p id="workGoal"></p></div><button class="mini-btn done" id="markDone" type="button">Mark done</button></div>
+    <div class="channel-row" id="channelRow"></div>
+    <div class="scripts" id="scripts"></div>
+    <div class="quick-links" id="quickLinks">
+      <a class="link-btn google" href="https://maps.app.goo.gl/5cVXhw1VefmqZtwW6" target="_blank" rel="noopener">Open Google</a>
+      <a class="link-btn yelp" href="https://www.yelp.com/biz/sheehy-nissan-of-manassas-manassas-2" target="_blank" rel="noopener">Open Yelp listing</a>
+      <a class="link-btn survey" href="survey.html">Open Nissan Survey</a>
+    </div>
+  </section>
+</div>
+<script src="./after-sale.js"></script>
+</body>
+</html>
