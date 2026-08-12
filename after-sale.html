@@ -5,15 +5,26 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>After Sale | Sheehy Sales HQ</title>
 <link rel="stylesheet" href="./after-sale-ui.css">
+<link rel="stylesheet" href="./after-sale-memory.css">
 <script src="./nav.js" defer></script>
 </head>
 <body>
 <div class="wrap">
   <h1>After Sale</h1>
-  <p class="lede">Ownership follow-through, handwritten touches, Nissan survey protection, reviews, referrals and relationship-building after delivery.</p>
+  <p class="lede">Ownership follow-through, personal touches, reviews, referrals and relationship-building after delivery.</p>
 
   <section class="panel">
     <div class="panel-title"><div><div class="kicker">1 · Customer</div><h2>Ownership context</h2></div><button class="mini-btn" id="clearCase" type="button">Clear case</button></div>
+
+    <div class="memory-bar">
+      <label>Saved customer<select id="savedCustomer"><option value="">New / unsaved customer</option></select></label>
+      <div class="memory-actions">
+        <button class="mini-btn primary" id="saveCustomerRecord" type="button">Save customer</button>
+        <button class="mini-btn" id="newCustomerRecord" type="button">New customer</button>
+      </div>
+      <div class="memory-status" id="memoryStatus">Save a sold customer once, then this page can restore their ownership state later.</div>
+    </div>
+
     <div class="grid">
       <label>Customer first name<input data-f="name" autocomplete="off" placeholder="Sarah"></label>
       <label>Vehicle<input data-f="vehicle" autocomplete="off" placeholder="2026 Rogue SV"></label>
@@ -25,6 +36,7 @@
       <label>Your phone<input data-f="number" autocomplete="off" placeholder="Your direct number"></label>
       <label>Your email<input data-f="email" autocomplete="off" placeholder="you@sheehy.com"></label>
       <label style="grid-column:span 2">Personal ownership cue<input id="personalCue" autocomplete="off" placeholder="Dog rides in back, long commute, first new car, family road trips"></label>
+      <label style="grid-column:span 2">Ownership notes<textarea id="ownershipNotes" rows="3" placeholder="What matters to this customer, unresolved items, promises made, useful details for the next follow-up"></textarea></label>
     </div>
   </section>
 
@@ -36,25 +48,20 @@
     </div>
   </section>
 
-  <section class="panel" id="kpiPanel">
-    <div class="panel-title"><div><div class="kicker">New Nissan</div><h2>Nissan VOC experience checkpoints</h2></div><a class="link-btn survey" href="survey.html">Open Nissan Survey</a></div>
-    <div class="kpi-grid">
-      <div class="kpi"><b>Overall satisfaction</b></div>
-      <div class="kpi"><b>Recommend dealership</b></div>
-      <div class="kpi"><b>Recommendation feedback</b></div>
-      <div class="kpi"><b>Sales Consultant</b></div>
-      <div class="kpi"><b>Financing paperwork</b></div>
-      <div class="kpi"><b>Features / controls</b></div>
-      <div class="kpi"><b>Delivery condition</b></div>
-    </div>
-    <div class="kpi-foot"><span>Nissan VOC is about the experience the customer can describe in their own words. No scoring weights are assumed here.</span><span id="surveyBadge" class="pill blue">Survey not established</span></div>
+  <section class="panel voc-mini" id="kpiPanel">
+    <div class="panel-title"><div><div class="kicker">New Nissan only</div><h2>Nissan VOC</h2></div><a class="link-btn survey" href="survey.html">Open Nissan Survey</a></div>
+    <div class="voc-mini-row"><span>Keep VOC-specific coaching on the dedicated Survey page. After Sale stays focused on the ownership relationship.</span><span id="surveyBadge" class="pill blue">Survey not established</span></div>
   </section>
 
   <section class="panel">
     <div class="panel-title"><div><div class="kicker">3 · Cadence</div><h2>Ownership timeline</h2></div></div>
-    <div class="issue-banner" id="issueBanner">There is an open ownership issue. Recovery stays ahead of survey, referral and gift asks. Google review requests remain on the same neutral cadence and are never conditioned on resolution or rating.</div>
-    <div class="timeline" id="timeline"></div>
-    <div class="note">Progress is saved only in this browser. DriveCentric remains the customer record. This page intentionally does not store a mailing address.</div>
+    <div class="issue-banner" id="issueBanner">There is an open ownership issue. Recovery stays ahead of referral and gift asks. Google review requests remain on the same neutral cadence and are never conditioned on resolution or rating.</div>
+    <div class="timeline-select-wrap">
+      <label>Choose milestone<select id="milestoneSelect"><option value="">Loading timeline…</option></select></label>
+      <div class="timeline-meta" id="milestoneMeta">Add a delivery date to generate the cadence.</div>
+    </div>
+    <div class="timeline timeline-source" id="timeline" aria-hidden="true"></div>
+    <div class="note">Customer records and progress are saved only in this browser on this device. Anyone using the same browser profile can see the saved names, vehicles and notes. DriveCentric remains the dealership customer record. Sales HQ does not sync these records to a cloud account.</div>
   </section>
 
   <section class="panel" id="workspace">
@@ -69,5 +76,6 @@
   </section>
 </div>
 <script src="./after-sale.js"></script>
+<script src="./after-sale-memory.js"></script>
 </body>
 </html>
