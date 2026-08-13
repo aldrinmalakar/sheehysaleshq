@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Behavior Funnel | Sheehy Sales HQ</title>
 <link rel="stylesheet" href="./funnel-ui.css">
+<link rel="stylesheet" href="./funnel-unavailable-options.css">
 <script src="./nav.js" defer></script>
 <script src="./funnel-data.js"></script>
 <script src="./funnel-lead-data.js"></script>
@@ -12,6 +13,7 @@
 <script src="./funnel-confidence.js"></script>
 <script src="./funnel-context.js"></script>
 <script src="./funnel-remote-numbers.js"></script>
+<script src="./funnel-unavailable-options.js"></script>
 <script src="./funnel-lead-ops.js" defer></script>
 </head>
 <body>
@@ -75,6 +77,48 @@
       <label>Where are you in the sale?<select id="stageSelect"></select></label>
       <label>What did the customer do or ask?<select id="behavior"></select></label>
     </div>
+
+    <div class="unavailable-options" id="unavailableOptions" hidden>
+      <div class="unavailable-head">
+        <div><b>Original vehicle unavailable</b><span>Name the real difference first. Do not turn one sold unit into a random-inventory dump.</span></div>
+        <span class="replacement-summary" id="replacementSummary">Replacement path</span>
+      </div>
+      <div class="replacement-grid">
+        <label>What verified direction do you have?<select id="replacementType">
+          <option value="same-color">Same model / trim, different color</option>
+          <option value="same-trim">Same model, different trim</option>
+          <option value="same-year">Same model / trim, different year</option>
+          <option value="same-multiple">Same model, multiple differences</option>
+          <option value="similar-nissan">Similar Nissan model</option>
+          <option value="new-used">New / used alternative</option>
+          <option value="brand">Different-brand comparable</option>
+          <option value="sister">Exact / near match at sister store</option>
+          <option value="several">Several strong verified alternatives</option>
+          <option value="none">Nothing strong enough yet</option>
+        </select></label>
+        <label id="alternative1Wrap">Best verified alternative<input id="alternativeVehicle" autocomplete="off" placeholder="2026 Rogue SV, Gun Metallic"></label>
+        <label id="alternative2Wrap" hidden>Second verified alternative<input id="alternativeVehicle2" autocomplete="off" placeholder="2026 Rogue SL, Pearl White"></label>
+        <label>What was the original must-have?<select id="originalMustHave">
+          <option value="unknown">Not established, use Buying Priority</option>
+          <option value="exact">Exact model / configuration</option>
+          <option value="value">Price / value</option>
+          <option value="equipment">Specific equipment / trim</option>
+          <option value="color">Color</option>
+          <option value="miles">Mileage / condition</option>
+          <option value="comfort">Comfort / fit</option>
+          <option value="reliability">Reliability / ownership confidence</option>
+          <option value="safety">Safety equipment</option>
+          <option value="technology">Technology</option>
+          <option value="space">Space / utility</option>
+          <option value="ownership">Ownership cost</option>
+        </select></label>
+        <div class="replacement-actions">
+          <a class="link-btn" id="openSisterStore" href="sister-store.html" hidden>Open Sister Store Comparison</a>
+        </div>
+      </div>
+      <div class="replacement-note">Only select an alternative after its current status is verified. Sister-store inventory is not secured until management confirms it. For long-distance customers, work the actual alternative, differences and verified purchase numbers remotely before asking them to travel.</div>
+    </div>
+
     <div class="behavior-bar"><span class="status-pill blue" id="behaviorTag">Behavior</span><span class="status-pill" id="contextTag">Context</span></div>
   </section>
 
