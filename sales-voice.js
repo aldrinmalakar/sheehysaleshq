@@ -13,6 +13,7 @@ function loadExtra(extraId,extraSrc){
 function loadSafety(){
   if(page==='sms-library.html')loadExtra('shqSmsSpecialtySafety','./sms-specialty-safety.js');
   if(page==='email-library.html')loadExtra('shqEmailMarketSafety','./email-market-safety.js');
+  if(page==='objection-library.html')loadExtra('shqObjectionSpecialtyVoice','./objection-specialty-voice.js');
   if(page==='reconnect.html')loadExtra('shqReconnectVoiceSafety','./reconnect-voice-safety.js');
 }
 var s=document.createElement('script');s.id=id;s.src=src;s.onload=loadSafety;s.onerror=function(){if(window.console&&console.warn)console.warn('Sales HQ could not load '+src);};(document.head||document.documentElement).appendChild(s);
