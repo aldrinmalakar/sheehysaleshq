@@ -69,13 +69,21 @@
   function applySubjectStyle(){if(!SUBJECT_PAGES[here])return;if(here==='reconnect.html'){var r=document.getElementById('subjOut');if(r&&r.value)r.value=formatSubject(r.value);}if(here==='email-library.html')document.querySelectorAll('input.subject').forEach(function(x){if(x.value)x.value=formatSubject(x.value);});}
   function initSubjectStyle(){if(!SUBJECT_PAGES[here])return;applySubjectStyle();document.addEventListener('change',function(){setTimeout(applySubjectStyle,0);});document.addEventListener('click',function(){setTimeout(applySubjectStyle,0);});document.addEventListener('input',function(e){var t=e.target;if(t&&(t.id==='subjOut'||(t.classList&&t.classList.contains('subject'))))return;setTimeout(applySubjectStyle,0);});if(window.MutationObserver&&document.body){var q=false;new MutationObserver(function(){if(q)return;q=true;setTimeout(function(){q=false;applySubjectStyle();},0);}).observe(document.body,{childList:true,subtree:true,characterData:true});}}
 
+  function loadScriptOnce(id,src,done){if(document.getElementById(id)){if(done)done();return;}var s=document.createElement('script');s.id=id;s.src=src;s.onload=function(){if(done)done();};s.onerror=function(){if(window.console&&console.warn)console.warn('Sales HQ could not load '+src);};(document.head||document.documentElement).appendChild(s);}
+
   /* Funnel remains canonical for migrated SMS, Email and Reconnect wordtracks. */
   var WORDTRACK_PAGES={'sms-library.html':true,'email-library.html':true,'reconnect.html':true};
-  function loadScriptOnce(id,src,done){if(document.getElementById(id)){if(done)done();return;}var s=document.createElement('script');s.id=id;s.src=src;s.onload=function(){if(done)done();};s.onerror=function(){if(window.console&&console.warn)console.warn('Sales HQ could not load '+src);};(document.head||document.documentElement).appendChild(s);}
+  var VOICE_PAGES={'sms-library.html':true,'email-library.html':true,'objection-library.html':true,'reconnect.html':true,'after-sale.html':true,'survey.html':true,'sister-store.html':true};
+  function initSalesVoice(){if(!VOICE_PAGES[here])return;loadScriptOnce('shqSalesVoiceScript','./sales-voice.js');}
   function initCanonicalWordtracks(){
     if(!WORDTRACK_PAGES[here])return;
-    function install(){if(window.SHQWordtracks){window.SHQWordtracks.install(here);return;}loadScriptOnce('shqWordtracksScript','./wordtracks.js',function(){if(window.SHQWordtracks)window.SHQWordtracks.install(here);});}
-    function loadConfidence(){loadScriptOnce('shqFunnelConfidenceScript','./funnel-confidence.js',install);}
+    function finish(){initSalesVoice();}
+    function install(){
+      if(window.SHQWordtracks){window.SHQWordtracks.install(here);finish();return;}
+      loadScriptOnce('shqWordtracksScript','./wordtracks.js',function(){if(window.SHQWordtracks)window.SHQWordtracks.install(here);finish();});
+    }
+    function loadWarm(){loadScriptOnce('shqFunnelWarmConfidenceScript','./funnel-warm-confidence.js',install);}
+    function loadConfidence(){loadScriptOnce('shqFunnelConfidenceScript','./funnel-confidence.js',loadWarm);}
     if(window.SHQFunnel)loadConfidence();else loadScriptOnce('shqFunnelDataScript','./funnel-data.js',loadConfidence);
   }
 
@@ -84,6 +92,13 @@
     loadScriptOnce('shqVocSalesSurvey','./voc-sales-survey.js');
   }
 
-  function init(){build();disableLegacyAI();initSubjectStyle();initCanonicalWordtracks();initVocSalesSurvey();}
+  function init(){
+    build();
+    disableLegacyAI();
+    initSubjectStyle();
+    initCanonicalWordtracks();
+    initVocSalesSurvey();
+    if(!WORDTRACK_PAGES[here])initSalesVoice();
+  }
   if(document.body)init();else document.addEventListener('DOMContentLoaded',init);
 })();
