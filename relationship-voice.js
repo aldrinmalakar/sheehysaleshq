@@ -2,6 +2,7 @@
 (function(g){
 'use strict';
 var page=(location.pathname.split('/').pop()||'').toLowerCase(),timer=null;
+var GOOGLE='https://maps.app.goo.gl/5cVXhw1VefmqZtwW6';
 function $(id){return document.getElementById(id);}
 function val(sel,fb){var e=document.querySelector(sel);return e&&e.value&&String(e.value).trim()?String(e.value).trim():fb;}
 function N(){return val('[data-f="name"]','[Name]');}
@@ -10,7 +11,8 @@ function A(){return val('[data-f="agent"]','[agent]');}
 function P(){return val('[data-f="number"]','[number]');}
 function clean(s){return String(s||'').replace(/\bjust checking in\b/gi,'checking in with a purpose').replace(/\bjust following up\b/gi,'following up with a clear next step').replace(/\bcircling back\b/gi,'following up').replace(/\bno pressure(?: at all)?[,.]?\s*/gi,'').replace(/[ \t]{2,}/g,' ');}
 function copied(btn){var o=btn.textContent;btn.textContent='Copied';setTimeout(function(){btn.textContent=o;},850);}
-function copy(text,btn){if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(function(){copied(btn);});}
+function fallback(text){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}ta.remove();}
+function copy(text,btn){if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(function(){copied(btn);}).catch(function(){fallback(text);copied(btn);});else{fallback(text);copied(btn);}}
 
 function afterText(title,kind){
   var n=N(),v=V(),a=A(),p=P(),m={
@@ -34,8 +36,8 @@ function afterText(title,kind){
       email:'Hi '+n+',\n\nYou have had a few days with the '+v+'. I want the purchase to feel finished, not just the paperwork.\n\nWhat is the one thing with features, controls, paperwork or delivery that still needs attention? Tell me and I will work it.\n\n'+a
     },
     'Google experience review':{
-      sms:'Hi '+n+', you have had real time with the '+v+' now, so I would value your honest take on working with us. If you have a minute, share the experience on Google. Your words help the next shopper know what to expect.',
-      email:'Hi '+n+',\n\nYou have had real time with the '+v+' now, so I would value your honest take on working with us.\n\nIf you have a minute, share the experience on Google. A genuine review helps the next shopper know what working with us is actually like.\n\nThank you again,\n'+a
+      sms:'Hi '+n+', you have had real time with the '+v+' now, so I would value your honest take on working with us. If you have a minute, share the experience here: '+GOOGLE+' Your words help the next shopper know what to expect.',
+      email:'Hi '+n+',\n\nYou have had real time with the '+v+' now, so I would value your honest take on working with us.\n\nIf you have a minute, share the experience on Google here:\n'+GOOGLE+'\n\nA genuine review helps the next shopper know what working with us is actually like.\n\nThank you again,\n'+a
     },
     'Referral conversation':{
       call:'Hi '+n+', you have had the '+v+' about a month now and I want to ask you one direct favor. If I earned your trust, who is the first person you would feel comfortable introducing me to when they need a vehicle? You make the introduction. I will take care of the rest.',
