@@ -9,11 +9,16 @@ Customer-facing wordtracks that represent a specific customer behavior belong in
 - `funnel-data.js` contains the core behavior funnel and shared lifecycle scenarios.
 - `funnel-lead-data.js` extends that model with exact fresh-lead contact outcomes and Owner / Outbound scenarios.
 - `funnel-behavior-variants.js` adds channel-specific behavior variants, especially email-only handling.
-- `funnel-confidence.js` is the canonical 2026 language layer. It tightens the loaded Funnel scenarios around direct questions, objection isolation, choice closes and clear next-step control while preserving the verification/compliance boundaries in the base model.
+- `funnel-confidence.js` is the canonical 2026 control layer. It tightens loaded Funnel scenarios around direct questions, objection isolation, choice closes and clear next-step control while preserving the verification/compliance boundaries in the base model.
+- `funnel-context.js` applies the customer context model: Behavior + Channel + Distance + Interaction Style + Decision Structure + Buying Priority.
+- `funnel-remote-numbers.js` handles long-distance remote-number workflows without guessing finance outcomes.
+- `funnel-unavailable-options.js` handles verified replacement paths when the original vehicle is no longer available.
+- `funnel-warm-confidence.js` is the final customer-facing Funnel voice layer. It adds human warmth to the existing control structure without weakening the close or changing factual/compliance boundaries.
 - `funnel-lead-ops.js` contains operational UI only: lead timing, available-channel controls, DriveCentric delivery follow-up and attempt logging. It should not become another independent wordtrack library.
 - `wordtracks.js` is the compatibility adapter for SMS Library, Email Library and Reconnect while those older surfaces still contain local templates.
+- `sales-voice.js` applies the same warm-confidence standard to current specialty communication surfaces that still own local scripts, including objections, reconnect, after-sale, survey and sister-store messaging.
 
-The load order matters: base Funnel data first, extensions/channel variants next, then `funnel-confidence.js`. Consumers should read the final loaded `SHQFunnel` model rather than copy an earlier version of a script.
+The Funnel load order matters: base data and extensions first, then confidence/context/remote/specialized behavior layers, then `funnel-warm-confidence.js` as the final voice pass. Consumers should read the final loaded `SHQFunnel` model rather than copy an earlier version of a script.
 
 ## Phase 1
 
@@ -67,15 +72,52 @@ The same Funnel model includes an `Owner / Outbound` stage for program-manifest 
 
 The outbound manifest itself lives on Programs and hands the selected owner into Funnel instead of recreating a call workspace.
 
-## 2026 language standard
+## Warm-confidence language standard
 
-The canonical wordtracks use a consistent control pattern:
+The final customer-facing voice uses one consistent sequence:
 
-**State the fact -> isolate what matters -> prescribe the next step -> give a closed/choice question -> stop.**
+**Warm human opening -> direct truth -> isolate the real issue -> prescribe the next step -> choice or commitment close -> stop.**
 
-The language should be concise, confident and specific. Remove passive phrases such as `just checking in`, unnecessary permission-seeking and generic closers such as `let me know` when a direct next-step question is available.
+Warmth is not passivity. It means the customer feels heard, respected and protected from wasted time while the salesperson still leads the process.
+
+Prefer language such as:
+
+- `That makes sense.`
+- `I appreciate you being straight with me.`
+- `You are asking the right question.`
+- `I want to make this easy.`
+- `Let us get specific.`
+- `Which one matters first?`
+- `If I solve that one piece, are you ready to move forward?`
+
+Avoid habitual filler and weak exits such as:
+
+- `just checking in`
+- `circling back`
+- `if you want`
+- `would you be open to`
+- `let me know`
+- repeated `fair?` / `sound good?`
+- fake `no pressure` language used as a substitute for actually respecting the customer
+
+Also avoid manufactured sales theater:
+
+- fake urgency or scarcity
+- unsupported `it will be gone` claims
+- unverified `I can hold it` promises
+- invented trade-market claims
+- invented incentive or program claims
+- fake `you are the first person I called` hooks
 
 Confidence does not override accuracy. The model still must not invent inventory status, price, payment, APR, approval, incentives, transfer status or other deal-specific facts.
+
+## Current-page voice rule
+
+Funnel remains authoritative when a behavior is mapped. The SMS Library, Email Library and Reconnect should inherit the warmed canonical Funnel scenario rather than replace it locally.
+
+Specialty templates that do not yet map to an exact Funnel behavior can remain local, but `sales-voice.js` keeps their current customer-facing language aligned with the same standard and removes unsupported market/urgency claims where they appear.
+
+The retired legacy workspace is preserved as a historical/reference surface and is not a source of current customer-facing language.
 
 ## Migration rule
 
