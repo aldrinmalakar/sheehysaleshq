@@ -18,7 +18,7 @@
     <div class="grid">
       <label>Customer first name<input data-f="name" autocomplete="off" placeholder="Sarah"></label>
       <label>Vehicle they asked for<input data-f="vehicle" autocomplete="off" placeholder="2023 Murano SL, Pearl White"></label>
-      <label>Vehicle you can actually show<input id="availableVeh" autocomplete="off" placeholder="2025 Murano SL, Gun Metallic"></label>
+      <label>Matched / alternative vehicle<input id="availableVeh" autocomplete="off" placeholder="2025 Murano SL, Gun Metallic"></label>
       <label>Where is that vehicle?<select id="location"><option value="our">Our Manassas lot</option><option value="sister">Sister store / group inventory</option></select></label>
       <label>Difference from inquiry<select id="difference">
         <option value="exact-sister">Exact match, but at a sister store</option>
@@ -50,7 +50,7 @@
         <option value="pushback">“That is not what I asked for”</option>
         <option value="open">Open to the alternative</option>
         <option value="pending">Manager checking sister-store vehicle</option>
-        <option value="secured">Manager confirmed the sister-store unit</option>
+        <option value="secured">Manager confirmed we can work the sister-store unit</option>
         <option value="failed">Requested sister-store unit could not be secured</option>
       </select></label>
       <label>Primary time<input data-f="daytime" autocomplete="off" placeholder="Today at 5:30"></label>
