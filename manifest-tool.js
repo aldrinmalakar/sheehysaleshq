@@ -11,7 +11,7 @@
   var MOUNT_ID='manifestMount';
   var PROGRESS_KEY='shq_manifest_progress_v1';
   var PROFILE_KEY='shq_fill_v1';
-  var rows=[],keys=[],map={},query='';
+  var rows=[],keys=[],map={},query='',campaignId='';
 
   function $(id){return document.getElementById(id);}
   function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
@@ -42,9 +42,18 @@
   function hydrate(){var p=loadProgress();rows.forEach(function(r){var x=p[keyOf(r)];if(x){r['Call Outcome']=x.outcome||r['Call Outcome']||'';r['Call Notes']=x.notes||r['Call Notes']||'';r['Worked At']=x.at||r['Worked At']||'';}});}
   function persistRow(r){var p=loadProgress(),k=keyOf(r);p[k]={outcome:r['Call Outcome']||'',notes:r['Call Notes']||'',at:r['Worked At']||new Date().toLocaleString()};saveProgress(p);}
 
+  function eligiblePrograms(){
+    if(!g.SHQPrograms||typeof g.SHQPrograms.active!=='function')return [];
+    return g.SHQPrograms.active('owner').filter(function(p){return !!p.verified&&!!p.ends&&!g.SHQPrograms.isExpired(p);});
+  }
+  function selectedProgram(){var a=eligiblePrograms();for(var i=0;i<a.length;i++)if(a[i].id===campaignId)return a[i];return null;}
+
   function addStyles(){var s=document.createElement('style');s.textContent=[
     '.manifest-panel .mtools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}',
     '.manifest-panel .mstat{font-size:12px;color:#6b7889;margin:9px 0;line-height:1.5}',
+    '.manifest-panel .campaignpick{border:1px solid #d8e2fb;background:#f8faff;border-radius:9px;padding:9px 10px;margin:9px 0}',
+    '.manifest-panel .campaignpick label{display:flex;flex-direction:column;gap:4px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#6b7889}',
+    '.manifest-panel .campaignpick select{width:100%;margin:0;font-size:13px}.manifest-panel .campaignpick span{display:block;font-size:11.5px;color:#6b7889;margin-top:5px}',
     '.manifest-panel .mmap{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px;margin:10px 0}',
     '.manifest-panel .mmap label{font-size:10px}.manifest-panel .mmap select{width:100%;margin-top:4px}',
     '.manifest-panel .msearch{width:100%;margin:8px 0 10px}',
@@ -60,9 +69,15 @@
   function markup(){return '<div class="panel manifest-panel"><h2>Outbound program manifest</h2>'
     +'<div class="mtools"><input type="file" id="manifestFile" accept=".xlsx,.xls,.csv"><button class="primary" id="manifestExport" type="button" disabled>Export progress</button><button class="ghostb" id="manifestClearProgress" type="button">Clear saved progress</button></div>'
     +'<div class="mstat" id="manifestStat">No manifest loaded. Load the approved program file when you are ready to work the list.</div>'
+    +'<div class="campaignpick"><label>Funnel campaign context<select id="manifestProgram"></select></label><span>Optional. Only verified, active owner programs appear here. The Funnel will not lead with the program; it uses this context only when the customer asks or it becomes relevant.</span></div>'
     +'<div id="manifestMap"></div><input class="msearch" id="manifestSearch" placeholder="Search name, phone, vehicle or outcome" autocomplete="off" style="display:none"><div class="mlist" id="manifestList"></div>'
-    +'<div class="note">The loaded manifest stays in this browser tab. Only your outcome/progress metadata is remembered locally on this device. Use <b>Open Funnel</b> to load the owner name and current vehicle into Owner / Outbound without creating a second CRM.</div></div>';}
+    +'<div class="note">The loaded manifest stays in this browser tab. Only your outcome/progress metadata is remembered locally on this device. <b>Open Funnel</b> loads the owner name, current vehicle and selected campaign context into Owner / Outbound without creating a second CRM.</div></div>';}
 
+  function renderCampaign(){
+    var sel=$('manifestProgram');if(!sel)return;var a=eligiblePrograms(),html='<option value="">Owner outreach · no named program</option>';
+    a.forEach(function(p){html+='<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>';});sel.innerHTML=html;
+    if(a.some(function(p){return p.id===campaignId;}))sel.value=campaignId;else{campaignId='';sel.value='';}
+  }
   function optionHtml(field){return '<option value="">(none)</option>'+keys.map(function(k){return '<option value="'+esc(k)+'"'+(map[field]===k?' selected':'')+'>'+esc(k)+'</option>';}).join('');}
   function renderMap(){
     var host=$('manifestMap');if(!rows.length){host.innerHTML='';return;}
@@ -81,6 +96,8 @@
     var profile={};try{profile=JSON.parse(localStorage.getItem(PROFILE_KEY)||'{}');}catch(e){}
     var n=nameOf(r);if(n&&n!=='(no name)')profile.name=n.split(/\s+/)[0];
     var c=currentOf(r);if(c)profile.current=c;
+    var prog=selectedProgram();
+    if(prog){profile.program=prog.name||'';profile.programdesc=prog.desc||'';}else{delete profile.program;delete profile.programdesc;}
     try{localStorage.setItem(PROFILE_KEY,JSON.stringify(profile));}catch(e){}
     window.open('funnel.html?stage=outbound&scenario=owner-first-contact','_blank','noopener');
   }
@@ -116,10 +133,12 @@
   function clearProgress(){if(!confirm('Clear the saved manifest outcomes on this browser? The original file is not changed.'))return;try{localStorage.removeItem(PROGRESS_KEY);}catch(e){}rows.forEach(function(r){r['Call Outcome']='';r['Call Notes']='';r['Worked At']='';});renderAll();}
 
   function start(){
-    var mount=$(MOUNT_ID);if(!mount)return;addStyles();mount.innerHTML=markup();
+    var mount=$(MOUNT_ID);if(!mount)return;addStyles();mount.innerHTML=markup();renderCampaign();
     $('manifestFile').addEventListener('change',function(){var f=this.files&&this.files[0];loadFile(f);this.value='';});
     $('manifestExport').onclick=exportFile;$('manifestClearProgress').onclick=clearProgress;
     $('manifestSearch').addEventListener('input',function(){query=this.value;renderList();});
+    $('manifestProgram').addEventListener('change',function(){campaignId=this.value||'';});
+    g.addEventListener('shq:programs-changed',renderCampaign);
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })(window);
