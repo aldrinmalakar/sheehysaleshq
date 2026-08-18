@@ -2,11 +2,12 @@
 (function(){
 'use strict';
 var page=(location.pathname.split('/').pop()||'').toLowerCase();
-/* Sister Store now owns its final decision-driven customer language directly. */
+/* Sister Store owns its final decision-driven customer language directly. */
 if(page==='sister-store.html')return;
+var survey=(page==='survey.html');
 var relationship=(page==='after-sale.html');
-var src=relationship?'./relationship-voice.js':'./sales-voice-core.js';
-var id=relationship?'shqRelationshipVoiceCore':'shqSalesVoiceCore';
+var src=survey?'./survey-voice.js':relationship?'./relationship-voice.js':'./sales-voice-core.js';
+var id=survey?'shqSurveyVoiceCore':relationship?'shqRelationshipVoiceCore':'shqSalesVoiceCore';
 if(document.getElementById(id))return;
 function loadExtra(extraId,extraSrc){
   if(document.getElementById(extraId))return;
