@@ -202,8 +202,13 @@ F.scenarios.forEach(function(s){if(s.stage==='outbound')out[s.id]=s;else rest.pu
 var ordered=[];ORDER.forEach(function(id){if(out[id]){ordered.push(out[id]);delete out[id];}});Object.keys(out).forEach(function(id){ordered.push(out[id]);});
 F.scenarios=ordered.concat(rest);
 
+/* Owner / Outbound is final after the global context/warmth layers.
+   This prevents premature "visit" language from being injected before
+   the owner has agreed there is a shopping conversation to have. */
 F.resolveScenario=function(raw,ctx){
-  var x=priorResolve?priorResolve(raw,ctx):clone(raw),o=clone(x||{});
+  var isOutbound=!!raw&&raw.stage==='outbound';
+  var x=isOutbound?clone(raw):(priorResolve?priorResolve(raw,ctx):clone(raw));
+  var o=clone(x||{});
   ['call','vm','sms','subject','email','video','goal','next','when'].forEach(function(k){if(o[k])o[k]=programTokens(o[k]);});
   return o;
 };
