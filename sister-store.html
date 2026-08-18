@@ -11,14 +11,14 @@
 <body>
 <div class="wrap">
   <h1>Sister Store / Comparable</h1>
-  <p class="sub">Match the inquiry honestly, show the real difference and keep the appointment moving.</p>
+  <p class="sub">Name the real difference, find out whether it matters, then earn the next step. Do not defend the substitution before the customer objects.</p>
 
   <section class="panel">
     <h2>Customer + vehicle context</h2>
     <div class="grid">
       <label>Customer first name<input data-f="name" autocomplete="off" placeholder="Sarah"></label>
-      <label>Vehicle they asked for<input data-f="vehicle" autocomplete="off" placeholder="2026 Rogue SL, Boulder Gray"></label>
-      <label>Vehicle you can actually show<input id="availableVeh" autocomplete="off" placeholder="2026 Rogue SL, Gun Metallic"></label>
+      <label>Vehicle they asked for<input data-f="vehicle" autocomplete="off" placeholder="2023 Murano SL, Pearl White"></label>
+      <label>Vehicle you can actually show<input id="availableVeh" autocomplete="off" placeholder="2025 Murano SL, Gun Metallic"></label>
       <label>Where is that vehicle?<select id="location"><option value="our">Our Manassas lot</option><option value="sister">Sister store / group inventory</option></select></label>
       <label>Difference from inquiry<select id="difference">
         <option value="exact-sister">Exact match, but at a sister store</option>
@@ -31,11 +31,26 @@
         <option value="all">Different year + trim + color</option>
         <option value="brand">Different brand, comparable vehicle</option>
       </select></label>
+      <label>What mattered most about the original?<select id="priority">
+        <option value="unknown">Not established yet</option>
+        <option value="exact">Exact model / configuration</option>
+        <option value="value">Price / value</option>
+        <option value="equipment">Trim / equipment</option>
+        <option value="color">Color</option>
+        <option value="miles">Mileage / condition</option>
+        <option value="comfort">Comfort / fit</option>
+        <option value="reliability">Reliability / ownership confidence</option>
+        <option value="safety">Safety equipment</option>
+        <option value="technology">Technology</option>
+        <option value="space">Space / utility</option>
+        <option value="ownership">Ownership cost</option>
+      </select></label>
       <label>Customer response<select id="response">
         <option value="first">New lead / first response</option>
         <option value="pushback">“That is not what I asked for”</option>
-        <option value="open">Open to a comparable</option>
+        <option value="open">Open to the alternative</option>
         <option value="pending">Manager checking sister-store vehicle</option>
+        <option value="secured">Manager confirmed the sister-store unit</option>
         <option value="failed">Requested sister-store unit could not be secured</option>
       </select></label>
       <label>Primary time<input data-f="daytime" autocomplete="off" placeholder="Today at 5:30"></label>
