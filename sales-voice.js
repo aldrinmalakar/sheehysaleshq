@@ -2,7 +2,9 @@
 (function(){
 'use strict';
 var page=(location.pathname.split('/').pop()||'').toLowerCase();
-var relationship=(page==='after-sale.html'||page==='sister-store.html');
+/* Sister Store now owns its final decision-driven customer language directly. */
+if(page==='sister-store.html')return;
+var relationship=(page==='after-sale.html');
 var src=relationship?'./relationship-voice.js':'./sales-voice-core.js';
 var id=relationship?'shqRelationshipVoiceCore':'shqSalesVoiceCore';
 if(document.getElementById(id))return;
