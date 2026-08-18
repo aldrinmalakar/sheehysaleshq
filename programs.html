@@ -55,7 +55,7 @@
     </div>
     <div class="full"><label>What it is, in plain words<textarea id="pDesc" placeholder="Loyalty program for current Nissan owners coming out of an eligible vehicle. Eligibility and details vary."></textarea></label></div>
     <div class="rowbtns"><button class="primary" id="addBtn">Add program</button><button class="ghostb" id="clearForm">Clear</button></div>
-    <div class="flag"><b>By design there is no field for a dollar amount, rate or payment.</b> This app cannot quote one, so programs are stored by name and description only. The generated language names the program and routes the customer to verified details.</div>
+    <div class="flag"><b>By design there is no field for a dollar amount, rate or payment.</b> This app cannot quote one, so programs are stored by name and description only. The Funnel uses the program only when the customer asks or discovery makes it relevant.</div>
   </div>
 
   <div class="panel">
@@ -68,11 +68,11 @@
   <div class="panel"><h2>Current programs</h2><div id="list"></div></div>
 
   <div class="panel">
-    <h2>What your messages will say</h2>
+    <h2>Program support line, not an opener</h2>
     <div class="plab">On a call</div><div class="preview" id="prevCall"></div>
     <div class="plab" style="margin-top:10px">In a text</div><div class="preview" id="prevSms"></div>
     <div class="plab" style="margin-top:10px">In an email</div><div class="preview" id="prevEmail"></div>
-    <div class="note">This is what the message pages will pull in. It names the program and stops there, on purpose.</div>
+    <div class="note">Use these only after the customer asks about a program or discovery makes it relevant. The cold-call opener belongs in Funnel and should be about the owner and vehicle, not a discount/program pitch.</div>
   </div>
 
   <div class="foot">Program settings and manifest progress are local to this browser. Programs change often, so re-verify with the desk before every selling week. DriveCentric remains the store system of record.</div>
@@ -82,6 +82,7 @@
 const $=id=>document.getElementById(id);
 const P=window.SHQPrograms;
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function changed(){try{window.dispatchEvent(new CustomEvent('shq:programs-changed'));}catch(e){}}
 function addItem(name,desc,aud,ends,verified){if(!name||!name.trim())return;const v=P.load();v.items.push({id:'p'+Date.now()+Math.floor(Math.random()*999),name:name.trim(),desc:(desc||'').trim(),audience:aud||'both',ends:ends||'',verified:verified||'',verifiedOn:verified?P.todayYMD():'',on:false});P.save(v);renderAll();}
 $('addBtn').onclick=()=>{addItem($('pName').value,$('pDesc').value,$('pAud').value,$('pEnds').value,$('pVerified').value);$('pName').value='';$('pDesc').value='';$('pEnds').value='';$('pVerified').value='';};
 $('clearForm').onclick=()=>{$('pName').value='';$('pDesc').value='';$('pEnds').value='';$('pVerified').value='';};
@@ -90,8 +91,8 @@ $('bulkBtn').onclick=()=>{ingest($('bulk').value);$('bulk').value='';};
 $('fileIn').onchange=e=>{const f=e.target.files&&e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{ingest(String(r.result));$('fileIn').value='';};r.readAsText(f);};
 function renderList(){const v=P.load(),box=$('list');if(!v.items.length){box.innerHTML='<span class="empty">No programs yet. Add one above or paste a list.</span>';return;}box.innerHTML='';v.items.forEach(function(p){const exp=P.isExpired(p);const el=document.createElement('div');el.className='item'+(p.on?'':' off')+(exp?' expired':'');const badge=p.audience==='owner'?'<span class="badge b-own">Owners</span>':p.audience==='customer'?'<span class="badge b-cust">Customers</span>':'<span class="badge b-both">Everyone</span>';const expB=exp?'<span class="badge b-exp">Expired</span>':'';const meta=[];meta.push(p.ends?('Ends '+p.ends):'No end date set');meta.push(p.verified?('Verified with '+p.verified+(p.verifiedOn?' on '+p.verifiedOn:'')):'Not verified');const left=document.createElement('div');left.innerHTML='<div class="iname">'+badge+expB+esc(p.name)+'</div>'+(p.desc?'<div class="idesc">'+esc(p.desc)+'</div>':'')+'<div class="imeta">'+esc(meta.join(' · '))+'</div>';const acts=document.createElement('div');acts.className='iacts';const t=document.createElement('button');t.className='qbtn'+(p.on?' on':'');t.textContent=p.on?'On':'Off';t.onclick=()=>{const vv=P.load();const it=vv.items.find(x=>x.id===p.id);if(it)it.on=!it.on;P.save(vv);renderAll();};const rm=document.createElement('button');rm.className='qbtn rm';rm.textContent='Remove';rm.onclick=()=>{const vv=P.load();vv.items=vv.items.filter(x=>x.id!==p.id);P.save(vv);renderAll();};acts.appendChild(t);acts.appendChild(rm);const head=document.createElement('div');head.className='ihead';head.appendChild(left);head.appendChild(acts);el.appendChild(head);box.appendChild(el);});}
 function renderWarn(){const s=P.stale(),box=$('warnArea');if(!s.length){box.innerHTML='';return;}const names=s.map(p=>p.name).join(', ');box.innerHTML='<div class="warnbox"><b>Check these before you use them:</b> '+esc(names)+'. They are switched on but either past their end date or have no end date set. Programs change monthly, so confirm with the desk before you mention them to a customer.</div>';}
-function renderPreview(){const c=P.line('call'),s=P.line('sms'),e=P.line('email');const none='Nothing switched on right now, so the message pages will not mention any program.';$('prevCall').textContent=c||none;$('prevSms').textContent=s||none;$('prevEmail').textContent=e||none;}
-function renderAll(){renderList();renderWarn();renderPreview();}
+function renderPreview(){const c=P.line('call'),s=P.line('sms'),e=P.line('email');const none='Nothing switched on right now, so there is no program support line to use.';$('prevCall').textContent=c||none;$('prevSms').textContent=s||none;$('prevEmail').textContent=e||none;}
+function renderAll(){renderList();renderWarn();renderPreview();changed();}
 renderAll();
 </script>
 </body>

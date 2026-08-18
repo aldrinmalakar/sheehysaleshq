@@ -23,10 +23,8 @@
 
   function todayYMD(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 
-  // A program is expired when its end date is in the past.
   function isExpired(p){ return !!(p.ends && p.ends < todayYMD()); }
 
-  // Active = switched on, not expired.
   function active(audience){
     return load().items.filter(function(p){
       if(!p.on) return false;
@@ -36,19 +34,17 @@
     });
   }
 
-  // Anything on but expired, or with no end date set. Surfaced as a warning.
   function stale(){
     return load().items.filter(function(p){ return p.on && (isExpired(p) || !p.ends); });
   }
 
-  /* ---- language builders ----
-     These never state a value. They name the program and route to
-     a verified conversation. */
+  /* Program language is a support line after the customer gives a reason.
+     It is deliberately not written as a cold-call opener. */
   function phraseFor(p, channel){
-    var n=p.name||'a current program';
-    if(channel==='sms') return 'There is also '+n+' running right now that may apply to you. I would want to confirm the details with my manager before I quote anything.';
-    if(channel==='email') return 'There is also '+n+' running at the moment that may apply to your situation. I want to give you accurate details rather than a guess, so let me verify exactly what you qualify for.';
-    return '"There is also '+n+' running right now, and depending on your situation it may apply to you. I do not want to quote you something wrong, so let me confirm the specifics with my manager and get you the real details."';
+    var n=p.name||'the current program';
+    if(channel==='sms') return 'Since you asked about programs, I can verify whether '+n+' applies to your situation before we count it into anything.';
+    if(channel==='email') return 'Since you asked about programs, I can verify the current requirements for '+n+' and whether it applies to your situation before we count it into the deal.';
+    return '"Since you asked about programs, '+n+' may be worth checking. I will verify the current eligibility and vehicle rules before we count it into the deal."';
   }
 
   function line(channel, audience){
