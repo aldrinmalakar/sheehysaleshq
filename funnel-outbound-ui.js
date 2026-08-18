@@ -11,9 +11,10 @@ function ensureHint(){
 }
 function apply(){
   ensureHint();
-  var out=isOutbound(),video=$('videoPanel'),follow=$('videoFollowupPanel'),hint=$('outboundStageHint');
+  var out=isOutbound(),video=$('videoPanel'),follow=$('videoFollowupPanel')||$('activityPanel'),hint=$('outboundStageHint'),activityJump=document.querySelector('.funnel-jump-nav a[href="#activityPanel"]');
   if(video)video.hidden=out;
   if(follow)follow.hidden=out;
+  if(activityJump)activityJump.hidden=out;
   if(hint)hint.hidden=!out;
 }
 function bind(){

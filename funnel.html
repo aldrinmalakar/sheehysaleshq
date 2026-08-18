@@ -16,12 +16,21 @@
 <script src="./funnel-unavailable-options.js"></script>
 <script src="./funnel-warm-confidence.js"></script>
 <script src="./funnel-outbound-programs.js"></script>
+<script src="./funnel-contact-control.js"></script>
 <script src="./funnel-lead-ops.js" defer></script>
 <script src="./funnel-outbound-ui.js" defer></script>
 </head>
 <body>
-<div class="wrap">
+<div class="wrap" id="funnelTop">
   <h1>Behavior Funnel</h1>
+
+  <nav class="funnel-jump-nav" aria-label="Funnel sections">
+    <a href="#customerContext">Customer</a>
+    <a href="#behaviorPanel">Behavior</a>
+    <a href="#contactControl">Attempts</a>
+    <a href="#scriptsHeading">Scripts</a>
+    <a href="#activityPanel">Activity</a>
+  </nav>
 
   <section class="panel" id="customerContext">
     <div class="panel-title"><div><div class="kicker">1 · Start here</div><h2>Customer context</h2></div><button class="mini-btn" id="clearCustomer" type="button">Clear customer</button></div>
@@ -74,7 +83,7 @@
     </div>
   </section>
 
-  <section class="panel">
+  <section class="panel" id="behaviorPanel">
     <div class="panel-title"><div><div class="kicker">2 · Behavior</div><h2>What is happening?</h2></div></div>
     <div class="situation-grid">
       <label>Where are you in the sale?<select id="stageSelect"></select></label>
@@ -125,19 +134,72 @@
     <div class="behavior-bar"><span class="status-pill blue" id="behaviorTag">Behavior</span><span class="status-pill" id="contextTag">Context</span></div>
   </section>
 
-  <h2 class="scripts-title">Wordtracks</h2>
+  <section class="panel contact-control" id="contactControl" aria-labelledby="contactControlTitle">
+    <div class="panel-title">
+      <div><div class="kicker">3 · Contact control</div><h2 id="contactControlTitle">Day, attempt and next move</h2></div>
+      <span class="status-pill" id="contactState" aria-live="polite">No outcome yet</span>
+    </div>
+
+    <div class="contact-metrics" aria-label="Contact tracking summary">
+      <div class="contact-metric"><span>Lead day</span><b id="metricDay">Not started</b></div>
+      <div class="contact-metric"><span>Calls completed</span><b id="metricCalls">0</b></div>
+      <div class="contact-metric"><span>Total touches</span><b id="metricTouches">0</b></div>
+      <div class="contact-metric"><span>Next call</span><b>Attempt <span id="metricNextCall">1</span></b></div>
+    </div>
+
+    <div class="attempt-view-row">
+      <label>Script attempt view<select id="attemptScriptView" aria-describedby="attemptScriptStatus">
+        <option value="auto">Auto · next call attempt</option>
+        <option value="1">Attempt 1</option>
+        <option value="2">Attempt 2</option>
+        <option value="3">Attempt 3</option>
+        <option value="4">Attempt 4</option>
+        <option value="5">Attempt 5+</option>
+      </select></label>
+      <div class="attempt-status" id="attemptScriptStatus" aria-live="polite">Auto: showing Attempt 1 scripts.</div>
+    </div>
+
+    <div class="outcome-label">Log what just happened</div>
+    <div class="outcome-grid" role="group" aria-label="Quick contact outcomes">
+      <button class="outcome-btn success" type="button" data-outcome="answered">Answered</button>
+      <button class="outcome-btn" type="button" data-outcome="noanswer">No Answer</button>
+      <button class="outcome-btn" type="button" data-outcome="voicemail">Voicemail</button>
+      <button class="outcome-btn" type="button" data-outcome="text">Text Sent</button>
+      <button class="outcome-btn" type="button" data-outcome="email">Email Sent</button>
+      <button class="outcome-btn" type="button" data-outcome="callback">Callback</button>
+      <button class="outcome-btn warn" type="button" data-outcome="badnumber">Bad Number</button>
+      <button class="outcome-btn warn" type="button" data-outcome="notinterested">Not Interested</button>
+      <button class="outcome-btn danger" type="button" data-outcome="optout">Opt-Out / DNC</button>
+      <button class="outcome-btn success" type="button" data-outcome="appointment">Appointment Set</button>
+    </div>
+
+    <div class="next-action" aria-live="polite" aria-atomic="true">
+      <span>Recommended next step</span>
+      <b id="nextActionTitle">Start with the call</b>
+      <p id="nextActionBody">Use the current Call script. If they answer, switch to their actual behavior.</p>
+    </div>
+
+    <details class="contact-history" id="contactHistoryDetails">
+      <summary>Current customer contact history</summary>
+      <div id="contactHistory"></div>
+      <button class="mini-btn reset-tracking" id="resetContactTracking" type="button">Reset this customer tracking</button>
+    </details>
+    <div class="quiet contact-storage-note">This working history is saved only in this browser. It is not DriveCentric and is not shared across devices.</div>
+  </section>
+
+  <h2 class="scripts-title" id="scriptsHeading" tabindex="-1">Wordtracks</h2>
   <div class="scripts-grid" id="scripts"></div>
 
   <section class="panel video-panel" id="videoPanel" style="margin-top:15px">
-    <div class="panel-title"><div><div class="kicker">3 · 60 seconds</div><h2>DriveCentric 6PO video</h2></div></div>
+    <div class="panel-title"><div><div class="kicker">4 · 60 seconds</div><h2>DriveCentric 6PO video</h2></div></div>
     <div class="video-grid">
       <div class="sixpo" id="sixpo"></div>
       <div class="companion" id="videoCompanion"></div>
     </div>
   </section>
 
-  <section class="panel" id="videoFollowupPanel">
-    <div class="panel-title"><div><div class="kicker">4 · After send</div><h2>DriveCentric video follow-up</h2></div></div>
+  <section class="panel" id="activityPanel">
+    <div class="panel-title"><div><div class="kicker">5 · After send</div><h2>DriveCentric video follow-up</h2></div></div>
     <div id="videoDeliveryControls"></div>
     <div class="notice" id="videoNotice"></div>
     <div class="delivery-actions"><button class="mini-btn primary" id="copyNotice" type="button">Copy follow-up</button><button class="mini-btn" id="logVideo" type="button">Log video sent</button><button class="mini-btn" id="logNotice" type="button">Log follow-up</button></div>
