@@ -11,13 +11,7 @@ function A(){return v('[data-f="agent"]','[agent]');}
 function P(){return v('[data-f="number"]','[number]');}
 function scenario(){return $('scenario')?$('scenario').value:'pre';}
 function concern(){var c=$('concern')?$('concern').value:'sales';if(c==='finance')return 'the financing or paperwork';if(c==='features')return 'the features or controls';if(c==='condition')return 'the condition of the vehicle at delivery';if(c==='other')return 'what happened';return 'the purchase experience';}
-
-function copyText(text,btn){
-  function done(){var old=btn.textContent;btn.textContent='Copied';setTimeout(function(){btn.textContent=old;},850);}
-  function fallback(){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}ta.remove();done();}
-  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(done).catch(fallback);else fallback();
-}
-
+function copyText(text,btn){function done(){var old=btn.textContent;btn.textContent='Copied';setTimeout(function(){btn.textContent=old;},850);}function fallback(){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}ta.remove();done();}if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(done).catch(fallback);else fallback();}
 function scripts(){
   var n=N(),veh=V(),a=A(),p=P(),issue=concern();
   if(scenario()==='arrived')return {
@@ -45,7 +39,7 @@ function scripts(){
     sms:'Hi '+n+', '+a+' here. Let us get the open issue on the '+veh+' handled. What is still unresolved with '+issue+' right now?',
     subject:'Let’s Get the '+veh+' Issue Clear',
     email:'Hi '+n+',\n\nLet us get the open issue handled.\n\nWhat is still unresolved with '+issue+' right now? Give me the full version so I can work the right next step instead of guessing.\n\n'+a,
-    route:'Write down the issue exactly as the customer describes it. Isolate whether anything else is wrong. Route finance/paperwork matters to the finance team and involve the appropriate manager for anything outside your authority. Do not promise an outcome you have not verified.'
+    route:'Write down the issue exactly as the customer describes it and isolate whether anything else is wrong. Financing, paperwork, payment, APR, approval or protection questions go to Bob, Daniel or Jack. Anything outside your authority gets the appropriate manager. Do not promise an outcome you have not verified.'
   };
   if(scenario()==='completed')return {
     call:'Got it. Thanks for taking the time. Now back to the '+veh+': how is it treating you? Anything you still want me to clear up?',
@@ -66,20 +60,8 @@ function scripts(){
     route:'If they raise anything unresolved, move immediately to issue recovery. If everything is good, leave it alone and continue normal ownership follow-up.'
   };
 }
-
-function apply(){
-  if(applying)return;applying=true;
-  var s=scripts(),map={callOut:s.call,vmOut:s.vm,smsOut:s.sms,subjOut:s.subject,emailOut:s.email,callCue:s.cue,routeOut:s.route};
-  Object.keys(map).forEach(function(id){var e=$(id);if(e&&e.textContent!==map[id])e.textContent=map[id];});
-  document.querySelectorAll('[data-copy]').forEach(function(btn){btn.onclick=function(){var target=$(this.getAttribute('data-copy'));copyText(target?target.textContent:'',this);};});
-  applying=false;
-}
+function apply(){if(applying)return;applying=true;var s=scripts(),map={callOut:s.call,vmOut:s.vm,smsOut:s.sms,subjOut:s.subject,emailOut:s.email,callCue:s.cue,routeOut:s.route};Object.keys(map).forEach(function(id){var e=$(id);if(e&&e.textContent!==map[id])e.textContent=map[id];});document.querySelectorAll('[data-copy]').forEach(function(btn){btn.onclick=function(){var target=$(this.getAttribute('data-copy'));copyText(target?target.textContent:'',this);};});applying=false;}
 function schedule(){clearTimeout(timer);timer=setTimeout(apply,0);}
-function bind(){
-  apply();
-  document.addEventListener('change',schedule);
-  document.addEventListener('input',schedule);
-  if(window.MutationObserver&&document.body)new MutationObserver(function(m){if(!applying)schedule();}).observe(document.body,{childList:true,subtree:true,characterData:true});
-}
+function bind(){apply();document.addEventListener('change',schedule);document.addEventListener('input',schedule);if(window.MutationObserver&&document.body)new MutationObserver(function(){if(!applying)schedule();}).observe(document.body,{childList:true,subtree:true,characterData:true});}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind);else bind();
 })();
