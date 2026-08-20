@@ -18,6 +18,14 @@ function vmIntro(){return cold()&&String(A()).toLowerCase()==='aldrin'?'Hi '+N()
 function standard(){if($('reconnectSpokenStandard'))return;var sub=document.querySelector('.sub');if(!sub||!sub.parentNode)return;var box=document.createElement('div');box.id='reconnectSpokenStandard';box.style.cssText='margin:0 0 12px;padding:9px 11px;border:1px solid #c9dbff;border-radius:10px;background:#eef4ff;font-size:12.5px;line-height:1.5;color:#31435a';box.innerHTML='<b>Spoken standard:</b> identify → where the deal stopped → one isolation question → next commitment → stop. Do not resell the whole car.';sub.parentNode.insertBefore(box,sub.nextSibling);}
 function call(){
   var n=N(),veh=V(),a=A(),s=sc(),x=slot(),y=alt(),open=n+'? '+a+' at Sheehy Nissan. ';
+  if(cold()){
+    if(s==='pencil')return open+'We got to numbers on the '+veh+' a while back. Did you end up buying something else, or is this still active?\n\n[If still active] What stopped it last time: selling price, payment, trade or timing?';
+    if(s==='testdrive')return open+'You drove the '+veh+' a while back. Did you end up buying something else, or is this still active?\n\n[If still active] What kept it from the next step: the vehicle, the numbers, the trade or the timing?';
+    if(s==='visit')return open+'You came by on the '+veh+' a while back but we never got to the drive. Did you end up buying something else, or is the search still open?';
+    if(s==='video')return open+'I sent you the video on the '+veh+' a while back. Did you end up buying something else, or are you still looking?';
+    if(s==='quiet')return open+'We spoke about the '+veh+' a while back and then it went quiet. Did you already handle it, is the timing different now or is the search still open?';
+    return open+'We spoke about the '+veh+' a while back. Quick status check: did you already buy, are you still shopping or did the timing move?';
+  }
   if(s==='pencil')return open+'You saw the numbers on the '+veh+'. Which part kept it from being a yes: the selling price, the payment, the trade or the timing?\n\n[Let them answer. Isolate that one issue.]\n\nIf we solve that piece, is there anything else keeping you from moving forward?\n\n[If no] Good. Let us put the current picture in front of you. '+x+' or '+y+'?';
   if(s==='testdrive')return open+'You drove the '+veh+'. What kept it from becoming the next step: the vehicle itself, the numbers, the trade or the timing?\n\n[Let them answer. Do not defend anything yet.]\n\nIf we get that one piece right, are you ready to pick this back up?';
   if(s==='visit')return open+'You came by on the '+veh+' but we never got to the drive. Was the vehicle not clicking, or did the visit just get cut short?\n\n[If the visit got cut short] Got it. Let us finish the part that actually tells you something. '+x+' or '+y+'?';
@@ -37,6 +45,7 @@ function vm(){
 }
 function sms(){
   var n=N(),veh=V(),a=A(),s=sc();
+  if(cold())return 'Hi '+n+', '+a+' at Sheehy Nissan. We spoke about the '+veh+' a while back. Did you already buy, are you still shopping or did the timing move?';
   if(s==='pencil')return 'Hi '+n+', '+a+' at Sheehy Nissan. You saw the numbers on the '+veh+'. What kept it from being a yes: price, payment, trade or timing?';
   if(s==='testdrive')return 'Hi '+n+', '+a+' here. You drove the '+veh+'. What kept it from the next step: the vehicle, numbers, trade or timing?';
   if(s==='visit')return 'Hi '+n+', '+a+' at Sheehy Nissan. You came by on the '+veh+' but never drove it. Was the vehicle not clicking, or did the visit just get cut short?';
@@ -44,9 +53,10 @@ function sms(){
   if(s==='quiet')return 'Hi '+n+', '+a+' at Sheehy Nissan. We had a real conversation on the '+veh+' and then it went quiet. Did the plan change, or is one thing still unresolved?';
   return 'Hi '+n+', '+a+' at Sheehy Nissan. You had asked about the '+veh+'. Are you still shopping for one, or did you already handle it?';
 }
-function subject(){var s=sc(),veh=V(),n=N();if(s==='pencil')return n+', What Stopped the '+veh+' Deal?';if(s==='testdrive')return n+', One Question After the '+veh+' Drive';if(s==='visit')return n+', We Never Got to the '+veh+' Drive';if(s==='video')return n+', Did the '+veh+' Video Answer It?';if(s==='quiet')return n+', Did the '+veh+' Plan Change?';return n+', Still Shopping for the '+veh+'?';}
+function subject(){var s=sc(),veh=V(),n=N();if(cold())return n+', Still Shopping for the '+veh+'?';if(s==='pencil')return n+', What Stopped the '+veh+' Deal?';if(s==='testdrive')return n+', One Question After the '+veh+' Drive';if(s==='visit')return n+', We Never Got to the '+veh+' Drive';if(s==='video')return n+', Did the '+veh+' Video Answer It?';if(s==='quiet')return n+', Did the '+veh+' Plan Change?';return n+', Still Shopping for the '+veh+'?';}
 function email(){
   var n=N(),veh=V(),a=A(),s=sc(),q='';
+  if(cold())return 'Hi '+n+',\n\nWe spoke about the '+veh+' a while back. Which is true now: already bought, still shopping or timing moved?\n\nReply with the one that is true and I will work from there.\n\n'+a;
   if(s==='pencil')q='You saw the numbers on the '+veh+'. What kept it from being a yes: selling price, payment, trade or timing?';
   else if(s==='testdrive')q='You drove the '+veh+'. What kept it from the next step: the vehicle itself, the numbers, the trade or the timing?';
   else if(s==='visit')q='You came by on the '+veh+' but we never got to the drive. Was the vehicle not clicking, or did the visit just get cut short?';
