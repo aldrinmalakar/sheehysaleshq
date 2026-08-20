@@ -25,7 +25,7 @@ function scripts(){
     route:'If they name a problem, stop discussing the survey and work the problem. If nothing is wrong, leave the survey alone.'
   };
   if(scenario()==='notreceived')return {
-    call:'No problem. Do not chase it. How is the '+veh+' treating you, and is there anything you still need from me?',
+    call:n+'? '+a+' here. No problem. Do not chase it. How is the '+veh+' treating you, and is there anything you still need from me?',
     cue:'The missing survey is not the issue. Return to ownership care.',
     vm:'Hi '+n+', '+a+' here. No need to hunt for the Nissan survey. I mainly want to know whether the '+veh+' is treating you well and whether anything still needs attention. Call or text me at '+p+'.',
     sms:'No need to chase the Nissan survey, '+n+'. How is the '+veh+' treating you? Anything you still need from me?',
