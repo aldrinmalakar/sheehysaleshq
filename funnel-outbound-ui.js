@@ -17,11 +17,20 @@ function apply(){
   if(activityJump)activityJump.hidden=out;
   if(hint)hint.hidden=!out;
 }
+function loadPhoneVoice(){
+  if(document.getElementById('shqFunnelCallVoice'))return;
+  var s=document.createElement('script');s.id='shqFunnelCallVoice';s.src='./funnel-call-voice.js';
+  s.onerror=function(){if(g.console&&console.warn)console.warn('Sales HQ could not load funnel-call-voice.js');};
+  (document.head||document.documentElement).appendChild(s);
+}
 function bind(){
   apply();
   var stage=$('stageSelect');if(stage)stage.addEventListener('change',apply);
   g.addEventListener('shq:funnel-state-change',apply);
   g.addEventListener('shq:funnel-context-change',apply);
+  /* This deferred UI file runs after contact-control, so the spoken phone voice
+     becomes the final Funnel resolver without disturbing earlier behavior logic. */
+  loadPhoneVoice();
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind);else bind();
 })(window);
