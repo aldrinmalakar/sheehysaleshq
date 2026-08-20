@@ -50,12 +50,12 @@ function scripts(title){
       email:'Hi '+n+',\n\nHow is the '+v+' treating you? Anything from the purchase, setup or delivery still unresolved?\n\nNissan may send a short purchase survey too. If you see it, give them your real experience.\n\n'+a
     },
     'Google experience review':{
-      sms:'Hi '+n+', you have had some real time with the '+v+' now. If you are willing, I would appreciate an honest Google review of what it was like working with me: '+GOOGLE,
-      email:'Hi '+n+',\n\nYou have had some real time with the '+v+' now. If you are willing, I would appreciate an honest Google review of what it was like working with me.\n\n'+GOOGLE+'\n\nThank you,\n'+a
+      sms:'Hi '+n+', you have had some real time with the '+v+' now. I would appreciate an honest Google review of what it was like working with me: '+GOOGLE,
+      email:'Hi '+n+',\n\nYou have had some real time with the '+v+' now. I would appreciate an honest Google review of what it was like working with me.\n\n'+GOOGLE+'\n\nThank you,\n'+a
     },
     'Referral conversation':{
-      call:n+'? '+a+' here. You have had the '+v+' about a month, so I am going to ask you one direct favor. If I earned your trust, who is the first person you would feel comfortable introducing me to when they need a vehicle?\n\n[Let them answer.]\n\nYou make the introduction. I will take it from there.',
-      vm:'Hi '+n+', '+a+' here. I wanted to check on the '+v+' and ask you one quick favor. Call or text me at '+p+' when you get a second.',
+      call:n+'? '+a+' here. You have had the '+v+' about a month. If I earned your trust, who is the first person you would feel comfortable introducing me to when they need a vehicle?\n\n[Let them answer.]\n\nYou make the introduction. I will take it from there.',
+      vm:'Hi '+n+', '+a+' here. If I earned your trust, who is the first person you would feel comfortable introducing me to when they need a vehicle? You make the introduction. I will take it from there. Call or text me at '+p+'.',
       sms:'Quick favor, '+n+'. If I earned your trust, who is the first person you would feel comfortable introducing me to when they need a vehicle? You make the introduction. I will take it from there.',
       email:'Hi '+n+',\n\nIf I earned your trust, who is the first person you would feel comfortable introducing me to when they need a vehicle?\n\nYou make the introduction. I will take it from there.\n\n'+a
     },
