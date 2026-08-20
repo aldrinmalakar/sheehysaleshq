@@ -26,9 +26,10 @@ function laterAttempt(s){return /tried you earlier|trying to get the status righ
 function phoneStage(s){return ['new','attempting','engaged','appointment','outbound','longterm'].indexOf(s)>-1;}
 
 function liveIntro(text){
-  var s=String(text||'');
+  var s=String(text||'').trim();
   if(!customerFacing(s))return s;
   if(/^\[Name\]\?\s*\[agent\]/i.test(s)||/^Hi \[Name\],\s*(?:this is )?\[agent\]/i.test(s))return s;
+  if(/^\[Name\],\s*/i.test(s))s=s.replace(/^\[Name\],\s*/i,'');
   return '[Name]? [agent] at Sheehy Nissan. '+s;
 }
 function cleanCall(text){
@@ -95,7 +96,7 @@ function polish(base,ctx,raw){
 }
 F.resolveScenario=function(raw,ctx){var base=priorResolve?priorResolve(raw,ctx):clone(raw);return polish(base,ctx||{},raw);};
 
-/* The Funnel may have rendered once before this late voice layer loads via nav.js. */
+/* The Funnel may have rendered once before this late voice layer loads. */
 function refresh(){
   var b=document.getElementById('behavior');
   if(b)try{b.dispatchEvent(new Event('change',{bubbles:true}));}catch(e){}
