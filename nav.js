@@ -93,6 +93,7 @@
   }
 
   function init(){
+    loadScriptOnce('shqThemeScript','./theme.js');
     build();
     disableLegacyAI();
     initSubjectStyle();
