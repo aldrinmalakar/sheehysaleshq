@@ -4,6 +4,14 @@
 (function(){
   'use strict';
 
+  /* Apply the saved/system theme hint before the shared nav paints. */
+  try{
+    var earlyTheme=localStorage.getItem('shq_theme_v1');
+    if(earlyTheme!=='light'&&earlyTheme!=='monokai')earlyTheme=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'monokai':'light';
+    document.documentElement.setAttribute('data-shq-theme',earlyTheme);
+    document.documentElement.style.colorScheme=earlyTheme==='monokai'?'dark':'light';
+  }catch(e){}
+
   var LINKS=[
     {href:'index.html',label:'Home'},
     {href:'funnel.html',label:'Funnel'},
@@ -30,11 +38,13 @@
     '.shq-clock-status{font-size:11px;font-weight:850;letter-spacing:.02em;color:#536174}',
     '.shq-clock.on{background:#edf8f1;border-color:#b8dfc8}.shq-clock.on .shq-clock-status{color:#16794a}',
     '.shq-clock.soon{background:#fff7e8;border-color:#efd294}.shq-clock.soon .shq-clock-status{color:#9a5b00}',
+    '.shq-theme-toggle{display:inline-flex;align-items:center;gap:6px;border:1px solid #e4e8ee;border-radius:9px;padding:6px 9px;background:#fff;color:#536174;font-family:"Space Grotesk",sans-serif;font-size:11.5px;font-weight:750;cursor:pointer;white-space:nowrap}',
+    '.shq-theme-toggle:focus-visible{outline:3px solid rgba(47,95,224,.28);outline-offset:2px}',
     '.shq-links{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}',
     '.shq-links a{text-decoration:none;font-size:12px;font-weight:600;color:#6b7889;border:1px solid #e4e8ee;border-radius:8px;padding:6px 10px;background:#fff;white-space:nowrap}',
     '.shq-links a:hover{border-color:#2f5fe0;color:#2f5fe0}',
     '.shq-links a.on{color:#fff;background:#2f5fe0;border-color:#2f5fe0}',
-    '@media(max-width:720px){.shq-inner{gap:7px}.shq-clock{order:2;margin-left:auto}.shq-links{order:3;width:100%;margin-left:0;flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px}.shq-links a{flex:0 0 auto}}'
+    '@media(max-width:720px){.shq-inner{gap:7px}.shq-clock{order:2;margin-left:auto}.shq-theme-toggle{order:2}.shq-links{order:3;width:100%;margin-left:0;flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px}.shq-links a{flex:0 0 auto}}'
   ].join('');
   var style=document.createElement('style');style.textContent=css;(document.head||document.documentElement).appendChild(style);
 
@@ -42,8 +52,9 @@
     if(document.getElementById('shqNav'))return;
     var links=LINKS.map(function(l){return '<a href="'+l.href+'"'+(l.href.toLowerCase()===here?' class="on"':'')+'>'+l.label+'</a>';}).join('');
     var bar=document.createElement('div');bar.className='shq-nav';bar.id='shqNav';
-    bar.innerHTML='<div class="shq-inner"><a class="shq-brand" href="index.html">Sheehy <b>Sales HQ</b></a><div class="shq-clock" id="shqUpClock" title="Strategic UP windows, Eastern Time"><span class="shq-clock-time" id="shqClockTime">--:--</span><span class="shq-clock-status" id="shqClockStatus">UP schedule</span></div><div class="shq-links">'+links+'</div></div>';
+    bar.innerHTML='<div class="shq-inner"><a class="shq-brand" href="index.html">Sheehy <b>Sales HQ</b></a><div class="shq-clock" id="shqUpClock" title="Strategic UP windows, Eastern Time"><span class="shq-clock-time" id="shqClockTime">--:--</span><span class="shq-clock-status" id="shqClockStatus">UP schedule</span></div><button type="button" class="shq-theme-toggle" id="shqThemeToggle" aria-pressed="false" aria-label="Switch Sales HQ theme"><span class="shq-theme-icon" id="shqThemeIcon" aria-hidden="true">☀</span><span id="shqThemeLabel">Day</span></button><div class="shq-links">'+links+'</div></div>';
     document.body.insertBefore(bar,document.body.firstChild);startUpClock();
+    loadScriptOnce('shqThemeScript','./theme-monokai.js',function(){if(window.SHQTheme&&window.SHQTheme.bind)window.SHQTheme.bind();});
   }
 
   /* Strategic UP windows, Eastern Time. */
