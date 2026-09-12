@@ -1,4 +1,4 @@
-import {states,amount,money,nearest50,calculate} from './calc.js';
+import {states,stateProfiles,automaticStateRate,amount,money,nearest50,calculate} from './calc.js?v=20260912-2';
 
 const $ = (id) => document.getElementById(id);
 const stateNames=Object.fromEntries(states);
@@ -10,8 +10,13 @@ const sources={
   VA:{url:'https://www.dmv.virginia.gov/vehicles/taxes-fees/sut',name:'Virginia DMV tax'},
   MD:{url:'https://mva.maryland.gov/your-mva-guide/businesses/bulletins-businesses/new-vehicle-registration-fees-and-term',name:'Maryland MVA excise tax'},
   DC:{url:'https://dmv.dc.gov/node/155452',name:'DC DMV tax & registration'},
-  NC:{url:'https://www.ncleg.gov/EnactedLegislation/Statutes/HTML/ByArticle/Chapter_105/Article_5A.html',name:'NC highway use tax'}
+  NC:{url:'https://www.ncleg.gov/EnactedLegislation/Statutes/HTML/ByArticle/Chapter_105/Article_5A.html',name:'NC highway use tax'},
+  DE:{url:'https://www.services.dmv.de.gov/VehicleServices/titles/index.shtml?dc=ve_title_leased',name:'Delaware DMV document fee'},
+  GA:{url:'https://dor.georgia.gov/motor-vehicles/vehicle-registration-license-plates/vehicle-taxes-title-ad-valorem-tax-tavt-and',name:'Georgia TAVT'},
+  TX:{url:'https://comptroller.texas.gov/taxes/publications/96-254/mv-sales.php',name:'Texas motor vehicle tax'},
+  WA:{url:'https://dor.wa.gov/taxes-rates/other-taxes/motor-vehicle-salesuse-tax',name:'Washington motor vehicle tax'}
 };
+const nationalSources='<a href="https://floridarevenue.com/taxes/tips/Documents/TIP_26A01-01.pdf" target="_blank" rel="noopener noreferrer">2026 vehicle-tax chart ↗</a> · <a href="https://taxfoundation.org/data/all/state/sales-tax-rates/" target="_blank" rel="noopener noreferrer">2026 local-rate data ↗</a> · <a href="https://caredge.com/guides/car-dealer-doc-fee-by-state" target="_blank" rel="noopener noreferrer">2026 title and registration data ↗</a>';
 
 for(const [label,subset] of [['DMV AREA',states.slice(0,3)],['OTHER STATES',states.slice(3)]]){
   const group=document.createElement('optgroup');group.label=label;
@@ -40,7 +45,7 @@ function renderStateFields(){
       html=`<p class="context span-2">6.5% vehicle excise tax. Registration estimate: $543–$561.</p>${input('Override DMV / tags','dmvOverride',s.dmvOverride,'543–561')}`;
       break;
     case 'NC':
-      html=`<p class="context span-2">3% highway-use tax is included in the tax line. Registration estimate: $543.</p>${d.trade>0?input('Tax amount from deal worksheet','taxOverride',s.taxOverride,'Enter amount'):''}${input('Override DMV / tags','dmvOverride',s.dmvOverride,'543')}`;
+      html=`<p class="context span-2">Automatic estimate: 3% highway-use tax after trade credit, capped at $2,000. Registration allowance: $543.</p>${input('Optional tax amount override','taxOverride',s.taxOverride,'Auto')}${input('Optional DMV / tags override','dmvOverride',s.dmvOverride,'543')}`;
       break;
     case 'DC':
       html=`<p class="context span-2">DC excise tax uses DMV fair market value, unladen weight, and city MPG.</p>
@@ -52,11 +57,10 @@ function renderStateFields(){
       ${input('Override DMV / tags','dmvOverride',s.dmvOverride,'Auto from weight')}`;
       break;
     default:
-      html=`<p class="context span-2">Enter the combined vehicle tax rate for the registration address and estimated title, tag, and registration charges.</p>
-      ${input('Vehicle tax rate (%)','manualRate',s.manualRate,'e.g. 6.25',{prefix:'%',step:'0.01'})}
-      ${input('DMV / title / tags (including state fees)','dmvOverride',s.dmvOverride,'Enter amount')}
-      <label class="checkline span-2"><input id="adminTaxable" data-state-input="adminTaxable" type="checkbox" ${s.adminTaxable?'checked':''}>Include admin fee in taxable amount</label>
-      <label class="checkline span-2"><input id="tradeTaxCredit" data-state-input="tradeTaxCredit" type="checkbox" ${s.tradeTaxCredit?'checked':''}>Trade allowance reduces taxable amount</label>`;
+      const profile=stateProfiles[d.state],autoRate=automaticStateRate(d.state,d.vehicle,d.price);
+      html=`<p class="context span-2">Automatic 2026 estimate: ${profile.detail}. Default rate: ${autoRate.toFixed(3).replace(/0+$/,'').replace(/\.$/,'')}%. DMV / registration allowance: ${money(profile.dmv)}.</p>
+      ${input('Optional exact tax-rate override','manualRate',s.manualRate,autoRate.toFixed(3).replace(/0+$/,'').replace(/\.$/,''),{prefix:'%',step:'0.001'})}
+      ${input('Optional DMV / title / tags override','dmvOverride',s.dmvOverride,money(profile.dmv).replace('$',''))}`;
   }
   $('stateFields').innerHTML=html;
 }
@@ -83,7 +87,7 @@ function update(){
   $('tradeRow').hidden=!d.trade&&!d.payoff;
   $('rowTrade').textContent=money(result.payoff-result.trade);
   $('formula').textContent=result.formula;
-  const src=sources[d.state];$('sourceLink').innerHTML=src?`Tax reference: <a href="${src.url}" target="_blank" rel="noopener noreferrer">${src.name} ↗</a>${d.state==='VA'?' · <a href="https://www.dmv.virginia.gov/sites/default/files/documents/HUF-fee-chart.pdf" target="_blank" rel="noopener noreferrer">VA 2026–27 highway-use schedule ↗</a>':''}`:'';
+  const src=sources[d.state];$('sourceLink').innerHTML=src?`Tax reference: <a href="${src.url}" target="_blank" rel="noopener noreferrer">${src.name} ↗</a>${d.state==='VA'?' · <a href="https://www.dmv.virginia.gov/sites/default/files/documents/HUF-fee-chart.pdf" target="_blank" rel="noopener noreferrer">VA 2026–27 highway-use schedule ↗</a>':''}`:`References: ${nationalSources}`;
   $('program').disabled=d.vehicle==='used';
   $('programHint').textContent=d.vehicle==='new'?'New vehicles only · Select one program.':'Programs available only for new vehicles.';
 }
@@ -93,7 +97,7 @@ for(const id of ['price','priceBasis','admin','discount','trade','payoff','vehic
   $(id).addEventListener('input',event=>{
     d[id]=['vehicle','program','priceBasis'].includes(id)?event.target.value:amount(event.target.value);
     if(id==='vehicle'&&d.vehicle==='used'){d.program='none';$('program').value='none';}
-    if(id==='trade'&&d.state==='NC')renderStateFields();
+    if((id==='trade'&&d.state==='NC')||(['vehicle','price'].includes(id)&&stateProfiles[d.state]))renderStateFields();
     update();
   });
 }

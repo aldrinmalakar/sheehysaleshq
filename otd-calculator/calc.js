@@ -7,6 +7,70 @@ export const cents = (value) => Math.round((value + Number.EPSILON) * 100) / 100
 export const money = (value) => '$' + cents(value).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 export const nearest50 = (value) => '$' + (Math.round(value / 50)*50).toLocaleString('en-US');
 
+/**
+ * 2026 working defaults for dealer sales to residents of every state.
+ * Rates are vehicle-specific where a state uses an excise, title, or highway-use tax.
+ * Where vehicle tax varies locally, the rate includes a population-weighted local allowance.
+ * The DMV amount keeps Sheehy's $543 out-of-state allowance unless normal state costs run higher.
+ */
+export const stateProfiles = {
+  AL:{rate:4.00,dmv:543,tradeCredit:true,label:'estimated combined automotive tax',detail:'2.00% state automotive tax plus a 2.00% local allowance'},
+  AK:{rate:1.82,dmv:543,tradeCredit:true,label:'estimated local vehicle tax',detail:'no state sales tax; 1.82% local allowance'},
+  AZ:{rate:8.52,dmv:568,tradeCredit:true,label:'estimated combined vehicle tax',detail:'5.60% state rate plus average local tax'},
+  AR:{rate:6.50,dmv:543,tradeCredit:true,localRate:6.125,localBaseCap:2500,label:'vehicle sales tax',detail:'6.50% state tax plus a conservative capped local allowance'},
+  CA:{rate:8.99,dmv:549,tradeCredit:false,label:'estimated combined vehicle tax',detail:'7.25% state rate plus average local tax'},
+  CO:{rate:7.89,dmv:602,tradeCredit:true,label:'estimated combined vehicle tax',detail:'2.90% state rate plus average local tax'},
+  CT:{rate:6.35,highPriceRate:7.75,highPriceAt:50000,dmv:543,tradeCredit:true,label:'vehicle sales tax',detail:'6.35%, or 7.75% when vehicle price is over $50,000'},
+  DE:{rate:5.25,dmv:543,tradeCredit:true,label:'motor vehicle document fee',detail:'5.25% document fee'},
+  FL:{rate:6.00,dmv:543,tradeCredit:true,localRate:.98,localBaseCap:5000,label:'vehicle sales and surtax',detail:'6.00% state tax plus average county surtax on the first $5,000'},
+  GA:{rate:7.00,dmv:543,tradeCredit:true,label:'title ad valorem tax',detail:'7.00% TAVT using selling price as the working value'},
+  HI:{rate:4.50,dmv:543,tradeCredit:false,label:'estimated general excise tax',detail:'4.00% state GET plus 0.50% county allowance'},
+  ID:{rate:6.03,dmv:543,tradeCredit:true,label:'estimated combined vehicle tax',detail:'6.00% state tax plus average local tax'},
+  IL:{rate:7.50,dmv:543,tradeCredit:true,label:'conservative vehicle-use tax',detail:'7.50% working rate for Illinois-titled vehicles'},
+  IN:{rate:7.00,dmv:543,tradeCredit:true,label:'vehicle sales tax',detail:'7.00% state tax'},
+  IA:{rate:5.00,dmv:543,tradeCredit:true,label:'one-time registration fee',detail:'5.00% one-time registration fee'},
+  KS:{rate:8.69,dmv:543,tradeCredit:true,label:'estimated combined vehicle tax',detail:'6.50% state rate plus average local tax'},
+  KY:{rate:6.00,dmv:543,tradeCredit:true,usedTradeCredit:false,label:'motor vehicle usage tax',detail:'6.00% usage tax; used-vehicle trade credit is not assumed'},
+  LA:{rate:10.11,dmv:543,tradeCredit:true,label:'estimated combined vehicle tax',detail:'5.00% state rate plus average local tax'},
+  ME:{rate:5.50,dmv:543,tradeCredit:true,label:'vehicle sales tax',detail:'5.50% state tax'},
+  MA:{rate:6.25,dmv:543,tradeCredit:true,label:'vehicle sales tax',detail:'6.25% state tax'},
+  MI:{rate:6.00,dmv:543,tradeCredit:true,tradeCap:12000,label:'vehicle sales tax',detail:'6.00% state tax with the 2026 trade deduction capped at $12,000'},
+  MN:{rate:6.875,dmv:543,tradeCredit:true,label:'motor vehicle sales tax',detail:'6.875% motor vehicle tax'},
+  MS:{rate:5.00,dmv:727,tradeCredit:true,label:'vehicle sales tax',detail:'5.00% passenger-vehicle tax'},
+  MO:{rate:8.44,dmv:543,tradeCredit:true,label:'estimated combined vehicle tax',detail:'4.225% state rate plus average local tax'},
+  MT:{rate:0,dmv:543,tradeCredit:false,label:'vehicle sales tax',detail:'no state vehicle sales tax'},
+  NE:{rate:6.98,dmv:543,tradeCredit:true,label:'estimated combined vehicle tax',detail:'5.50% state rate plus average local tax'},
+  NV:{rate:8.24,dmv:543,tradeCredit:true,label:'estimated combined vehicle tax',detail:'6.85% state rate plus average local tax'},
+  NH:{rate:0,dmv:543,tradeCredit:false,label:'vehicle sales tax',detail:'no state vehicle sales tax'},
+  NJ:{rate:6.625,dmv:543,tradeCredit:true,label:'vehicle sales tax',detail:'6.625% state tax'},
+  NM:{rate:4.00,dmv:543,tradeCredit:true,label:'motor vehicle excise tax',detail:'4.00% motor vehicle excise tax'},
+  NY:{rate:8.54,dmv:543,tradeCredit:true,label:'estimated combined vehicle tax',detail:'4.00% state rate plus average local tax'},
+  ND:{rate:5.00,dmv:543,tradeCredit:true,label:'motor vehicle excise tax',detail:'5.00% motor vehicle excise tax'},
+  OH:{rate:7.29,dmv:543,tradeCredit:true,label:'estimated combined vehicle tax',detail:'5.75% state rate plus average local tax'},
+  OK:{rate:4.50,dmv:543,tradeCredit:true,label:'combined vehicle tax',detail:'1.25% sales tax plus 3.25% excise tax'},
+  OR:{rate:0,dmv:543,tradeCredit:false,newRate:.50,label:'vehicle use tax',detail:'0.50% on a new vehicle; no sales tax on a used vehicle'},
+  PA:{rate:6.34,dmv:543,tradeCredit:true,label:'estimated combined vehicle tax',detail:'6.00% state rate plus average local tax'},
+  RI:{rate:7.00,dmv:543,tradeCredit:true,label:'vehicle sales tax',detail:'7.00% state tax'},
+  SC:{rate:5.00,dmv:543,tradeCredit:true,taxCap:500,label:'infrastructure maintenance fee',detail:'5.00% IMF capped at $500'},
+  SD:{rate:4.00,dmv:543,tradeCredit:true,label:'motor vehicle excise tax',detail:'4.00% motor vehicle excise tax'},
+  TN:{rate:7.00,dmv:543,tradeCredit:true,localRate:2.75,localBaseCap:1600,singleArticleRate:2.75,label:'vehicle sales tax',detail:'7.00% state tax plus capped local and single-article taxes'},
+  TX:{rate:6.25,dmv:543,tradeCredit:true,label:'motor vehicle sales tax',detail:'6.25% motor vehicle tax'},
+  UT:{rate:7.42,dmv:543,tradeCredit:true,label:'estimated combined vehicle tax',detail:'4.85% state vehicle rate plus local tax allowance'},
+  VT:{rate:6.00,dmv:543,tradeCredit:true,label:'purchase and use tax',detail:'6.00% purchase and use tax'},
+  WA:{rate:10.01,dmv:543,tradeCredit:true,label:'estimated combined motor vehicle tax',detail:'average state and local rate plus the 0.50% motor vehicle tax'},
+  WV:{rate:6.00,dmv:543,tradeCredit:true,label:'motor vehicle sales tax',detail:'6.00% motor vehicle tax'},
+  WI:{rate:5.72,dmv:543,tradeCredit:true,label:'estimated combined vehicle tax',detail:'5.00% state rate plus average local tax'},
+  WY:{rate:5.56,dmv:631,tradeCredit:true,label:'estimated combined vehicle tax',detail:'4.00% state rate plus average local tax'}
+};
+
+export function automaticStateRate(code,vehicle,price){
+  const profile=stateProfiles[code];
+  if(!profile)return null;
+  if(code==='CT'&&amount(price)>profile.highPriceAt)return profile.highPriceRate;
+  if(code==='OR'&&vehicle==='new')return profile.newRate;
+  return profile.rate;
+}
+
 /** Virginia DMV's 2026-27 fee schedule, valid July 1, 2026 through June 30, 2027. */
 export function virginiaHighwayUseFee(fuel,combinedMpg,years=1) {
   const term=Number(years);
@@ -61,10 +125,9 @@ export function calculate(d) {
     formula='MD: 6.5% × (adjusted price + admin − trade allowance). Registration estimate: $543–$561.';
   } else if(d.state==='NC') {
     rate=3;
-    if(trade && d.taxOverride==null) return {...common,rate,dmv:d.dmvOverride==null?543:amount(d.dmvOverride),missing:'Enter NC tax from the deal worksheet for a trade.'};
-    tax=d.taxOverride==null?cents((netPrice+admin)*.03):amount(d.taxOverride);
+    tax=d.taxOverride==null?cents(Math.min(Math.max(netPrice+admin-trade,0)*.03,2000)):amount(d.taxOverride);
     dmv=d.dmvOverride==null?543:amount(d.dmvOverride);
-    formula=d.taxOverride==null?'NC: 3% × (adjusted price + admin) + $543 registration estimate.':'NC: entered tax amount + registration.';
+    formula=d.taxOverride==null?'NC: 3% × (adjusted price + admin − trade), capped at $2,000, plus the $543 out-of-state registration allowance.':'NC: entered tax amount + registration.';
   } else if(d.state==='DC') {
     const weight=Number(d.weight), fmv=Number(d.fmv), mpg=Number(d.mpg),fuel=d.fuel;
     if(!Number.isFinite(weight)||weight<=0) return {...common,missing:'Enter the vehicle’s unladen weight.'};
@@ -79,14 +142,28 @@ export function calculate(d) {
     dmv=d.dmvOverride==null?reg+30+(d.financed?20:0):amount(d.dmvOverride);
     formula=`DC: ${rate}% × DMV fair market value; ${money(reg)} registration + $30 title${d.financed?' + $20 lien':''}.`;
   } else {
-    if(d.manualRate===null || d.manualRate==='' || !Number.isFinite(Number(d.manualRate))) return {...common,missing:'Enter the combined vehicle tax rate for this registration address.'};
-    if(d.dmvOverride===null || d.dmvOverride==='' || !Number.isFinite(Number(d.dmvOverride))) return {...common,missing:'Enter the title, tags and registration estimate.'};
-    rate=amount(d.manualRate);
+    const profile=stateProfiles[d.state];
+    if(!profile)return {...common,missing:'Select a registration state.'};
+    const hasRateOverride=d.manualRate!==null&&d.manualRate!==''&&Number.isFinite(Number(d.manualRate));
+    rate=hasRateOverride?amount(d.manualRate):automaticStateRate(d.state,d.vehicle,netPrice);
     if(rate>100) return {...common,missing:'Enter a tax percentage between 0 and 100.'};
-    let base=netPrice+(d.adminTaxable?admin:0)-(d.tradeTaxCredit?trade:0);
-    tax=cents(Math.max(base,0)*rate/100);
-    dmv=amount(d.dmvOverride);
-    formula=`Entered vehicle tax: ${rate}% × ${money(Math.max(base,0))} taxable amount; entered DMV fees ${money(dmv)}.`;
+    const tradeAllowed=profile.tradeCredit&&(d.vehicle!=='used'||profile.usedTradeCredit!==false);
+    const tradeDeduction=tradeAllowed?Math.min(trade,profile.tradeCap??trade):0;
+    const base=Math.max(netPrice+admin-tradeDeduction,0);
+    tax=cents(base*rate/100);
+    if(!hasRateOverride&&profile.localRate){
+      const localBase=Math.min(base,profile.localBaseCap??base);
+      tax=cents(tax+localBase*profile.localRate/100);
+      if(profile.singleArticleRate){
+        const singleBase=Math.min(Math.max(base-1600,0),1600);
+        tax=cents(tax+singleBase*profile.singleArticleRate/100);
+      }
+    }
+    if(profile.taxCap!=null)tax=Math.min(tax,profile.taxCap);
+    dmv=d.dmvOverride==null?profile.dmv:amount(d.dmvOverride);
+    const tradeText=tradeDeduction?` after ${money(tradeDeduction)} trade credit`:trade&& !tradeAllowed?' with no trade-tax credit assumed':'';
+    const rateText=hasRateOverride?'entered rate':profile.label;
+    formula=`${stateProfiles[d.state].detail}; ${rate}% ${rateText} on ${money(base)}${tradeText}. DMV / registration allowance: ${money(dmv)}.`;
   }
   const total=cents(netPrice+admin+tax+extraTax+dmv+highwayFee-trade+payoff);
   const totalMax=dmvMax===null?null:cents(total+(dmvMax-dmv));
