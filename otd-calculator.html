@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#162238">
+  <meta name="description" content="Sheehy Nissan of Manassas vehicle out-the-door price calculator.">
+  <title>OTD Calculator | Sheehy Nissan of Manassas</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23162238'/%3E%3Cpath d='M12 42h40M18 36l6-14h16l6 14M23 36h18' fill='none' stroke='%23e23b48' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="otd-calculator/styles.css">
+  <script src="./nav.js" defer></script>
+  <script src="otd-calculator/app.js" type="module"></script>
+</head>
+<body>
+  <main class="shell">
+    <header class="masthead">
+      <div class="identity"><span class="mark" aria-hidden="true">S</span><div><span class="eyebrow">SHEEHY NISSAN OF MANASSAS</span><h1>Out-the-door calculator</h1></div></div>
+      <span class="desk-tag">SALES DESK · ESTIMATOR</span>
+    </header>
+
+    <div class="workspace">
+      <section class="card inputs" aria-labelledby="deal-title">
+        <div class="section-head"><div><span class="section-number">01 / BUILD THE DEAL</span><h2 id="deal-title">Price &amp; registration</h2></div></div>
+        <div class="field-grid">
+          <label class="field"><span>Starting vehicle price</span><span class="input-wrap leading"><span aria-hidden="true">$</span><input id="price" type="number" inputmode="decimal" min="0" step="0.01" value="30998" aria-label="Starting vehicle price in dollars"></span></label>
+          <label class="field"><span>Price provided as</span><select id="priceBasis"><option value="rebated">Easy Price / after rebates</option><option value="msrp">MSRP / before savings</option></select></label>
+        </div>
+        <p class="hint" id="priceHint" style="margin:8px 0 20px">Enter only discounts not already reflected in this price.</p>
+
+        <fieldset class="region-picks"><legend>Registration state</legend><div class="chips" role="group" aria-label="DMV area quick selections"><button class="chip selected" type="button" data-state="VA" aria-pressed="true">Virginia</button><button class="chip" type="button" data-state="MD" aria-pressed="false">Maryland</button><button class="chip" type="button" data-state="DC" aria-pressed="false">Washington, DC</button><button class="chip" type="button" data-state="NC" aria-pressed="false">North Carolina</button></div></fieldset>
+        <label class="field full"><span>All states + DC</span><select id="state" aria-label="Registration state"></select></label>
+
+        <div class="divider"></div>
+        <div class="field-grid">
+          <label class="field"><span>Vehicle</span><select id="vehicle"><option value="new">New</option><option value="used" selected>Used</option></select></label>
+          <label class="field"><span>Sheehy admin fee</span><span class="input-wrap leading"><span aria-hidden="true">$</span><input id="admin" type="number" inputmode="decimal" min="0" step="0.01" value="998" aria-label="Sheehy admin fee in dollars"></span></label>
+        </div>
+
+        <div class="section-head secondary"><div><span class="section-number">02 / ADJUSTMENTS</span><h2>Discounts &amp; trade</h2></div></div>
+        <div class="field-grid">
+          <label class="field"><span>Sheehy program</span><select id="program"><option value="none">No program</option><option value="military">Military − $500</option><option value="college">College graduate − $500</option></select></label>
+          <label class="field"><span>Additional verified savings / discounts</span><span class="input-wrap leading"><span aria-hidden="true">$</span><input id="discount" type="number" inputmode="decimal" min="0" step="0.01" value="0" aria-label="Verified savings not included in starting price in dollars"></span></label>
+        </div>
+        <p class="hint" id="programHint">New vehicles only · Select one program.</p>
+        <div class="field-grid trade-grid">
+          <label class="field"><span>Trade allowance</span><span class="input-wrap leading"><span aria-hidden="true">$</span><input id="trade" type="number" inputmode="decimal" min="0" step="0.01" value="0" aria-label="Trade allowance in dollars"></span></label>
+          <label class="field"><span>Trade payoff</span><span class="input-wrap leading"><span aria-hidden="true">$</span><input id="payoff" type="number" inputmode="decimal" min="0" step="0.01" value="0" aria-label="Trade payoff in dollars"></span></label>
+        </div>
+
+        <div class="section-head secondary"><div><span class="section-number">03 / STATE CHARGES</span><h2>Tax &amp; DMV</h2></div></div>
+        <div id="stateFields" class="state-fields"></div>
+      </section>
+
+      <aside class="card result" aria-live="polite" aria-label="Estimated out the door result">
+        <span class="section-number">YOUR ESTIMATE</span>
+        <p class="result-caption" id="resultCaption">Virginia · Used vehicle</p>
+        <div class="total-block"><span class="total-label" id="totalLabel">ESTIMATED OTD</span><strong id="total">$0.00</strong><span id="rounding" class="rounding"></span></div>
+        <div class="result-rows">
+          <div><span id="rowPriceLabel">Provided price</span><strong id="rowPrice">$0.00</strong></div>
+          <div><span>Sheehy program</span><strong id="rowProgram">$0.00</strong></div>
+          <div><span>Additional savings</span><strong id="rowDiscount">$0.00</strong></div>
+          <div><span>Admin fee</span><strong id="rowAdmin">$998.00</strong></div>
+          <div><span>State tax / excise</span><strong id="rowTax">$0.00</strong></div>
+          <div id="extraTaxRow"><span>Other state tax / fee</span><strong id="rowExtraTax">$0.00</strong></div>
+          <div id="highwayFeeRow"><span>VA highway-use amount</span><strong id="rowHighwayFee">$88.20</strong></div>
+          <div><span>DMV / registration</span><strong id="rowDmv">$0.00</strong></div>
+          <div id="tradeRow"><span>Trade allowance / payoff</span><strong id="rowTrade">$0.00</strong></div>
+        </div>
+        <div class="formula" id="formula"></div>
+        <div class="source-link" id="sourceLink"></div>
+      </aside>
+    </div>
+    <footer>9010 Liberia Ave · Manassas, VA 20110 <span>Prepared for Aldrin Malakar</span></footer>
+  </main>
+</body>
+</html>

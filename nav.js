@@ -13,6 +13,7 @@
   }catch(e){}
 
   var LINKS=[
+    {href:'otd-calculator.html',label:'OTD Calculator'},
     {href:'index.html',label:'Home'},
     {href:'funnel.html',label:'Funnel'},
     {href:'sms-library.html',label:'SMS Library'},
