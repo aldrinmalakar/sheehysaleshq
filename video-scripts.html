@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Video Script Builder | Sheehy Sales HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="./nav.js" defer></script>
+<style>
+:root{--ink:#17202c;--muted:#657386;--line:#e3e8ef;--paper:#fff;--bg:#eef2f7;--blue:#2f5fe0;--soft:#f7f9fc;--green:#177245;--warn:#9a5b00}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 14px 52px}
+.hero{display:flex;gap:18px;align-items:flex-end;justify-content:space-between;margin-bottom:18px}
+h1{font-family:"Space Grotesk",sans-serif;font-size:30px;line-height:1.05;margin:0 0 7px}
+.hero p{margin:0;color:var(--muted);font-size:14px;line-height:1.5;max-width:760px}
+.badge{border:1px solid #c9d7ff;background:#f7f9ff;color:#254fbf;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:750;white-space:nowrap}
+.app{display:grid;grid-template-columns:360px minmax(0,1fr);gap:14px;align-items:start}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:14px}
+.panel h2{font-family:"Space Grotesk",sans-serif;font-size:16px;margin:0 0 12px}
+label{display:block;font-size:12px;font-weight:750;color:#46556a;margin:12px 0 5px}
+input,select,textarea{width:100%;border:1px solid #d8dee8;border-radius:8px;background:#fff;color:var(--ink);font:inherit;font-size:14px;padding:10px}
+textarea{min-height:70px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:3px solid rgba(47,95,224,.18);border-color:#8aa6f7}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.hint{font-size:12px;color:var(--muted);line-height:1.45;margin-top:7px}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+button{border:1px solid #d8dee8;background:#fff;color:var(--ink);border-radius:8px;padding:9px 11px;font-weight:750;font-size:13px;cursor:pointer}
+button:hover{border-color:#b8c8f5}
+button.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.outputs{display:grid;gap:12px}
+.output{background:var(--paper);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.outHead{display:flex;align-items:center;gap:10px;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--line);background:#f9fbfe}
+.outTitle{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:14px}
+.meta{font-size:12px;color:var(--muted)}
+.meta.ok{color:var(--green);font-weight:750}
+.meta.warn{color:var(--warn);font-weight:750}
+.outBody{padding:12px;white-space:pre-wrap;font-size:14px;line-height:1.48}
+.copy{padding:7px 9px;font-size:12px}
+.note{border-left:3px solid var(--blue);padding:9px 10px;background:#f7f9ff;border-radius:8px;font-size:12.5px;line-height:1.5;color:#46556a;margin-top:12px}
+.miniGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.pill{border:1px solid var(--line);border-radius:8px;padding:8px;background:#fbfcff;font-size:12px;color:#536174}
+.pill b{display:block;color:#1f2a38;margin-bottom:2px}
+.toast{position:fixed;right:14px;bottom:14px;background:#17202c;color:#fff;border-radius:8px;padding:10px 12px;font-size:13px;opacity:0;transform:translateY(8px);transition:.16s ease;z-index:10000}
+.toast.show{opacity:1;transform:translateY(0)}
+@media(max-width:880px){.app{grid-template-columns:1fr}.hero{display:block}.badge{display:inline-block;margin-top:12px}.row,.miniGrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <section class="hero">
+    <div>
+      <h1>Video Script Builder</h1>
+      <p>Generate short DriveCentric video scripts, separate emails, voicemail, SMS and CRM notes. The video stays under one minute and every channel reinforces direct contact without sounding weird.</p>
+    </div>
+    <div class="badge">Built for Aldrin | Sheehy Nissan</div>
+  </section>
+
+  <section class="app">
+    <aside class="panel">
+      <h2>Customer + Vehicle</h2>
+
+      <label for="clientName">Client name</label>
+      <input id="clientName" placeholder="Optional">
+
+      <label for="vehicle">Car / model</label>
+      <input id="vehicle" placeholder="2026 Nissan Rogue SV">
+
+      <label for="scriptType">Script type</label>
+      <select id="scriptType">
+        <option value="new">Universal new car</option>
+        <option value="usedClean">Clean used car</option>
+        <option value="usedValue">Rough / value used car</option>
+        <option value="truckSuv">Used truck / SUV</option>
+        <option value="luxuryPerformance">Luxury / performance used car</option>
+        <option value="remoteProof">Remote buyer proof</option>
+      </select>
+
+      <div class="row">
+        <div>
+          <label for="detailOne">Highlight 1</label>
+          <input id="detailOne" placeholder="AWD, ProPILOT, low miles">
+        </div>
+        <div>
+          <label for="detailTwo">Highlight 2</label>
+          <input id="detailTwo" placeholder="heated seats, bed liner">
+        </div>
+      </div>
+
+      <label for="conditionPoint">Condition / trust point</label>
+      <input id="conditionPoint" placeholder="clean for the year and mileage">
+
+      <label for="customerNeed">Customer need or buying reason</label>
+      <input id="customerNeed" placeholder="commute, family space, totaled vehicle, budget">
+
+      <label for="nextTimes">Appointment options</label>
+      <input id="nextTimes" placeholder="4:15 or 6:30">
+
+      <label for="videoLink">Video link</label>
+      <input id="videoLink" placeholder="Paste DriveCentric link if using email">
+
+      <div class="controls">
+        <button class="primary" id="generateBtn" type="button">Generate Scripts</button>
+        <button id="clearBtn" type="button">Clear</button>
+      </div>
+
+      <div class="note">Best play: call, voicemail, send the DriveCentric video, then use the email as a separate touch. The goal is a reply directly to you, because two-way engagement protects the deal better than silent activity.</div>
+
+      <div class="miniGrid">
+        <div class="pill"><b>Video</b>Short proof, not a full tour.</div>
+        <div class="pill"><b>Email</b>Different wording from video.</div>
+        <div class="pill"><b>CTA</b>Reply, call, or ask for Aldrin.</div>
+      </div>
+    </aside>
+
+    <section class="outputs" id="outputs"></section>
+  </section>
+</main>
+<div class="toast" id="toast">Copied</div>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var outputs=$('outputs');
+
+  var defaults={
+    new:{d1:'the equipment people usually ask about',d2:'the comfort and technology package',cond:'new-vehicle condition and factory-backed ownership value',need:'the way you plan to use it'},
+    usedClean:{d1:'the body and wheels',d2:'the interior condition',cond:'clean for the year and mileage',need:'condition and value'},
+    usedValue:{d1:'the price point',d2:'the basic condition areas',cond:'some normal used-car wear',need:'value without paying new-car money'},
+    truckSuv:{d1:'the tires and stance',d2:'the bed, cargo area, or cabin space',cond:'the areas truck and SUV buyers normally want to see first',need:'space, utility, or capability'},
+    luxuryPerformance:{d1:'the exterior and wheels',d2:'the driver area and key equipment',cond:'the kind of condition that matters on this type of vehicle',need:'feel, equipment, and condition'},
+    remoteProof:{d1:'the exterior',d2:'the cabin and dash',cond:'the important areas before you make the drive',need:'confidence before traveling'}
+  };
+
+  var labels={
+    new:'Universal new car',
+    usedClean:'Clean used car',
+    usedValue:'Rough / value used car',
+    truckSuv:'Used truck / SUV',
+    luxuryPerformance:'Luxury / performance used car',
+    remoteProof:'Remote buyer proof'
+  };
+
+  function clean(v){return String(v||'').trim();}
+  function val(id){return clean($(id).value);}
+  function client(){return val('clientName') || 'there';}
+  function vehicle(){return val('vehicle') || 'the vehicle';}
+  function cap(s){return s.charAt(0).toUpperCase()+s.slice(1);}
+  function pieces(){
+    var type=val('scriptType') || 'new';
+    var d=defaults[type];
+    return {
+      type:type,
+      label:labels[type],
+      name:client(),
+      rawName:val('clientName'),
+      car:vehicle(),
+      d1:val('detailOne') || d.d1,
+      d2:val('detailTwo') || d.d2,
+      cond:val('conditionPoint') || d.cond,
+      need:val('customerNeed') || d.need,
+      times:val('nextTimes') || 'today or tomorrow',
+      link:val('videoLink')
+    };
+  }
+  function greeting(p){return p.rawName ? 'Hey '+p.rawName+',' : 'Hey there,';}
+  function directLine(){
+    return 'When you call or arrive, ask for Aldrin so I can pick up from here and save you from starting over.';
+  }
+  function videoScript(p){
+    var map={
+      new:function(){
+        return 'Hey '+p.name+', Aldrin here at Sheehy Nissan of Manassas. I wanted to show you the actual '+p.car+', not stock photos.\n\nHere it is. This one gives you '+p.d1+' and '+p.d2+', which matters if you are focused on '+p.need+'.\n\nI am keeping this quick because the real test is seeing it in person. If it looks like the right one, reply back with "looks good" or call me directly. '+directLine();
+      },
+      usedClean:function(){
+        return 'Hey '+p.name+', Aldrin at Sheehy Nissan of Manassas. I pulled up the actual '+p.car+' you asked about.\n\nQuick look around the outside, then the inside. I wanted you to see '+p.d1+' and '+p.d2+' before you make the trip.\n\nFrom what I am seeing, it is '+p.cond+'. If this looks like the right fit, reply "looks good" or call me directly. '+directLine();
+      },
+      usedValue:function(){
+        return 'Hey '+p.name+', Aldrin here at Sheehy Nissan of Manassas. This is the actual '+p.car+'.\n\nI want to show it straight: this is a used vehicle, and you should expect '+p.cond+'. I am showing '+p.d1+' and '+p.d2+' so there are no surprises.\n\nThe reason to look at this one is '+p.need+'. If that works for you, reply back or call me directly. '+directLine();
+      },
+      truckSuv:function(){
+        return 'Hey '+p.name+', Aldrin at Sheehy Nissan of Manassas. I have the actual '+p.car+' here.\n\nSince this is a truck or SUV, I am showing the areas that matter first: '+p.d1+', '+p.d2+', and the cabin.\n\nI am keeping this short so you can decide if it is worth seeing in person. If it checks the boxes, reply "looks good" or call me directly. '+directLine();
+      },
+      luxuryPerformance:function(){
+        return 'Hey '+p.name+', Aldrin here at Sheehy Nissan of Manassas. I pulled up the actual '+p.car+'.\n\nOn this type of vehicle, condition and equipment matter, so I am showing '+p.d1+', '+p.d2+', and the driver area.\n\nThe video gives you the first look. The drive is what decides it. If it looks right, reply back or call me directly. '+directLine();
+      },
+      remoteProof:function(){
+        return 'Hey '+p.name+', Aldrin at Sheehy Nissan of Manassas. Since you are not right around the corner, I wanted to show the actual '+p.car+'.\n\nI am showing '+p.d1+', '+p.d2+', the seats, dash, and cargo area so you can judge the important parts before traveling.\n\nBased on what I see, '+p.cond+'. If you want one closer shot, reply with the area you care about. '+directLine();
+      }
+    };
+    return map[p.type]();
+  }
+  function emailScript(p){
+    var linkLine=p.link ? '\n\nVideo: '+p.link : '';
+    var map={
+      new:'Subject: Quick look at the '+p.car+'\n\n'+greeting(p)+'\n\nI made you a short video of the actual '+p.car+' so you can see the real vehicle before coming in.'+linkLine+'\n\nThe two things I would pay attention to are '+p.d1+' and '+p.d2+'. If those line up with what you want, the next step is simple.\n\nReply back with "looks good" and I will have it ready. If you call the store or stop in, ask for Aldrin so you continue with the person who already checked it for you.\n\nAldrin Malakar\nSheehy Nissan of Manassas\n571-292-8302\n703-996-9877',
+      usedClean:'Subject: I checked the '+p.car+'\n\n'+greeting(p)+'\n\nI checked the actual '+p.car+' and sent you a quick video. I kept it short, but I focused on the areas that matter on a used vehicle: '+p.d1+', '+p.d2+', and overall condition.'+linkLine+'\n\nMy read from the video is: '+p.cond+'.\n\nIf this looks acceptable, reply "looks good" and I can have it ready. When calling or arriving, ask for Aldrin so you do not have to restart with someone else.\n\nAldrin Malakar\nSheehy Nissan of Manassas\n571-292-8302\n703-996-9877',
+      usedValue:'Subject: Straight look at the '+p.car+'\n\n'+greeting(p)+'\n\nI sent a short video of the actual '+p.car+'. I am being direct with this one because value vehicles need to be judged honestly, not dressed up.'+linkLine+'\n\nYou will see '+p.d1+' and '+p.d2+'. Expect '+p.cond+', but the reason to consider it is '+p.need+'.\n\nIf the condition works for you, reply back and I will set it up. If you call or come in, ask for Aldrin so I can pick up from the vehicle I already checked.\n\nAldrin Malakar\nSheehy Nissan of Manassas\n571-292-8302\n703-996-9877',
+      truckSuv:'Subject: '+cap(p.car)+' quick video\n\n'+greeting(p)+'\n\nI made a short video of the actual '+p.car+' and focused on the truck/SUV areas people usually need to see first: '+p.d1+', '+p.d2+', and cabin space.'+linkLine+'\n\nIf those pieces line up with what you need, the best move is to see it in person and drive it.\n\nReply "looks good" and I will have it ready. Ask for Aldrin when you call or arrive so you continue with the person who checked it.\n\nAldrin Malakar\nSheehy Nissan of Manassas\n571-292-8302\n703-996-9877',
+      luxuryPerformance:'Subject: Your '+p.car+' video\n\n'+greeting(p)+'\n\nI sent a short video of the actual '+p.car+'. For this type of vehicle, I focused on what matters before the drive: '+p.d1+', '+p.d2+', driver area, and condition.'+linkLine+'\n\nIf it looks right from the video, the next step is getting behind the wheel.\n\nReply back and I will line it up. If you call the store or come in, ask for Aldrin so you are not starting over with someone who has not looked at it.\n\nAldrin Malakar\nSheehy Nissan of Manassas\n571-292-8302\n703-996-9877',
+      remoteProof:'Subject: Real look at the '+p.car+'\n\n'+greeting(p)+'\n\nSince distance matters, I sent a short proof video of the actual '+p.car+'. I focused on '+p.d1+', '+p.d2+', seats, dash, and cargo area so you can decide whether the trip makes sense.'+linkLine+'\n\nMy quick condition note: '+p.cond+'.\n\nIf you need one specific close-up, reply with that area. If the video checks out, call me directly and ask for Aldrin so I can keep the process moving from here.\n\nAldrin Malakar\nSheehy Nissan of Manassas\n571-292-8302\n703-996-9877'
+    };
+    return map[p.type];
+  }
+  function smsScript(p){
+    return 'Hi '+(p.rawName||'there')+', Aldrin at Sheehy Nissan. I sent you a quick video of the actual '+p.car+'. If it looks right, reply "looks good" and I will have it ready. If you call or come in, ask for Aldrin so you do not have to start over.';
+  }
+  function voicemailScript(p){
+    return 'Hi '+(p.rawName||'there')+', this is Aldrin at Sheehy Nissan of Manassas. I am calling about the '+p.car+'. I am sending you a quick video of the actual vehicle now. If it looks right, call me at 703-996-9877 and ask for Aldrin. Again, Aldrin at Sheehy Nissan.';
+  }
+  function appointmentScript(p){
+    return (p.rawName||'You')+', you are set for '+p.times+' on the '+p.car+'. I will have it ready at Sheehy Nissan of Manassas, 9010 Liberia Ave. Ask for Aldrin when you arrive so I can take care of you directly.';
+  }
+  function crmScript(p){
+    return 'Personalized DriveCentric video sent for actual '+p.car+'. Script type: '+p.label+'. Voicemail/SMS/email language directs customer to reply directly or ask for Aldrin when calling/arriving so customer can continue with the salesperson who checked the unit. Awaiting two-way customer response.';
+  }
+  function words(s){var m=String(s).trim().match(/\S+/g);return m?m.length:0;}
+  function seconds(s){return Math.ceil(words(s)/2.35);}
+  function outputCard(title, body, meta){
+    var safe=body.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    var id='out_'+Math.random().toString(36).slice(2);
+    return '<article class="output"><div class="outHead"><div><div class="outTitle">'+title+'</div><div class="meta '+(meta && meta.warn ? 'warn':'ok')+'">'+(meta ? meta.text : '')+'</div></div><button class="copy" type="button" data-copy="'+id+'">Copy</button></div><div class="outBody" id="'+id+'">'+safe+'</div></article>';
+  }
+  function generate(){
+    var p=pieces();
+    var video=videoScript(p);
+    var estimate=seconds(video);
+    var warn=estimate>58;
+    var parts=[
+      outputCard('Video Script', video, {text:words(video)+' words | about '+estimate+' seconds'+(warn?' | tighten custom fields':' | under 60 seconds'), warn:warn}),
+      outputCard('Email', emailScript(p), {text:'Separate email touch, not a copy of the video'}),
+      outputCard('SMS', smsScript(p), {text:'Use only when texting is permitted'}),
+      outputCard('Voicemail', voicemailScript(p), {text:'Short callback hook'}),
+      outputCard('Appointment Confirmation', appointmentScript(p), {text:'Use after two-way engagement'}),
+      outputCard('CRM Note', crmScript(p), {text:'Documents your work without overstating contact'})
+    ];
+    outputs.innerHTML=parts.join('');
+  }
+  function copyText(text){
+    if(navigator.clipboard && navigator.clipboard.writeText){return navigator.clipboard.writeText(text);}
+    var ta=document.createElement('textarea');
+    ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+  function toast(){
+    var t=$('toast');
+    t.classList.add('show');
+    setTimeout(function(){t.classList.remove('show');},1200);
+  }
+  document.addEventListener('click',function(e){
+    var btn=e.target.closest('[data-copy]');
+    if(btn){var node=$(btn.getAttribute('data-copy'));if(node)copyText(node.textContent).then(toast);}
+  });
+  $('generateBtn').addEventListener('click',generate);
+  $('clearBtn').addEventListener('click',function(){
+    ['clientName','vehicle','detailOne','detailTwo','conditionPoint','customerNeed','nextTimes','videoLink'].forEach(function(id){$(id).value='';});
+    $('scriptType').value='new';
+    generate();
+  });
+  ['clientName','vehicle','scriptType','detailOne','detailTwo','conditionPoint','customerNeed','nextTimes','videoLink'].forEach(function(id){
+    $(id).addEventListener('input',generate);
+    $(id).addEventListener('change',generate);
+  });
+  generate();
+})();
+</script>
+</body>
+</html>
