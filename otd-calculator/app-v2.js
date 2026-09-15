@@ -1,4 +1,4 @@
-import {states,stateProfiles,automaticStateRate,amount,money,nearest50,calculate} from './calc-v2.js';
+import {states,stateProfiles,automaticStateRate,amount,money,nearest50,paymentAprPresets,autoLoanPayment,calculate} from './calc-v2.js?v=20260915-1';
 
 const $ = (id) => document.getElementById(id);
 const stateNames=Object.fromEntries(states);
@@ -6,6 +6,52 @@ const stateSelect=$('state');
 const d={state:'VA',vehicle:'used',program:'none',price:30998,priceBasis:'rebated',admin:998,discount:0,trade:0,payoff:0};
 const stateDraft={};
 let result=null;
+let paymentResult=null;
+const payment={creditTier:'market',term:72,cashDown:0,apr:paymentAprPresets.market.used};
+const wholeMoney=value=>'$'+Math.round(value).toLocaleString('en-US');
+const paymentRange=(low,high,suffix='')=>high!==null&&high!==low?`${wholeMoney(low)}–${wholeMoney(high)}${suffix}`:`${wholeMoney(low)}${suffix}`;
+function presetApr(){
+  const preset=paymentAprPresets[payment.creditTier];
+  return preset?preset[d.vehicle]:payment.apr;
+}
+function syncPresetApr(){
+  const rate=presetApr();
+  if(Number.isFinite(rate)){payment.apr=rate;$('apr').value=rate.toFixed(2);}
+}
+function updatePayment(complete){
+  const validApr=Number.isFinite(payment.apr)&&payment.apr>=0&&payment.apr<=40;
+  if(!complete||!validApr){
+    paymentResult=null;
+    $('monthlyPayment').textContent='—';
+    $('paymentVerbal').textContent=!complete?'Complete the OTD estimate first.':'Enter an APR from 0% to 40%.';
+    for(const id of ['amountFinanced','totalPayments','financeCharge','pay60','pay72','pay84'])$(id).textContent='—';
+    $('paymentAprBadge').textContent=validApr?`${payment.apr.toFixed(2)}% APR`:'APR needed';
+    return;
+  }
+  const balanceLow=Math.max(result.total-payment.cashDown,0);
+  const balanceHigh=result.totalMax===null?null:Math.max(result.totalMax-payment.cashDown,0);
+  const monthlyLow=autoLoanPayment(balanceLow,payment.apr,payment.term);
+  const monthlyHigh=balanceHigh===null?null:autoLoanPayment(balanceHigh,payment.apr,payment.term);
+  const verbal=Math.ceil((monthlyHigh??monthlyLow)/10)*10;
+  const totalLow=monthlyLow*payment.term;
+  const totalHigh=monthlyHigh===null?null:monthlyHigh*payment.term;
+  paymentResult={balanceLow,balanceHigh,monthlyLow,monthlyHigh,verbal,totalLow,totalHigh};
+  $('monthlyPayment').textContent=paymentRange(monthlyLow,monthlyHigh,' / mo');
+  $('paymentVerbal').textContent=`Verbal: about ${wholeMoney(verbal)} per month`;
+  $('paymentAprBadge').textContent=`${payment.apr.toFixed(2)}% APR · ${payment.term} mo`;
+  $('amountFinanced').textContent=paymentRange(balanceLow,balanceHigh);
+  $('totalPayments').textContent=paymentRange(totalLow,totalHigh);
+  $('financeCharge').textContent=paymentRange(Math.max(totalLow-balanceLow,0),totalHigh===null?null:Math.max(totalHigh-balanceHigh,0));
+  for(const term of [60,72,84]){
+    const low=autoLoanPayment(balanceLow,payment.apr,term);
+    const high=balanceHigh===null?null:autoLoanPayment(balanceHigh,payment.apr,term);
+    $(`pay${term}`).textContent=paymentRange(low,high,' / mo');
+    $(`term${term}`).classList.toggle('selected',payment.term===term);
+  }
+  const preset=paymentAprPresets[payment.creditTier];
+  const period=payment.creditTier==='market'?'Q2 2026':payment.creditTier==='custom'?null:'Q1 2026';
+  $('paymentBasis').innerHTML=`Uses estimated OTD less cash down. ${preset?preset.label:'Custom APR'}${period?` · Experian ${period}`:''} for a ${d.vehicle} vehicle. <a href="https://www.experian.com/blogs/ask-experian/auto-loan-rates-by-credit-score/" target="_blank" rel="noopener noreferrer">APR data ↗</a>`;
+}
 const sources={
   VA:{url:'https://www.dmv.virginia.gov/vehicles/taxes-fees/sut',name:'Virginia DMV tax'},
   MD:{url:'https://mva.maryland.gov/your-mva-guide/businesses/bulletins-businesses/new-vehicle-registration-fees-and-term',name:'Maryland MVA excise tax'},
@@ -90,17 +136,39 @@ function update(){
   const src=sources[d.state];$('sourceLink').innerHTML=src?`Tax reference: <a href="${src.url}" target="_blank" rel="noopener noreferrer">${src.name} ↗</a>${d.state==='VA'?' · <a href="https://www.dmv.virginia.gov/sites/default/files/documents/HUF-fee-chart.pdf" target="_blank" rel="noopener noreferrer">VA 2026–27 highway-use schedule ↗</a>':''}`:`References: ${nationalSources}`;
   $('program').disabled=d.vehicle==='used';
   $('programHint').textContent=d.vehicle==='new'?'New vehicles only · Select one program.':'Programs available only for new vehicles.';
+  updatePayment(complete);
 }
 document.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>setState(chip.dataset.state)));
 stateSelect.addEventListener('change',event=>setState(event.target.value));
 for(const id of ['price','priceBasis','admin','discount','trade','payoff','vehicle','program']){
   $(id).addEventListener('input',event=>{
     d[id]=['vehicle','program','priceBasis'].includes(id)?event.target.value:amount(event.target.value);
-    if(id==='vehicle'&&d.vehicle==='used'){d.program='none';$('program').value='none';}
+    if(id==='vehicle'){
+      if(d.vehicle==='used'){d.program='none';$('program').value='none';}
+      if(payment.creditTier!=='custom')syncPresetApr();
+    }
     if((id==='trade'&&d.state==='NC')||(['vehicle','price'].includes(id)&&stateProfiles[d.state]))renderStateFields();
     update();
   });
 }
+$('creditTier').addEventListener('change',event=>{
+  payment.creditTier=event.target.value;
+  if(payment.creditTier!=='custom')syncPresetApr();
+  update();
+});
+$('term').addEventListener('change',event=>{payment.term=Number(event.target.value);update();});
+document.querySelectorAll('[data-payment-term]').forEach(button=>button.addEventListener('click',()=>{
+  payment.term=Number(button.dataset.paymentTerm);
+  $('term').value=String(payment.term);
+  update();
+}));
+$('cashDown').addEventListener('input',event=>{payment.cashDown=amount(event.target.value);update();});
+$('apr').addEventListener('input',event=>{
+  payment.apr=event.target.value===''?null:Number(event.target.value);
+  payment.creditTier='custom';
+  $('creditTier').value='custom';
+  update();
+});
 $('stateFields').addEventListener('input',event=>{
   const key=event.target.dataset.stateInput;if(!key)return;
   active()[key]=event.target.type==='checkbox'?event.target.checked:['fuel','hufMode','hufFuel'].includes(key)?event.target.value:event.target.value===''?null:Number(event.target.value);
@@ -112,20 +180,25 @@ renderStateFields();update();
 // Expose the visible calculation workflow to supporting agent browsers when available.
 if(document.modelContext?.registerTool){
   const tool={
-    name:'configure_otd_estimate',title:'Configure OTD estimate',
-    description:'Set the vehicle price, registration state and optional deal details in the visible Sheehy calculator. Return the current estimate or the next required field.',
-    inputSchema:{type:'object',properties:{state:{type:'string',enum:states.map(([code])=>code)},price:{type:'number',minimum:0.01},priceBasis:{type:'string',enum:['msrp','rebated']},vehicle:{type:'string',enum:['new','used']},program:{type:'string',enum:['none','military','college']},admin:{type:'number',minimum:0},hufMode:{type:'string',enum:['proposal','calculated','manual','none']},highwayFee:{type:'number',minimum:0},combinedMpg:{type:'number',minimum:1},hufFuel:{type:'string',enum:['gas','ev']},registrationYears:{type:'integer',minimum:1,maximum:3},discount:{type:'number',minimum:0},trade:{type:'number',minimum:0},payoff:{type:'number',minimum:0},taxRate:{type:'number',minimum:0,maximum:100},dmv:{type:'number',minimum:0},weight:{type:'number',minimum:1},cityMpg:{type:'number',minimum:1},fairMarketValue:{type:'number',minimum:0.01},fuel:{type:'string',enum:['gas','ev']}},required:['state','price'],additionalProperties:false},
+    name:'configure_otd_estimate',title:'Configure OTD and payment estimate',
+    description:'Set vehicle, registration and optional retail-finance details in the visible Sheehy calculator. Return the current OTD and payment estimate or the next required field.',
+    inputSchema:{type:'object',properties:{state:{type:'string',enum:states.map(([code])=>code)},price:{type:'number',minimum:0.01},priceBasis:{type:'string',enum:['msrp','rebated']},vehicle:{type:'string',enum:['new','used']},program:{type:'string',enum:['none','military','college']},admin:{type:'number',minimum:0},hufMode:{type:'string',enum:['proposal','calculated','manual','none']},highwayFee:{type:'number',minimum:0},combinedMpg:{type:'number',minimum:1},hufFuel:{type:'string',enum:['gas','ev']},registrationYears:{type:'integer',minimum:1,maximum:3},discount:{type:'number',minimum:0},trade:{type:'number',minimum:0},payoff:{type:'number',minimum:0},taxRate:{type:'number',minimum:0,maximum:100},dmv:{type:'number',minimum:0},weight:{type:'number',minimum:1},cityMpg:{type:'number',minimum:1},fairMarketValue:{type:'number',minimum:0.01},fuel:{type:'string',enum:['gas','ev']},creditTier:{type:'string',enum:['market','superprime','prime','nearprime','subprime','deep','custom']},apr:{type:'number',minimum:0,maximum:40},term:{type:'integer',enum:[36,48,60,72,84]},cashDown:{type:'number',minimum:0}},required:['state','price'],additionalProperties:false},
     annotations:{readOnlyHint:false,untrustedContentHint:false},
     execute(value){
       if(!states.some(([code])=>code===value.state)||!Number.isFinite(value.price)||value.price<=0)throw new Error('Enter a valid state and positive price.');
       if(value.vehicle==='used'&&value.program&&value.program!=='none')throw new Error('Sheehy military and college programs are for new vehicles only.');
       for(const key of ['vehicle','program','price','priceBasis','admin','discount','trade','payoff'])if(value[key]!==undefined){d[key]=value[key];$(key).value=value[key];}
       if(d.vehicle==='used'){d.program='none';$('program').value='none';}
+      if(value.vehicle!==undefined&&payment.creditTier!=='custom')syncPresetApr();
+      if(value.creditTier!==undefined){payment.creditTier=value.creditTier;$('creditTier').value=value.creditTier;if(value.creditTier!=='custom')syncPresetApr();}
+      if(value.apr!==undefined){payment.apr=value.apr;payment.creditTier='custom';$('creditTier').value='custom';$('apr').value=value.apr;}
+      if(value.term!==undefined){payment.term=value.term;$('term').value=value.term;}
+      if(value.cashDown!==undefined){payment.cashDown=value.cashDown;$('cashDown').value=value.cashDown;}
       const s=stateDraft[value.state]??(stateDraft[value.state]=newStateDraft());
       for(const [from,to] of [['taxRate','manualRate'],['dmv','dmvOverride'],['weight','weight'],['cityMpg','mpg'],['fairMarketValue','fmv'],['fuel','fuel'],['hufMode','hufMode'],['highwayFee','highwayFee'],['combinedMpg','hufMpg'],['hufFuel','hufFuel'],['registrationYears','hufYears']])if(value[from]!==undefined)s[to]=value[from];
       if(value.highwayFee!==undefined&&value.hufMode===undefined)s.hufMode='manual';
       setState(value.state);
-      return {state:d.state,estimatedOtd:result.total,estimatedOtdHigh:result.totalMax,missing:result.missing};
+      return {state:d.state,estimatedOtd:result.total,estimatedOtdHigh:result.totalMax,estimatedMonthlyPayment:paymentResult?.monthlyLow??null,estimatedMonthlyPaymentHigh:paymentResult?.monthlyHigh??null,verbalMonthlyPayment:paymentResult?.verbal??null,apr:payment.apr,term:payment.term,amountFinanced:paymentResult?.balanceLow??null,missing:result.missing};
     }
   };
   try{Promise.resolve(document.modelContext.registerTool(tool)).catch(()=>{});}catch{}

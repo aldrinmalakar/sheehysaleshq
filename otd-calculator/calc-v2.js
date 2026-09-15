@@ -7,6 +7,27 @@ export const cents = (value) => Math.round((value + Number.EPSILON) * 100) / 100
 export const money = (value) => '$' + cents(value).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 export const nearest50 = (value) => '$' + (Math.round(value / 50)*50).toLocaleString('en-US');
 
+/** Current retail auto-loan benchmarks. Market averages are Q2 2026; score tiers are Q1 2026 Experian data. */
+export const paymentAprPresets = {
+  market:{label:'Market average',new:6.35,used:11.19},
+  superprime:{label:'Super prime · 781–850',new:4.55,used:6.30},
+  prime:{label:'Prime · 661–780',new:6.23,used:8.77},
+  nearprime:{label:'Near prime · 601–660',new:9.67,used:14.03},
+  subprime:{label:'Subprime · 501–600',new:13.44,used:19.42},
+  deep:{label:'Deep subprime · 300–500',new:16.01,used:21.77}
+};
+
+/** Standard fixed-rate installment calculation. Returns a dollar amount rounded to cents. */
+export function autoLoanPayment(principal,apr,months) {
+  const balance=Number(principal), annualRate=Number(apr), term=Number(months);
+  if(!Number.isFinite(balance)||balance<0||!Number.isFinite(annualRate)||annualRate<0||annualRate>40||!Number.isInteger(term)||term<=0)return null;
+  if(balance===0)return 0;
+  const monthlyRate=annualRate/1200;
+  if(monthlyRate===0)return cents(balance/term);
+  const factor=(1+monthlyRate)**term;
+  return cents(balance*monthlyRate*factor/(factor-1));
+}
+
 /**
  * 2026 working defaults for dealer sales to residents of every state.
  * Rates are vehicle-specific where a state uses an excise, title, or highway-use tax.

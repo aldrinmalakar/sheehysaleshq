@@ -4,17 +4,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#162238">
-  <meta name="description" content="Sheehy Nissan of Manassas vehicle out-the-door price calculator.">
-  <title>OTD Calculator | Sheehy Nissan of Manassas</title>
+  <meta name="description" content="Sheehy Nissan of Manassas out-the-door price and estimated payment calculator.">
+  <title>OTD &amp; Payment Calculator | Sheehy Nissan of Manassas</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23162238'/%3E%3Cpath d='M12 42h40M18 36l6-14h16l6 14M23 36h18' fill='none' stroke='%23e23b48' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="otd-calculator/styles.css">
+  <link rel="stylesheet" href="otd-calculator/styles.css?v=20260915-1">
   <script src="./nav.js" defer></script>
-  <script src="otd-calculator/app-v2.js" type="module"></script>
+  <script src="otd-calculator/app-v2.js?v=20260915-1" type="module"></script>
 </head>
 <body>
   <main class="shell">
     <header class="masthead">
-      <div class="identity"><span class="mark" aria-hidden="true">S</span><div><span class="eyebrow">SHEEHY NISSAN OF MANASSAS</span><h1>Out-the-door calculator</h1></div></div>
+      <div class="identity"><span class="mark" aria-hidden="true">S</span><div><span class="eyebrow">SHEEHY NISSAN OF MANASSAS</span><h1>OTD &amp; payment calculator</h1></div></div>
       <span class="desk-tag">SALES DESK · ESTIMATOR</span>
     </header>
 
@@ -51,10 +51,46 @@
         <div id="stateFields" class="state-fields"></div>
       </section>
 
-      <aside class="card result" aria-live="polite" aria-label="Estimated out the door result">
+      <aside class="card result" aria-live="polite" aria-label="Estimated out the door and payment result">
         <span class="section-number">YOUR ESTIMATE</span>
         <p class="result-caption" id="resultCaption">Virginia · Used vehicle</p>
         <div class="total-block"><span class="total-label" id="totalLabel">ESTIMATED OTD</span><strong id="total">$0.00</strong><span id="rounding" class="rounding"></span></div>
+        <section class="payment-panel" aria-labelledby="paymentTitle">
+          <div class="payment-head">
+            <div><span class="section-number">PAYMENT ESTIMATE</span><h2 id="paymentTitle">Retail finance</h2></div>
+            <span class="apr-badge" id="paymentAprBadge">11.19% APR · 72 mo</span>
+          </div>
+          <div class="payment-total">
+            <span>ESTIMATED MONTHLY PAYMENT</span>
+            <strong id="monthlyPayment">$0 / mo</strong>
+            <small id="paymentVerbal">Verbal: about $0 per month</small>
+          </div>
+          <div class="payment-controls">
+            <label class="field"><span>Credit profile</span><select id="creditTier">
+              <option value="market">Market average</option>
+              <option value="superprime">Super prime · 781–850</option>
+              <option value="prime">Prime · 661–780</option>
+              <option value="nearprime">Near prime · 601–660</option>
+              <option value="subprime">Subprime · 501–600</option>
+              <option value="deep">Deep subprime · 300–500</option>
+              <option value="custom">Custom APR</option>
+            </select></label>
+            <label class="field"><span>Term</span><select id="term"><option value="36">36 months</option><option value="48">48 months</option><option value="60">60 months</option><option value="72" selected>72 months</option><option value="84">84 months</option></select></label>
+            <label class="field"><span>Cash down</span><span class="input-wrap leading"><span aria-hidden="true">$</span><input id="cashDown" type="number" inputmode="decimal" min="0" step="100" value="0" aria-label="Cash down in dollars"></span></label>
+            <label class="field"><span>APR used</span><span class="input-wrap trailing"><input id="apr" type="number" inputmode="decimal" min="0" max="40" step="0.01" value="11.19" aria-label="Annual percentage rate"><span aria-hidden="true">%</span></span></label>
+          </div>
+          <div class="payment-rows">
+            <div><span>Amount financed</span><strong id="amountFinanced">$0.00</strong></div>
+            <div><span>Total of payments</span><strong id="totalPayments">$0.00</strong></div>
+            <div><span>Finance charge</span><strong id="financeCharge">$0.00</strong></div>
+          </div>
+          <div class="term-strip" aria-label="Common term comparison">
+            <button type="button" id="term60" data-payment-term="60"><span>60 mo</span><strong id="pay60">$0 / mo</strong></button>
+            <button type="button" id="term72" data-payment-term="72" class="selected"><span>72 mo</span><strong id="pay72">$0 / mo</strong></button>
+            <button type="button" id="term84" data-payment-term="84"><span>84 mo</span><strong id="pay84">$0 / mo</strong></button>
+          </div>
+          <p class="payment-basis" id="paymentBasis">Uses estimated OTD less cash down.</p>
+        </section>
         <div class="result-rows">
           <div><span id="rowPriceLabel">Provided price</span><strong id="rowPrice">$0.00</strong></div>
           <div><span>Sheehy program</span><strong id="rowProgram">$0.00</strong></div>
