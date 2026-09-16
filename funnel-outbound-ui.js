@@ -17,20 +17,27 @@ function apply(){
   if(activityJump)activityJump.hidden=out;
   if(hint)hint.hidden=!out;
 }
-function loadPhoneVoice(){
-  if(document.getElementById('shqFunnelCallVoice'))return;
-  var s=document.createElement('script');s.id='shqFunnelCallVoice';s.src='./funnel-call-voice.js';
-  s.onerror=function(){if(g.console&&console.warn)console.warn('Sales HQ could not load funnel-call-voice.js');};
+function loadOnce(id,src,done){
+  var old=document.getElementById(id);if(old){if(done)done();return;}
+  var s=document.createElement('script');s.id=id;s.src=src;s.onload=function(){if(done)done();};
+  s.onerror=function(){if(g.console&&console.warn)console.warn('Sales HQ could not load '+src);};
   (document.head||document.documentElement).appendChild(s);
+}
+function loadFinalVoice(){
+  loadOnce('shqFunnelCallVoice','./funnel-call-voice.js',function(){
+    loadOnce('shqFunnelNegotiationVoice','./funnel-negotiation-voice.js',function(){
+      loadOnce('shqFunnelVideoNegotiation','./funnel-video-negotiation.js');
+    });
+  });
 }
 function bind(){
   apply();
   var stage=$('stageSelect');if(stage)stage.addEventListener('change',apply);
   g.addEventListener('shq:funnel-state-change',apply);
   g.addEventListener('shq:funnel-context-change',apply);
-  /* This deferred UI file runs after contact-control, so the spoken phone voice
-     becomes the final Funnel resolver without disturbing earlier behavior logic. */
-  loadPhoneVoice();
+  /* Deferred after the earlier Funnel layers: spoken phone voice, then the final
+     negotiation resolver, then the decision-focused video presentation layer. */
+  loadFinalVoice();
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind);else bind();
 })(window);
