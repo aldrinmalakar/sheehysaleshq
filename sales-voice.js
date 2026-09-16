@@ -15,7 +15,7 @@ function loadExtra(extraId,extraSrc,done){
 function loadSafety(){
   if(page==='sms-library.html')loadExtra('shqSmsSpecialtySafety','./sms-specialty-safety.js');
   if(page==='email-library.html')loadExtra('shqEmailMarketSafety','./email-market-safety.js');
-  if(page==='objection-library.html')loadExtra('shqObjectionSpecialtyVoice','./objection-specialty-voice.js',function(){loadExtra('shqObjectionNegotiationVoice','./objection-negotiation-voice.js');});
+  if(page==='objection-library.html')loadExtra('shqObjectionSpecialtyVoice','./objection-specialty-voice.js',function(){loadExtra('shqObjectionNegotiationVoice','./objection-negotiation-voice.js',function(){loadExtra('shqObjectionNegotiationUi','./objection-negotiation-ui.js');});});
   if(page==='reconnect.html')loadExtra('shqReconnectVoiceSafety','./reconnect-voice-safety.js',function(){loadExtra('shqReconnectNegotiationVoice','./reconnect-negotiation-voice.js');});
 }
 if(document.getElementById(id)){loadSafety();return;}
