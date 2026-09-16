@@ -26,7 +26,9 @@ function loadOnce(id,src,done){
 function loadFinalVoice(){
   loadOnce('shqFunnelCallVoice','./funnel-call-voice.js',function(){
     loadOnce('shqFunnelNegotiationVoice','./funnel-negotiation-voice.js',function(){
-      loadOnce('shqFunnelVideoNegotiation','./funnel-video-negotiation.js');
+      loadOnce('shqFunnelNegotiationSafety','./funnel-negotiation-safety.js',function(){
+        loadOnce('shqFunnelVideoNegotiation','./funnel-video-negotiation.js');
+      });
     });
   });
 }
@@ -35,8 +37,8 @@ function bind(){
   var stage=$('stageSelect');if(stage)stage.addEventListener('change',apply);
   g.addEventListener('shq:funnel-state-change',apply);
   g.addEventListener('shq:funnel-context-change',apply);
-  /* Deferred after the earlier Funnel layers: spoken phone voice, then the final
-     negotiation resolver, then the decision-focused video presentation layer. */
+  /* Deferred after the earlier Funnel layers: spoken phone voice, negotiation,
+     contact-stop guard, then the decision-focused video presentation layer. */
   loadFinalVoice();
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind);else bind();
