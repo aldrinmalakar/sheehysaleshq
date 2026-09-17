@@ -3,63 +3,110 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Video Scripts | Sheehy Sales HQ</title>
+<title>Video Desk | Sheehy Sales HQ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./video-desk.css">
 <script src="./nav.js" defer></script>
-<style>
-:root{--ink:#17202c;--muted:#657386;--line:#e3e8ef;--paper:#fff;--bg:#eef2f7;--blue:#2f5fe0;--green:#177245;--soft:#f7f9fc}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}.wrap{max-width:1180px;margin:0 auto;padding:24px 14px 60px}.hero{margin-bottom:16px}.hero h1{font-family:"Space Grotesk",sans-serif;font-size:28px;margin:0 0 5px}.hero p{margin:0;color:var(--muted);font-size:14px;line-height:1.5;max-width:800px}.app{display:grid;grid-template-columns:350px minmax(0,1fr);gap:14px;align-items:start}.panel,.output{background:var(--paper);border:1px solid var(--line);border-radius:12px}.panel{padding:14px;position:sticky;top:72px}.panel h2{font-family:"Space Grotesk",sans-serif;font-size:16px;margin:0 0 10px}label{display:block;font-size:12px;font-weight:750;color:#46556a;margin:11px 0 5px}input,select{width:100%;border:1px solid #d8dee8;border-radius:8px;background:#fff;color:var(--ink);font:inherit;font-size:14px;padding:9px 10px}input:focus,select:focus{outline:3px solid rgba(47,95,224,.18);border-color:#8aa6f7}.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.controls{display:flex;gap:8px;margin-top:14px}button{border:1px solid #d8dee8;background:#fff;color:var(--ink);border-radius:8px;padding:9px 11px;font-weight:750;cursor:pointer}button.primary{background:var(--blue);border-color:var(--blue);color:#fff}.note{margin-top:12px;background:#f7f9ff;border-left:3px solid var(--blue);border-radius:8px;padding:9px 10px;font-size:12px;line-height:1.5;color:#46556a}.outputs{display:grid;gap:11px}.outHead{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding:10px 12px;background:#f9fbfe}.outTitle{font-family:"Space Grotesk",sans-serif;font-size:14px;font-weight:700}.outBody{padding:12px;white-space:pre-wrap;font-size:14px;line-height:1.52}.copy{padding:6px 9px;font-size:12px}.video .outHead{background:#eef8f2}.coach{font-size:12px;color:var(--muted);padding:0 12px 12px}.toast{position:fixed;right:14px;bottom:14px;background:#17202c;color:#fff;border-radius:8px;padding:10px 12px;font-size:13px;opacity:0;transform:translateY(8px);transition:.15s;z-index:10000}.toast.show{opacity:1;transform:none}@media(max-width:850px){.app{grid-template-columns:1fr}.panel{position:static}.row{grid-template-columns:1fr}}
-</style>
+<script src="./video-desk.js" defer></script>
 </head>
 <body>
 <main class="wrap">
-<section class="hero"><h1>Video Scripts</h1><p>Make the DriveCentric video prove the customer’s decision point. Start with what matters, show the strongest evidence, then ask for the next commitment.</p></section>
-<section class="app">
-<aside class="panel">
-<h2>Customer + decision context</h2>
-<label>Customer name<input id="clientName" data-f="name" autocomplete="off" placeholder="Felicia"></label>
-<label>Vehicle<input id="vehicle" data-f="vehicle" autocomplete="off" placeholder="2025 Nissan Pathfinder"></label>
-<label>Video purpose<select id="scriptType"><option value="first">First vehicle proof</option><option value="used">Used-car condition proof</option><option value="remote">Distance buyer / proof before travel</option><option value="question">Answer a specific question</option><option value="alternative">Alternative / comparable vehicle</option></select></label>
-<label>What matters most to this customer?<input id="customerNeed" data-f="priority" autocomplete="off" placeholder="third-row space, payment, condition, AWD"></label>
-<label>What question or concern are we solving?<input id="concern" autocomplete="off" placeholder="Is there any body damage? Does it have a bed liner?"></label>
-<div class="row"><div><label>Proof point 1<input id="detailOne" autocomplete="off" placeholder="show exact feature"></label></div><div><label>Proof point 2<input id="detailTwo" autocomplete="off" placeholder="show condition / equipment"></label></div></div>
-<label>Material condition / difference<input id="conditionPoint" autocomplete="off" placeholder="clean tires; small fender chip; different color"></label>
-<div class="row"><div><label>Primary time<input id="timeOne" data-f="daytime" autocomplete="off" placeholder="Today 5:15"></label></div><div><label>Alternate time<input id="timeTwo" data-f="alttime" autocomplete="off" placeholder="Tomorrow 11:30"></label></div></div>
-<div class="controls"><button class="primary" id="generateBtn" type="button">Generate</button><button id="clearBtn" type="button">Clear video fields</button></div>
-<div class="note">DriveCentric embeds the video. No link field. Customer/vehicle/time fields are shared with Funnel and other Sales HQ pages on this browser.</div>
-</aside>
-<section class="outputs" id="outputs"></section>
-</section>
+  <section class="hero">
+    <div>
+      <h1>Video Desk</h1>
+      <p>Build the video around the customer’s decision—not the car’s feature list. Show the exact proof they need, surface the material condition or difference, and close one specific next step.</p>
+    </div>
+    <div class="hero-tag">DriveCentric · no video link needed</div>
+  </section>
+
+  <section class="app">
+    <aside class="panel setup">
+      <div class="panel-title"><div><div class="kicker">Customer context</div><h2>Build the reason to watch</h2></div></div>
+      <label>Customer first name<input id="clientName" data-f="name" autocomplete="off" placeholder="Felicia"></label>
+      <label>Exact vehicle<input id="vehicle" data-f="vehicle" autocomplete="off" placeholder="2025 Nissan Pathfinder SL AWD"></label>
+      <label>Video situation<select id="situation">
+        <option value="first">First response / prove the actual unit</option>
+        <option value="feature">Specific feature or configuration question</option>
+        <option value="used">Used-vehicle condition proof</option>
+        <option value="damage">Damage / imperfection close-up</option>
+        <option value="remote">Remote buyer / proof before travel</option>
+        <option value="price">Price shopper / apples-to-apples value</option>
+        <option value="family">Family space / comfort / utility</option>
+        <option value="truck">Truck / SUV capability</option>
+        <option value="performance">Luxury / performance vehicle</option>
+        <option value="ev">EV / hybrid ownership fit</option>
+        <option value="compare">Comparable / alternative vehicle</option>
+      </select></label>
+      <label>What matters most to this customer?<input id="customerNeed" autocomplete="off" placeholder="third-row room, AWD, condition, low payment"></label>
+      <label>Exact question, objection or risk<input id="concern" autocomplete="off" placeholder="Any dents? Does it have the Convenience Package?"></label>
+      <label>Customer use case<input id="useCase" autocomplete="off" placeholder="daily commute, family trips, towing, first EV"></label>
+      <div class="three">
+        <label>Proof 1<input id="proof1" autocomplete="off" placeholder="third-row access"></label>
+        <label>Proof 2<input id="proof2" autocomplete="off" placeholder="cargo depth"></label>
+        <label>Proof 3<input id="proof3" autocomplete="off" placeholder="tire condition"></label>
+      </div>
+      <label>Material condition / difference<input id="condition" autocomplete="off" placeholder="small dent on driver rear door; different color"></label>
+      <label>Competitor / comparison vehicle<input id="comparison" autocomplete="off" placeholder="Optional — other listing, trim or model"></label>
+      <label>Travel context<input id="travel" autocomplete="off" placeholder="Optional — Pittsburgh / 3.5 hours away"></label>
+      <label>Next commitment<select id="nextCommitment">
+        <option value="auto">Auto — best next step for this video</option>
+        <option value="appointment">Set appointment</option>
+        <option value="condition">Confirm condition is acceptable</option>
+        <option value="answer">Confirm the question is answered</option>
+        <option value="comparison">Get competing listing / written offer</option>
+        <option value="remote">Structure the deal remotely</option>
+        <option value="trade">Start the trade</option>
+      </select></label>
+      <div class="row">
+        <label>Primary time<input id="timeOne" data-f="daytime" autocomplete="off" placeholder="Today 5:15"></label>
+        <label>Alternate time<input id="timeTwo" data-f="alttime" autocomplete="off" placeholder="Tomorrow 11:30"></label>
+      </div>
+      <div class="controls"><button class="primary" id="refreshBtn" type="button">Refresh script</button><button id="clearVideo" type="button">Clear video-only fields</button></div>
+      <div class="note">Name, vehicle and appointment times carry over from Funnel on this browser. Video-only details stay temporary so they do not bleed into the next customer.</div>
+    </aside>
+
+    <section class="work">
+      <article class="card record-card">
+        <div class="record-head">
+          <div><div class="kicker">Record this now</div><h2 id="situationTitle">First response</h2></div>
+          <div class="badges"><span class="pill green" id="lengthBadge">60 sec</span><span class="pill blue" id="goalBadge">Earn the appointment</span></div>
+        </div>
+        <div class="record-body">
+          <div class="missing" id="missing"></div>
+          <div class="objective"><b>Objective:</b> <span id="objectiveText"></span></div>
+          <div class="spoken" id="spokenScript"></div>
+        </div>
+      </article>
+
+      <div class="grid2">
+        <article class="card">
+          <div class="card-head"><h3>Camera order</h3><span class="channel-meta">Move with purpose</span></div>
+          <div class="card-body"><div class="shot-list" id="shotList"></div></div>
+        </article>
+        <article class="card">
+          <div class="card-head"><h3>Do not weaken this video</h3><span class="channel-meta">Keep control</span></div>
+          <div class="card-body"><div class="avoid" id="avoidList"></div></div>
+        </article>
+      </div>
+
+      <article class="card">
+        <div class="card-head"><h3>After the DriveCentric video</h3><span class="channel-meta">One message · one job</span></div>
+        <div class="card-body"><div class="channels" id="channels"></div></div>
+      </article>
+
+      <article class="card reply-card">
+        <div class="card-head"><h3>They replied — what do you say next?</h3><span class="channel-meta">Clarify → isolate → close</span></div>
+        <div class="card-body">
+          <div class="reply-buttons" id="replyButtons"></div>
+          <div class="next-line" id="nextLine"></div>
+          <div class="next-after" id="nextAfter"></div>
+        </div>
+      </article>
+    </section>
+  </section>
 </main>
 <div class="toast" id="toast">Copied</div>
-<script>
-(function(){
-'use strict';
-var $=function(id){return document.getElementById(id);},out=$('outputs');
-function v(id,fb){var e=$(id),x=e&&e.value?String(e.value).trim():'';return x||fb;}
-function name(){return v('clientName','there');}function rawName(){return v('clientName','');}function car(){return v('vehicle','the vehicle');}function need(){return v('customerNeed','the part of the vehicle that matters most to you');}function concern(){return v('concern','the one question that could change your decision');}function d1(){return v('detailOne','the exact area you asked about');}function d2(){return v('detailTwo','the strongest supporting detail');}function cond(){return v('conditionPoint','the material condition point that matters');}function t1(){return v('timeOne','later today');}function t2(){return v('timeTwo','tomorrow');}function type(){return v('scriptType','first');}
-function greet(){return rawName()?'Hi '+rawName()+',':'Hi,';}
-function video(){
- var open='Hi '+name()+', Aldrin at Sheehy Nissan. This is the actual '+car()+'. You told me '+need()+' matters, so I’m starting there.';
- var middle='First, '+d1()+'. Next, '+d2()+'.';
- var material=type()==='used'||type()==='remote'||v('conditionPoint','')?' One thing I also want you to see clearly: '+cond()+'.':'';
- var q=type()==='question'?' You asked: '+concern()+'. Here is the answer on the actual vehicle.':'';
- var alt=type()==='alternative'?' This is not the exact vehicle you first asked about, so focus on whether it solves '+need()+'.':'';
- return open+q+alt+'\n\n'+middle+material+'\n\nFrom what you told me, '+need()+' is the part that has to be right. If this checks that box, what—if anything—is still missing before we take the next step?';
-}
-function sms(){return 'Hi '+name()+', Aldrin at Sheehy Nissan. I sent the DriveCentric video on the '+car()+'. I focused on '+need()+'. Does that part check the box, or is something still missing?';}
-function email(){return 'Subject: '+car()+' — the part you asked about\n\n'+greet()+'\n\nI sent the DriveCentric video of the actual '+car()+'. I focused on '+need()+' instead of giving you a generic walk-around.\n\nIf that checks out, what—if anything—is still missing before we take the next step?';}
-function voicemail(){return 'Hi '+name()+', this is Aldrin, like Buzz Aldrin, at Sheehy Nissan. I sent you a short video on the '+car()+' focused on '+need()+'. Take a look and call or text me back with the one thing, if anything, still missing.';}
-function crm(){return 'DriveCentric video sent on '+car()+'. Focus: '+need()+'. Proof points: '+d1()+'; '+d2()+'. Condition/difference: '+cond()+'. CTA asks what remains before next step.';}
-function closeCoach(){return 'After a positive reply, do not re-sell the car. Say: “Good. Then let’s finish the part that is still open. I have '+t1()+' or '+t2()+'. Which works better?” If they name a concern, mirror it, clarify it, isolate it, then close again.';}
-function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
-function card(cls,title,text,coach){return '<div class="output '+cls+'"><div class="outHead"><div class="outTitle">'+esc(title)+'</div><button class="copy" type="button">Copy</button></div><div class="outBody">'+esc(text)+'</div>'+(coach?'<div class="coach">'+esc(coach)+'</div>':'')+'</div>';}
-function render(){out.innerHTML=card('video','DriveCentric video — spoken',video(),closeCoach())+card('sms','Send with video — SMS',sms())+card('email','Send with video — Email',email())+card('vm','Voicemail after video',voicemail())+card('crm','CRM note',crm());out.querySelectorAll('.copy').forEach(function(b){b.addEventListener('click',function(){var text=b.closest('.output').querySelector('.outBody').textContent;(navigator.clipboard?navigator.clipboard.writeText(text):Promise.reject()).then(show).catch(function(){var ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();show();});});});}
-function show(){var t=$('toast');t.classList.add('show');setTimeout(function(){t.classList.remove('show');},800);}
-$('generateBtn').addEventListener('click',render);$('clearBtn').addEventListener('click',function(){['detailOne','detailTwo','conditionPoint','concern','customerNeed'].forEach(function(id){$(id).value='';});render();});
-setTimeout(render,50);
-})();
-</script>
 </body>
 </html>
