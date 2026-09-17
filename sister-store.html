@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sister Store / Comparable | Sheehy Sales HQ</title>
+<title>Shared Inventory / Comparable | Sheehy Sales HQ</title>
 <link rel="stylesheet" href="./sister-store-ui.css">
 <script src="./nav.js" defer></script>
 <script src="./programs.js"></script>
 </head>
 <body>
 <div class="wrap">
-  <h1>Sister Store / Comparable</h1>
-  <p class="sub">Name the real difference, find out whether it matters, then earn the next step. Do not defend the substitution before the customer objects.</p>
+  <h1>Shared Inventory / Comparable</h1>
+  <p class="sub">Protect the exact request, explain only the meaningful difference, and earn the commitment required before we move shared inventory.</p>
 
   <section class="panel">
     <h2>Customer + vehicle context</h2>
@@ -19,9 +19,9 @@
       <label>Customer first name<input data-f="name" autocomplete="off" placeholder="Sarah"></label>
       <label>Vehicle they asked for<input data-f="vehicle" autocomplete="off" placeholder="2023 Murano SL, Pearl White"></label>
       <label>Matched / alternative vehicle<input id="availableVeh" autocomplete="off" placeholder="2025 Murano SL, Gun Metallic"></label>
-      <label>Where is that vehicle?<select id="location"><option value="our">Our Manassas lot</option><option value="sister">Sister store / group inventory</option></select></label>
+      <label>Where is that vehicle?<select id="location"><option value="our">Our Manassas lot</option><option value="sister">Shared group inventory</option></select></label>
       <label>Difference from inquiry<select id="difference">
-        <option value="exact-sister">Exact match, but at a sister store</option>
+        <option value="exact-sister">Exact match in shared inventory</option>
         <option value="color">Same year / model / trim, different color</option>
         <option value="trim">Same year / model, different trim</option>
         <option value="year">Same model / trim, different year</option>
@@ -49,9 +49,9 @@
         <option value="first">New lead / first response</option>
         <option value="pushback">“That is not what I asked for”</option>
         <option value="open">Open to the alternative</option>
-        <option value="pending">Manager checking sister-store vehicle</option>
-        <option value="secured">Manager confirmed we can work the sister-store unit</option>
-        <option value="failed">Requested sister-store unit could not be secured</option>
+        <option value="pending">Manager checking shared vehicle</option>
+        <option value="secured">Manager approved shared vehicle</option>
+        <option value="failed">Shared vehicle could not be secured</option>
       </select></label>
       <label>Primary time<input data-f="daytime" autocomplete="off" placeholder="Today at 5:30"></label>
       <label>Alternate time<input data-f="alttime" autocomplete="off" placeholder="Tomorrow at 11:00"></label>
@@ -60,6 +60,7 @@
     </div>
     <div class="tagbar"><span class="tag blue" id="differenceTag"></span><span class="tag" id="locationTag"></span><span class="tag alt" id="responseTag"></span></div>
     <div class="match" id="matchSummary"></div>
+    <div class="match">Shared-lot Select units are not moved for exploratory test drives. Complete the deal structure and the current manager-required commitment first. After the vehicle arrives, the customer may inspect and test-drive it before final acceptance.</div>
   </section>
 
   <div class="scripts" id="scripts"></div>
