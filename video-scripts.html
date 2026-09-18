@@ -16,9 +16,9 @@
   <section class="hero">
     <div>
       <h1>Video Desk</h1>
-      <p>Build the video around the customer’s decision—not the car’s feature list. Show the exact proof they need, surface the material condition or difference, and close one specific next step.</p>
+      <p>Use the customer’s own words, prove the one thing that matters, build the weakest certainty and close one next step. The video should move the sale, not tour the inventory.</p>
     </div>
-    <div class="hero-tag">DriveCentric · no video link needed</div>
+    <div class="hero-tag">DriveCentric · customer-specific proof</div>
   </section>
 
   <section class="app">
@@ -26,6 +26,9 @@
       <div class="panel-title"><div><div class="kicker">Customer context</div><h2>Build the reason to watch</h2></div></div>
       <label>Customer first name<input id="clientName" data-f="name" autocomplete="off" placeholder="Felicia"></label>
       <label>Exact vehicle<input id="vehicle" data-f="vehicle" autocomplete="off" placeholder="2025 Nissan Pathfinder SL AWD"></label>
+      <label>Exact phrase they used<input id="customerPhrase" data-f="customerphrase" autocomplete="off" placeholder="I need a real third row · payment is too high · I won't drive 3 hours for a maybe"></label>
+      <div class="micro">Use their language once when it matters. Do not turn their concern into dealership language before you have understood it.</div>
+
       <label>Video situation<select id="situation">
         <option value="first">First response / prove the actual unit</option>
         <option value="feature">Specific feature or configuration question</option>
@@ -39,9 +42,11 @@
         <option value="ev">EV / hybrid ownership fit</option>
         <option value="compare">Comparable / alternative vehicle</option>
       </select></label>
-      <label>What matters most to this customer?<input id="customerNeed" autocomplete="off" placeholder="third-row room, AWD, condition, low payment"></label>
+
+      <label>What matters most to this customer?<input id="customerNeed" data-f="prioritytext" autocomplete="off" placeholder="third-row room, AWD, condition, low payment"></label>
       <label>Exact question, objection or risk<input id="concern" autocomplete="off" placeholder="Any dents? Does it have the Convenience Package?"></label>
       <label>Customer use case<input id="useCase" autocomplete="off" placeholder="daily commute, family trips, towing, first EV"></label>
+
       <div class="three">
         <label>Proof 1<input id="proof1" autocomplete="off" placeholder="third-row access"></label>
         <label>Proof 2<input id="proof2" autocomplete="off" placeholder="cargo depth"></label>
@@ -50,6 +55,25 @@
       <label>Material condition / difference<input id="condition" autocomplete="off" placeholder="small dent on driver rear door; different color"></label>
       <label>Competitor / comparison vehicle<input id="comparison" autocomplete="off" placeholder="Optional — other listing, trim or model"></label>
       <label>Travel context<input id="travel" autocomplete="off" placeholder="Optional — Pittsburgh / 3.5 hours away"></label>
+
+      <div class="method-box">
+        <div class="box-title">Three certainties</div>
+        <div class="three certainty-grid">
+          <label>Vehicle<select id="certaintyVehicle" data-f="certvehicle"><option value="">Not scored</option><option value="1">1 · very low</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5 · uncertain</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10 · strong</option></select></label>
+          <label>You / trust<select id="certaintyYou" data-f="certyou"><option value="">Not scored</option><option value="1">1 · very low</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5 · uncertain</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10 · strong</option></select></label>
+          <label>Store / process<select id="certaintyStore" data-f="certstore"><option value="">Not scored</option><option value="1">1 · very low</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5 · uncertain</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10 · strong</option></select></label>
+        </div>
+        <div class="micro" id="certaintyHint">Score only what you actually know. The weakest certainty tells you what the video must prove next.</div>
+      </div>
+
+      <label>Delivery style<select id="deliveryStyle" data-f="interactionstyle">
+        <option value="neutral">Balanced / not established</option>
+        <option value="direct">Direct / decisive</option>
+        <option value="warm">Warm / relationship-first</option>
+        <option value="formal">Formal / respectful</option>
+        <option value="analytical">Analytical / detail-driven</option>
+      </select></label>
+
       <label>Next commitment<select id="nextCommitment">
         <option value="auto">Auto — best next step for this video</option>
         <option value="appointment">Set appointment</option>
@@ -64,7 +88,7 @@
         <label>Alternate time<input id="timeTwo" data-f="alttime" autocomplete="off" placeholder="Tomorrow 11:30"></label>
       </div>
       <div class="controls"><button class="primary" id="refreshBtn" type="button">Refresh script</button><button id="clearVideo" type="button">Clear video-only fields</button></div>
-      <div class="note">Name, vehicle and appointment times carry over from Funnel on this browser. Video-only details stay temporary so they do not bleed into the next customer.</div>
+      <div class="note">Name, vehicle, exact customer phrase, certainty scores and appointment times carry over from Funnel on this browser. Video-only details clear separately.</div>
     </aside>
 
     <section class="work">
@@ -75,18 +99,24 @@
         </div>
         <div class="record-body">
           <div class="missing" id="missing"></div>
+          <div class="method-strip">
+            <div class="method-cell"><span>Weakest certainty</span><b id="certaintyTarget">Not scored</b></div>
+            <div class="method-cell"><span>Customer language</span><b id="languageTarget">Listen first</b></div>
+            <div class="method-cell"><span>Delivery</span><b id="deliveryTarget">Warm + controlled</b></div>
+          </div>
           <div class="objective"><b>Objective:</b> <span id="objectiveText"></span></div>
           <div class="spoken" id="spokenScript"></div>
+          <div class="silence-cue">After the final question: stop. Let the customer answer before you add another reason.</div>
         </div>
       </article>
 
       <div class="grid2">
         <article class="card">
-          <div class="card-head"><h3>Camera order</h3><span class="channel-meta">Move with purpose</span></div>
+          <div class="card-head"><h3>Camera order</h3><span class="channel-meta">Proof before pitch</span></div>
           <div class="card-body"><div class="shot-list" id="shotList"></div></div>
         </article>
         <article class="card">
-          <div class="card-head"><h3>Do not weaken this video</h3><span class="channel-meta">Keep control</span></div>
+          <div class="card-head"><h3>Delivery + control</h3><span class="channel-meta">How to say it</span></div>
           <div class="card-body"><div class="avoid" id="avoidList"></div></div>
         </article>
       </div>
@@ -97,7 +127,7 @@
       </article>
 
       <article class="card reply-card">
-        <div class="card-head"><h3>They replied — what do you say next?</h3><span class="channel-meta">Clarify → isolate → close</span></div>
+        <div class="card-head"><h3>They replied — what do you say next?</h3><span class="channel-meta">Listen → isolate → loop gap → close</span></div>
         <div class="card-body">
           <div class="reply-buttons" id="replyButtons"></div>
           <div class="next-line" id="nextLine"></div>
