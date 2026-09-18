@@ -9,9 +9,14 @@ function scoreOptions(){var s='<option value="">Not scored</option>';for(var i=1
 function score(id){var e=$(id),n=e?parseInt(e.value,10):0;return isNaN(n)?0:n;}
 function gap(){var a=[['Vehicle',score('certaintyVehicle')],['You / trust',score('certaintyYou')],['Dealership / process',score('certaintyStore')]].filter(function(x){return x[1]>0;});if(!a.length)return null;a.sort(function(x,y){return x[1]-y[1];});return a[0];}
 function syncExistingContext(){
-  var interaction=$('interactionStyle'),priority=$('buyingPriority');
-  var p=load();
-  if(interaction){if(p.interactionstyle)interaction.value=p.interactionstyle;saveField('interactionstyle',interaction.value||'neutral');interaction.addEventListener('change',function(){saveField('interactionstyle',this.value||'neutral');refresh();});}
+  var interaction=$('interactionStyle'),priority=$('buyingPriority'),p=load(),loadedInteraction=false;
+  if(interaction){
+    if(p.interactionstyle&&interaction.value!==p.interactionstyle){interaction.value=p.interactionstyle;loadedInteraction=true;}
+    saveField('interactionstyle',interaction.value||'neutral');
+    interaction.addEventListener('change',function(){saveField('interactionstyle',this.value||'neutral');refresh();});
+    /* funnel-context.js owns its own session state, so notify it when a saved style was restored after its initial bind. */
+    if(loadedInteraction)try{interaction.dispatchEvent(new Event('change',{bubbles:true}));}catch(e){}
+  }
   if(priority){var labels={unknown:'',value:'price and overall value',comfort:'comfort',reliability:'reliability and ownership confidence',safety:'safety',technology:'technology',space:'space and utility',ownership:'ownership cost'};saveField('prioritytext',labels[priority.value]||'');priority.addEventListener('change',function(){saveField('prioritytext',labels[this.value]||'');refresh();});}
 }
 function renderRead(){var el=$('certaintyRead');if(!el)return;var g0=gap();if(!g0){el.textContent='Use these only when you have enough information. The lowest certainty is usually the next thing to build before you close.';return;}if(g0[1]>=8){el.textContent='All scored certainties are strong. Ask for the next commitment and stop talking.';return;}el.textContent='Primary certainty gap: '+g0[0]+' ('+g0[1]+'/10). Build that certainty before adding more pitch.';}
