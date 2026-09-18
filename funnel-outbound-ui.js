@@ -12,11 +12,13 @@ function ensureHint(){
 function apply(){var out=isOutbound(),video=$('videoPanel'),follow=$('videoFollowupPanel')||$('activityPanel'),hint=$('outboundStageHint'),activityJump=document.querySelector('.funnel-jump-nav a[href="#activityPanel"]');ensureHint();if(video)video.hidden=out;if(follow)follow.hidden=out;if(activityJump)activityJump.hidden=out;if(hint)hint.hidden=!out;}
 function loadOnce(id,src,done){var old=document.getElementById(id);if(old){if(done)done();return;}var s=document.createElement('script');s.id=id;s.src=src;s.onload=function(){if(done)done();};s.onerror=function(){if(g.console&&console.warn)console.warn('Sales HQ could not load '+src);};(document.head||document.documentElement).appendChild(s);}
 function loadFinalVoice(){
-  loadOnce('shqFunnelCallVoice','./funnel-call-voice.js',function(){
-    loadOnce('shqFunnelNegotiationVoice','./funnel-negotiation-voice.js',function(){
-      loadOnce('shqFunnelNegotiationSafety','./funnel-negotiation-safety.js',function(){
-        loadOnce('shqFunnelProVoicemail','./funnel-pro-voicemail.js',function(){
-          loadOnce('shqFunnelVideoNegotiation','./funnel-video-negotiation.js');
+  loadOnce('shqFunnelBookUI','./funnel-book-ui.js',function(){
+    loadOnce('shqFunnelCallVoice','./funnel-call-voice.js',function(){
+      loadOnce('shqFunnelNegotiationVoice','./funnel-negotiation-voice.js',function(){
+        loadOnce('shqFunnelNegotiationSafety','./funnel-negotiation-safety.js',function(){
+          loadOnce('shqFunnelProVoicemail','./funnel-pro-voicemail.js',function(){
+            loadOnce('shqFunnelVideoNegotiation','./funnel-video-negotiation.js');
+          });
         });
       });
     });
